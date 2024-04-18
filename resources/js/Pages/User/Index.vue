@@ -1,5 +1,11 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
+import { ref, defineProps } from "vue"
+
+const props = defineProps({
+    users: Array
+})
+
 </script>
 
 <template>
@@ -8,7 +14,6 @@ import AppLayout from "@/Layouts/AppLayout.vue";
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <div class="flex justify-between py-2 px-4 mr-4 mt-4">
-
                         <div class="relative">
                             <input
                                 type="text"
@@ -33,11 +38,12 @@ import AppLayout from "@/Layouts/AppLayout.vue";
                                 class="bg-sky-800 hover:bg-sky-700 p-2 text-white rounded-lg flex items-center"
                                 @click="addUser"
                             >
-                                <v-icon name="io-add-circle-sharp"/>
+                                <v-icon name="io-add-circle-sharp" />
                                 <p class="sm:block hidden ml-2">agregar</p>
                             </button>
                         </div>
                     </div>
+
 
                 </div>
             </div>

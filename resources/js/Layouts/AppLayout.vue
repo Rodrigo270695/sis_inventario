@@ -71,7 +71,7 @@ const logout = () => {
                                                     type="button"
                                                     class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150"
                                                 >
-                                                    Hola
+                                                    Zonal
                                                     <v-icon class="ms-2 -me-0.5 h-4 w-4" name="hi-solid-chevron-down" />
                                                 </button>
                                             </span>
@@ -80,9 +80,14 @@ const logout = () => {
                                         <template #content>
                                             <div class="w-40">
                                                 <DropdownLink
-                                                    :href="route('user.index')"
+                                                    :href="route('zonal.index')"
                                                 >
-                                                    Profile
+                                                    Gestionar Zonal
+                                                </DropdownLink>
+                                                <DropdownLink
+                                                    :href="route('pdv.index')"
+                                                >
+                                                    Gestionar PDV
                                                 </DropdownLink>
                                             </div>
                                         </template>

@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\PdvController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ZonalController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -30,5 +32,7 @@ Route::middleware([
 ])->group(function () {
 
     Route::resource('user', UserController::class);
+    Route::resource('zona/zonal', ZonalController::class);
+    Route::resource('zona/pdv', PdvController::class);
 
 });
