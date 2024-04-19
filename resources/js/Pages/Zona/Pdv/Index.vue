@@ -3,47 +3,48 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import { ref, defineProps, onMounted, onUnmounted, reactive } from "vue";
 import Pagination from "@/Components/Pagination.vue";
 import Modal from "@/Components/Modal.vue";
+import PdvForm from "./PdvForm.vue";
 import Swal from "sweetalert2";
-import ZonalForm from "./ZonalForm.vue";
 import { useForm } from "@inertiajs/vue3";
 
 const props = defineProps({
+    pdvs: Array,
     zonals: Array,
     texto: String,
 });
 
 const form = useForm({
-    zonal: Object,
+    pdv: Object,
 });
 
-let zonalObj = ref(null);
+let pdvObj = ref(null);
 let showModal = ref(false);
 let openMenuId = ref(null);
 let query = ref(props.texto);
 
 
-const toggleOptions = (zonalId) => {
-    if (openMenuId.value === zonalId) {
+const toggleOptions = (pdvId) => {
+    if (openMenuId.value === pdvId) {
         openMenuId.value = null;
     } else {
-        openMenuId.value = zonalId;
+        openMenuId.value = pdvId;
     }
 };
 
-const addZonal = () => {
-    zonalObj.value = null;
+const addPdv = () => {
+    pdvObj.value = null;
     showModal.value = true;
 };
 
-const editZonal = (zonal) => {
+const editPdv = (pdv) => {
     openMenuId.value = null;
-    zonalObj.value = zonal;
+    pdvObj.value = pdv;
     showModal.value = true;
 };
 
 const closeModal = () => {
     showModal.value = false;
-    zonalObj.value = null;
+    pdvObj.value = null;
 };
 
 // Detectar la tecla ESC para cerrar el modal
@@ -61,10 +62,10 @@ onUnmounted(() => {
     window.removeEventListener("keydown", onKeydown);
 });
 
-const changeStatus = (zonal) => {
+const changeStatus = (pdv) => {
     Swal.fire({
         title: "¿Estás seguro?",
-        text: "¿Quieres cambiar el estado de del Zonal?",
+        text: "¿Quieres cambiar el estado de del pdv?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
@@ -73,14 +74,14 @@ const changeStatus = (zonal) => {
         cancelButtonText: "No, cancelar!",
     }).then((result) => {
         if (result.isConfirmed) {
-            form.put(route("zonal.change", zonal), {
+            form.put(route("pdv.change", pdv), {
                 preserveScroll: true,
             });
         }
     });
 };
 
-const deleteZonal = (zonal) => {
+const deletePdv = (pdv) => {
     Swal.fire({
         title: "¿Estás seguro?",
         text: "No podrás revertir esto!",
@@ -92,7 +93,7 @@ const deleteZonal = (zonal) => {
         cancelButtonText: "No, cancelar!",
     }).then((result) => {
         if (result.isConfirmed) {
-            form.delete(route("zonal.destroy", zonal), {
+            form.delete(route("pdv.destroy", pdv), {
                 preserveScroll: true,
             });
         }
@@ -100,11 +101,11 @@ const deleteZonal = (zonal) => {
 };
 
 const search = () => {
-    form.get(route("zonal.search", { texto: query.value }));
+    form.get(route("pdv.search", { texto: query.value }));
 };
 
 const goToIndex = () => {
-    window.location.href = route("zonal.index");
+    window.location.href = route("pdv.index");
 };
 
 </script>
@@ -117,7 +118,7 @@ const goToIndex = () => {
                     <div
                         class="text-xl sm:text-2xl px-4 h-11 inline-flex items-center w-full text-slate-700 font-extrabold border-b"
                     >
-                        <h2>Gestionar Zonal</h2>
+                        <h2>Gestionar PDV</h2>
                     </div>
 
                     <div class="flex justify-between py-2 px-4 mr-4 mt-4">
@@ -126,7 +127,7 @@ const goToIndex = () => {
                                 type="text"
                                 v-model="query"
                                 class="w-64 md:w-72 lg:w-96 hover:border-sky-300 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
-                                placeholder="Buscar Zonal"
+                                placeholder="Buscar pdv"
                                 @input="query = query.toUpperCase()"
                                 @keyup.enter="search"
                             />
@@ -143,7 +144,7 @@ const goToIndex = () => {
                         <div>
                             <button
                                 class="bg-sky-800 hover:bg-sky-700 p-2 text-white rounded-lg flex items-center"
-                                @click="addZonal"
+                                @click="addPdv"
                             >
                                 <v-icon
                                     name="io-add-circle-sharp"
@@ -166,7 +167,7 @@ const goToIndex = () => {
                                                 scope="col"
                                                 class="px-6 py-2 text-left text-xs sm:text-base font-semibold text-white uppercase tracking-wider border-l"
                                             >
-                                                Unidad de Negocio
+                                                Zonal
                                             </th>
                                             <th
                                                 scope="col"
@@ -178,7 +179,13 @@ const goToIndex = () => {
                                                 scope="col"
                                                 class="px-6 py-2 text-center text-xs sm:text-base font-semibold text-white uppercase tracking-wider border-l"
                                             >
-                                                Estado
+                                                Dirección
+                                            </th>
+                                            <th
+                                                scope="col"
+                                                class="px-6 py-2 text-center text-xs sm:text-base font-semibold text-white uppercase tracking-wider border-l"
+                                            >
+                                                estado
                                             </th>
                                             <th class="border-l"></th>
                                         </tr>
@@ -187,19 +194,24 @@ const goToIndex = () => {
                                         class="bg-white divide-y divide-gray-200"
                                     >
                                         <tr
-                                            v-for="zonal in zonals.data"
-                                            :key="zonal.id"
+                                            v-for="pdv in pdvs.data"
+                                            :key="pdv.id"
                                             class="bg-sky-100 hover:bg-sky-200"
                                         >
                                             <td
                                                 class="text-xs md:text-sm px-6 py-3 whitespace-nowrap"
                                             >
-                                                {{ zonal.unidad_negocio }}
+                                                {{ pdv.zonal.unidad_negocio }} - {{ pdv.zonal.nombre }}
                                             </td>
                                             <td
                                                 class="text-xs md:text-sm px-6 py-3 whitespace-nowrap text-center"
                                             >
-                                                {{ zonal.nombre }}
+                                                {{ pdv.nombre }}
+                                            </td>
+                                            <td
+                                                class="text-xs md:text-sm px-6 py-3 whitespace-nowrap text-center"
+                                            >
+                                                {{ pdv.direccion }}
                                             </td>
                                             <td
                                                 class="text-xs md:text-sm px-6 py-3 whitespace-nowrap text-center"
@@ -208,13 +220,13 @@ const goToIndex = () => {
                                                     class="inline-block px-2 rounded-full h-auto justify-center items-center text-xs md:text-sm"
                                                     :class="{
                                                         ' bg-green-500 text-white':
-                                                            zonal.estado == 1,
+                                                            pdv.estado == 1,
                                                         'bg-red-500 rounded text-white':
-                                                            zonal.estado == 0,
+                                                            pdv.estado == 0,
                                                     }"
                                                 >
                                                     {{
-                                                        zonal.estado == 1
+                                                        pdv.estado == 1
                                                             ? "ACTIVO"
                                                             : "INACTIVO"
                                                     }}
@@ -223,7 +235,7 @@ const goToIndex = () => {
                                             <td
                                                 class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium"
                                             >
-                                                <div class="flex items-center justify-center gap-x-1">
+                                                <!-- <div class="flex items-center justify-center gap-x-1">
                                                     <button
                                                         class="bg-yellow-500 text-white p-1 rounded-md hover:bg-yellow-400 cursor-pointer"
                                                         @click="
@@ -270,10 +282,10 @@ const goToIndex = () => {
                                                             name="bi-trash"
                                                         />
                                                     </button>
-                                                </div>
+                                                </div> -->
                                             </td>
                                         </tr>
-                                        <tr v-if="zonals.data.length <= 0">
+                                        <tr v-if="pdvs.data.length <= 0">
                                             <td
                                                 class="text-center text-slate-800 text-md sm:text-lg font-semibold bg-slate-300"
                                                 colspan="5"
@@ -287,8 +299,8 @@ const goToIndex = () => {
                         </div>
                         <div class="block sm:hidden">
                             <div
-                                v-for="zonal in zonals.data"
-                                :key="zonal.id"
+                                v-for="pdv in pdvs.data"
+                                :key="pdv.id"
                                 class="p-4 mx-1 mt-4 bg-sky-100 hover:bg-sky-200 rounded-lg shadow-md relative"
                             >
                                 <!-- Contenido de la tarjeta -->
@@ -307,33 +319,39 @@ const goToIndex = () => {
                                         />
                                     </svg>
                                     <h3 class="text-lg font-bold text-gray-900">
-                                        U. Negocio:
-                                        <span class="font-normal">{{
-                                            zonal.unidad_negocio
-                                        }}</span>
+                                        Zonal:
+                                        <span class="font-normal">
+                                            {{pdv.zonal.unidad_negocio}}-{{pdv.zonal.nombre}}
+                                        </span>
                                     </h3>
                                 </div>
                                 <!-- Detalles de la tarjeta -->
                                 <div class="text-md">
                                     <p>
                                         <strong>Nombre:</strong>
-                                        <span class="text-gray-700 ml-1">{{
-                                            zonal.nombre
-                                        }}</span>
+                                        <span class="text-gray-700 ml-1">
+                                            {{pdv.nombre}}
+                                        </span>
+                                    </p>
+                                    <p>
+                                        <strong>Dirección:</strong>
+                                        <span class="text-gray-700 ml-1">
+                                            {{pdv.direccion}}
+                                        </span>
                                     </p>
                                     <p
                                         :class="{
-                                            'text-green-500': zonal.estado == 1,
-                                            'text-red-500': zonal.estado == 0,
+                                            'text-green-500': pdv.estado == 1,
+                                            'text-red-500': pdv.estado == 0,
                                         }"
                                         class="flex items-center"
                                     >
                                         <svg
                                             :class="{
                                                 'text-green-500':
-                                                    zonal.estado == 1,
+                                                    pdv.estado == 1,
                                                 'text-red-500':
-                                                    zonal.estado == 0,
+                                                    pdv.estado == 0,
                                             }"
                                             class="h-5 w-5 mr-2"
                                             fill="none"
@@ -345,7 +363,7 @@ const goToIndex = () => {
                                                 stroke-linejoin="round"
                                                 stroke-width="2"
                                                 d="M5 13l4 4L19 7"
-                                                v-if="zonal.estado == 1"
+                                                v-if="pdv.estado == 1"
                                             />
                                             <path
                                                 stroke-linecap="round"
@@ -357,14 +375,14 @@ const goToIndex = () => {
                                         </svg>
                                         Estado:
                                         <span class="font-normal">{{
-                                            zonal.estado == 1
+                                            pdv.estado == 1
                                                 ? "ACTIVO"
                                                 : "INACTIVO"
                                         }}</span>
                                     </p>
                                 </div>
                                 <!-- Menú de tres puntos -->
-                                <div class="absolute top-0 right-0 p-2 z-10">
+                                <!-- <div class="absolute top-0 right-0 p-2 z-10">
                                     <button
                                         @click="toggleOptions(zonal.id)"
                                         class="text-gray-600 hover:text-gray-900 shadow-md shadow-sky-100"
@@ -417,14 +435,15 @@ const goToIndex = () => {
                                             />
                                         </a>
                                     </div>
-                                </div>
+                                </div>-->
                             </div>
                         </div>
-                        <Pagination class="mt-2" :pagination="zonals" />
+                        <!-- <Pagination class="mt-2" :pagination="zonals" /> -->
                     </div>
                     <Modal :show="showModal">
-                        <ZonalForm
-                            :zonal="zonalObj"
+                        <PdvForm
+                            :pdv="pdvObj"
+                            :zonals="zonals"
                             @close-modal="closeModal"
                         />
                     </Modal>

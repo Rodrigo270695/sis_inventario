@@ -1,28 +1,31 @@
 <script setup>
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
+import TextArea from "@/Components/TextArea.vue";
 import InputError from "@/Components/InputError.vue";
 import { useForm } from "@inertiajs/vue3";
 import { defineProps } from "vue";
 
 const props = defineProps({
-    zonal: Object,
+    pdv: Object,
+    zonals: Array,
 });
 
 const form = useForm({
-    id: props.zonal ? props.zonal.id : "",
-    nombre: props.zonal ? props.zonal.nombre : "",
-    unidad_negocio: props.zonal ? props.zonal.unidad_negocio : "",
+    id: props.pdv ? props.pdv.id : "",
+    zonal_id: props.pdv ? props.pdv.zonal_id : "",
+    nombre: props.pdv ? props.pdv.nombre : "",
+    direccion: props.pdv ? props.pdv.direccion : "",
 });
 
 const submit = () => {
-    if (props.zonal) {
-        form.put(route("zonal.update", props.zonal.id), {
+    if (props.pdv) {
+        form.put(route("pdv.update", props.pdv.id), {
             preserveScroll: true,
             onSuccess: () => emit("close-modal"),
         });
     } else {
-        form.post(route("zonal.store"), {
+        form.post(route("pdv.store"), {
             preserveScroll: true,
             onSuccess: () => emit("close-modal"),
         });
@@ -30,12 +33,6 @@ const submit = () => {
 };
 
 const emit = defineEmits(["close-modal"]);
-
-const datos = [
-    { id: 1, name: "DISTRIBUIDORA" },
-    { id: 2, name: "FRANQUICIA" },
-    { id: 3, name: "DAM" },
-];
 </script>
 <template>
     <div class="flex justify-between bg-slate-300 h-12 px-4">
@@ -55,26 +52,26 @@ const datos = [
             <div class="mb-4">
                 <div class="grid grid-cols-6 gap-3">
                     <div class="col-span-6 sm:col-span-6">
-                        <InputLabel value="Unidad de negocio" />
+                        <InputLabel value="Zonal" />
                         <select
                             id="select"
-                            v-model="form.unidad_negocio"
+                            v-model="form.zonal_id"
                             class="bg-gray-50 border border-blue-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 white:bg-gray-700 white:border-gray-600 white:placeholder-gray-400 white:text-white white:focus:ring-blue-500 white:focus:border-blue-500"
                         >
                             <option disabled selected value="">
                                 Elija una opción
                             </option>
                             <option
-                                v-for="dato in datos"
-                                :key="dato.id"
-                                :value="dato.name"
+                                v-for="zonal in zonals"
+                                :key="zonal.id"
+                                :value="zonal.id"
                             >
-                                {{ dato.name }}
+                                {{ zonal.unidad_negocio }}-{{ zonal.nombre }}
                             </option>
                         </select>
                         <InputError
                             class="w-full"
-                            :message="form.errors.unidad_negocio"
+                            :message="form.errors.zonal_id"
                         />
                     </div>
                     <div class="col-span-6 sm:col-span-6">
@@ -82,11 +79,18 @@ const datos = [
                         <TextInput
                             class="w-full"
                             v-model="form.nombre"
-                            @input="form.nombre = form.nombre.toUpperCase()"
                         />
                         <InputError
                             class="w-full"
                             :message="form.errors.nombre"
+                        />
+                    </div>
+                    <div class="col-span-6 sm:col-span-6">
+                        <InputLabel value="Dirección" />
+                        <TextArea class="w-full" v-model="form.direccion" />
+                        <InputError
+                            class="w-full"
+                            :message="form.errors.direccion"
                         />
                     </div>
                 </div>

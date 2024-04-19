@@ -2,33 +2,39 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PdvRequest;
 use App\Models\Pdv;
+use App\Models\Zonal;
+use Illuminate\Database\QueryException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class PdvController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+
+    public function index(): Response
     {
-        //
+        $pdvs = Pdv::with('zonal')->orderBy('id','desc')->paginate(7);
+        $zonals = Zonal::where('estado', 1)->orderBy('nombre', 'asc')->get();
+
+        return Inertia::render('Zona/Pdv/Index',compact(['pdvs','zonals']));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(PdvRequest $request): RedirectResponse
     {
-        //
-    }
+        try {
+            Pdv::create($request->all());
+            return redirect()->route('pdv.index')->with('toast', ['Pdv creado exitosamente!','success']);
+        } catch (QueryException $e) {
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('toast', ['El pdv ya existe!','warning']);
+            }else{
+                return redirect()->back()->with('toast', ['Ocurrió un error!','danger']);
+            }
+        }
     }
 
     /**

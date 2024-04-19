@@ -32,7 +32,11 @@ Route::middleware([
 ])->group(function () {
 
     Route::resource('user', UserController::class);
+    /* Zonal */
+    Route::get('zona/zonal/search', [ZonalController::class, 'search' ])->name('zonal.search');
     Route::resource('zona/zonal', ZonalController::class);
+    Route::put('zona/zonal/change/{zonal}', [ZonalController::class, 'change'])->name('zonal.change');
+
     Route::resource('zona/pdv', PdvController::class);
 
 });

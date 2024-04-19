@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre',30)->unique();
             $table->string('direccion',255)->nullable();
-            $table->boolean('status')->default(true);
+            $table->boolean('estado')->default(true);
             $table->unsignedBigInteger('zonal_id');
             $table->foreign('zonal_id')->references('id')->on('zonals')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
