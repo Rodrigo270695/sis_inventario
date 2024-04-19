@@ -1,6 +1,6 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
-import { ref, defineProps, onMounted, onUnmounted } from "vue";
+import { ref, defineProps, onMounted, onUnmounted, reactive } from "vue";
 import Pagination from "@/Components/Pagination.vue";
 import Modal from "@/Components/Modal.vue";
 import Swal from "sweetalert2";
@@ -9,6 +9,19 @@ import { useForm } from "@inertiajs/vue3";
 
 let zonalObj = ref(null);
 let showModal = ref(false);
+let openMenuId = ref(null);
+
+const toggleOptions = (zonalId) => {
+    if (openMenuId.value === zonalId) {
+        openMenuId.value = null;
+    } else {
+        openMenuId.value = zonalId;
+    }
+};
+
+const deleteZonal = (zonalId) => {
+    openMenuId.value = null;
+};
 
 const props = defineProps({
     zonals: Array,
@@ -20,6 +33,12 @@ const form = useForm({
 
 const addZonal = () => {
     zonalObj.value = null;
+    showModal.value = true;
+};
+
+const editZonal = (zonal) => {
+    openMenuId.value = null;
+    zonalObj.value = zonal;
     showModal.value = true;
 };
 
@@ -50,7 +69,7 @@ onUnmounted(() => {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <div
-                        class="bg-slate-300 text-xl sm:text-2xl px-4 h-11 inline-flex items-center w-full text-slate-700 font-bold"
+                        class="text-xl sm:text-2xl px-4 h-11 inline-flex items-center w-full text-slate-700 font-bold border-b"
                     >
                         <h2>Gestionar Zonal</h2>
                     </div>
@@ -60,7 +79,7 @@ onUnmounted(() => {
                             <input
                                 type="text"
                                 v-model="query"
-                                class="w-auto lg:w-96 hover:border-sky-300 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
+                                class="w-64 md:w-72 lg:w-96 hover:border-sky-300 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
                                 placeholder="Buscar Zonal"
                                 @input="query = query.toUpperCase()"
                                 @keyup.enter="search"
@@ -80,94 +99,278 @@ onUnmounted(() => {
                                 class="bg-sky-800 hover:bg-sky-700 p-2 text-white rounded-lg flex items-center"
                                 @click="addZonal"
                             >
-                                <v-icon name="io-add-circle-sharp" />
+                                <v-icon
+                                    name="io-add-circle-sharp"
+                                    scale="1.3"
+                                />
                                 <p class="sm:block hidden ml-2">agregar</p>
                             </button>
                         </div>
                     </div>
 
                     <div class="p-3">
-                        <div class="overflow-x-auto rounded-lg">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-slate-300">
-                                    <tr class="">
-                                        <th
-                                            scope="col"
-                                            class="px-6 py-3 text-left text-xs sm:text-base font-semibold text-gray-600 uppercase tracking-wider"
-                                        >
-                                            Unidad de Negocio
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            class="px-6 py-3 text-left text-xs sm:text-base font-semibold text-gray-600 uppercase tracking-wider"
-                                        >
-                                            Nombre
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            class="px-6 py-3 text-left text-xs sm:text-base font-semibold text-gray-600 uppercase tracking-wider"
-                                        >
-                                            Estado
-                                        </th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody
-                                    class="bg-white divide-y divide-gray-200"
+                        <div class="hidden sm:block">
+                            <div class="overflow-x-auto rounded-lg">
+                                <table
+                                    class="min-w-full divide-y divide-gray-200"
                                 >
-                                    <tr
-                                        v-for="zonal in zonals.data"
-                                        :key="zonal.id"
-                                        class="hover:bg-slate-500 hover:text-white"
-                                    >
-                                        <td
-                                            class="text-xs md:text-sm px-6 py-4 whitespace-nowrap "
-                                        >
-                                            {{ zonal.unidad_negocio }}
-                                        </td>
-                                        <td
-                                            class="text-xs md:text-sm px-6 py-4 whitespace-nowrap"
-                                        >
-                                            {{ zonal.nombre }}
-                                        </td>
-                                        <td
-                                            class="text-xs md:text-sm px-6 py-4 whitespace-nowrap"
-                                        >
-                                            <p
-                                                class="inline-block px-2 rounded-full h-auto justify-center items-center text-sm"
-                                                :class="{
-                                                    ' bg-green-500 text-white':
-                                                        zonal.estado == 1,
-                                                    'bg-red-500 rounded text-white':
-                                                        zonal.estado == 0,
-                                                }"
+                                    <thead class="bg-cyan-800">
+                                        <tr class="">
+                                            <th
+                                                scope="col"
+                                                class="px-6 py-2 text-left text-xs sm:text-base font-semibold text-white uppercase tracking-wider border-l"
                                             >
-                                                {{
-                                                    zonal.estado == 1
-                                                        ? "ACTIVO"
-                                                        : "INACTIVO"
-                                                }}
-                                            </p>
-                                        </td>
-                                        <td
-                                            class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
-                                        ></td>
-                                    </tr>
-                                    <tr v-if="zonals.data.length <= 0">
-                                        <td
-                                            class="text-center text-slate-800 text-md sm:text-lg font-semibold bg-slate-300"
-                                            colspan="5"
+                                                Unidad de Negocio
+                                            </th>
+                                            <th
+                                                scope="col"
+                                                class="px-6 py-2 text-left text-xs sm:text-base font-semibold text-white uppercase tracking-wider border-l"
+                                            >
+                                                Nombre
+                                            </th>
+                                            <th
+                                                scope="col"
+                                                class="px-6 py-2 text-left text-xs sm:text-base font-semibold text-white uppercase tracking-wider border-l"
+                                            >
+                                                Estado
+                                            </th>
+                                            <th class="border-l"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody
+                                        class="bg-white divide-y divide-gray-200"
+                                    >
+                                        <tr
+                                            v-for="zonal in zonals.data"
+                                            :key="zonal.id"
+                                            class="hover:bg-slate-200"
                                         >
-                                            No hay registros
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <Pagination class="mt-2" :pagination="zonals" />
+                                            <td
+                                                class="text-xs md:text-sm px-6 py-3 whitespace-nowrap"
+                                            >
+                                                {{ zonal.unidad_negocio }}
+                                            </td>
+                                            <td
+                                                class="text-xs md:text-sm px-6 py-3 whitespace-nowrap"
+                                            >
+                                                {{ zonal.nombre }}
+                                            </td>
+                                            <td
+                                                class="text-xs md:text-sm px-6 py-3 whitespace-nowrap text-center"
+                                            >
+                                                <p
+                                                    class="inline-block px-2 rounded-full h-auto justify-center items-center text-xs md:text-sm"
+                                                    :class="{
+                                                        ' bg-green-500 text-white':
+                                                            zonal.estado == 1,
+                                                        'bg-red-500 rounded text-white':
+                                                            zonal.estado == 0,
+                                                    }"
+                                                >
+                                                    {{
+                                                        zonal.estado == 1
+                                                            ? "ACTIVO"
+                                                            : "INACTIVO"
+                                                    }}
+                                                </p>
+                                            </td>
+                                            <td
+                                                class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium"
+                                            >
+                                                <button
+                                                    class="bg-yellow-500 text-white p-1 rounded-md hover:bg-yellow-400 cursor-pointer mr-1"
+                                                    @click="editZonal(zonal)"
+                                                >
+                                                    <v-icon
+                                                        name="md-modeedit-round"
+                                                    />
+                                                </button>
+                                                <button
+                                                    class="text-white p-1 rounded-md"
+                                                    :class="{
+                                                        'bg-red-500 hover:bg-red-400':
+                                                            zonal.estado == 1,
+                                                        'bg-green-500 hover:bg-green-400':
+                                                            zonal.estado == 0,
+                                                    }"
+                                                    @click="changeStatus(zonal)"
+                                                >
+                                                    <v-icon
+                                                        v-if="zonal.estado == 1"
+                                                        name="gi-cancel"
+                                                    />
+                                                    <v-icon
+                                                        v-else
+                                                        name="fa-check"
+                                                    />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr v-if="zonals.data.length <= 0">
+                                            <td
+                                                class="text-center text-slate-800 text-md sm:text-lg font-semibold bg-slate-300"
+                                                colspan="5"
+                                            >
+                                                No hay registros
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
+                        <div class="block sm:hidden">
+                            <div
+                                v-for="zonal in zonals.data"
+                                :key="zonal.id"
+                                class="p-4 mx-1 mt-4 bg-sky-100 hover:bg-sky-200 rounded-lg shadow-md relative"
+                            >
+                                <!-- Contenido de la tarjeta -->
+                                <div class="flex items-center space-x-2 mb-4">
+                                    <svg
+                                        class="h-6 w-6 text-sky-500"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M3 7h18M3 12h18m-9 5h9"
+                                        />
+                                    </svg>
+                                    <h3 class="text-lg font-bold text-gray-900">
+                                        U. Negocio:
+                                        <span class="font-normal">{{
+                                            zonal.unidad_negocio
+                                        }}</span>
+                                    </h3>
+                                </div>
+                                <!-- Detalles de la tarjeta -->
+                                <div class="text-md">
+                                    <p>
+                                        <strong>Nombre:</strong>
+                                        <span class="text-gray-700">{{
+                                            zonal.nombre
+                                        }}</span>
+                                    </p>
+                                    <p
+                                        :class="{
+                                            'text-green-500': zonal.estado == 1,
+                                            'text-red-500': zonal.estado == 0,
+                                        }"
+                                        class="flex items-center"
+                                    >
+                                        <svg
+                                            :class="{
+                                                'text-green-500':
+                                                    zonal.estado == 1,
+                                                'text-red-500':
+                                                    zonal.estado == 0,
+                                            }"
+                                            class="h-5 w-5 mr-2"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M5 13l4 4L19 7"
+                                                v-if="zonal.estado == 1"
+                                            />
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M6 18L18 6M6 6l12 12"
+                                                v-else
+                                            />
+                                        </svg>
+                                        Estado:
+                                        <span class="font-normal">{{
+                                            zonal.estado == 1
+                                                ? "ACTIVO"
+                                                : "INACTIVO"
+                                        }}</span>
+                                    </p>
+                                </div>
+                                <!-- Menú de tres puntos -->
+                                <div class="absolute top-0 right-0 p-2 z-10">
+                                    <button
+                                        @click="toggleOptions(zonal.id)"
+                                        class="text-gray-600 hover:text-gray-900 shadow-md shadow-sky-100"
+                                    >
+                                        <v-icon name="oi-apps" />
+                                    </button>
+                                    <div
+                                        v-if="openMenuId === zonal.id"
+                                        class="bg-white flex justify-between shadow-lg rounded-lg absolute right-0 mt-1 w-[154px] z-20 text-center"
+                                    >
+                                        <a
+                                            href="#"
+                                            @click="editZonal(zonal)"
+                                            class="block px-4 py-2 text-sm text-white bg-yellow-500 hover:bg-yellow-400 rounded-l-lg"
+                                        >
+                                            <v-icon
+                                                name="md-modeedit-round"
+                                                class="text-white"
+                                            />
+                                        </a>
+                                        <a
+                                            href="#"
+                                            @click="deleteZonal(zonal.id)"
+                                            class="block px-4 py-2 text-sm"
+                                            :class="
+                                                zonal.estado === 1
+                                                    ? 'bg-red-500 hover:bg-red-400'
+                                                    : 'bg-green-500 hover:bg-green-400'
+                                            "
+                                        >
+                                            <v-icon
+                                                v-if="zonal.estado == 1"
+                                                name="gi-cancel"
+                                                class="text-white"
+                                            />
+                                            <v-icon
+                                                v-else
+                                                name="fa-check"
+                                                class="text-white"
+                                            />
+                                        </a>
+                                        <a
+                                            href="#"
+                                            @click="deleteZonal(zonal.id)"
+                                            class="block px-4 py-2 text-sm rounded-r-lg"
+                                            :class="
+                                                zonal.estado === 1
+                                                    ? 'bg-red-500 hover:bg-red-400'
+                                                    : 'bg-green-500 hover:bg-green-400'
+                                            "
+                                        >
+                                            <v-icon
+                                                v-if="zonal.estado == 1"
+                                                name="gi-cancel"
+                                                class="text-white"
+                                            />
+                                            <v-icon
+                                                v-else
+                                                name="fa-check"
+                                                class="text-white"
+                                            />
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <Pagination class="mt-2" :pagination="zonals" />
                     </div>
                     <Modal :show="showModal">
-                        <ZonalForm @close-modal="closeModal" />
+                        <ZonalForm
+                            :zonal="zonalObj"
+                            @close-modal="closeModal"
+                        />
                     </Modal>
                 </div>
             </div>
