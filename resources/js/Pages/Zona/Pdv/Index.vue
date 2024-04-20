@@ -128,7 +128,6 @@ const goToIndex = () => {
                                 v-model="query"
                                 class="w-64 md:w-72 lg:w-96 hover:border-sky-300 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
                                 placeholder="Buscar pdv"
-                                @input="query = query.toUpperCase()"
                                 @keyup.enter="search"
                             />
                             <button
@@ -235,11 +234,11 @@ const goToIndex = () => {
                                             <td
                                                 class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium"
                                             >
-                                                <!-- <div class="flex items-center justify-center gap-x-1">
+                                                <div class="flex items-center justify-center gap-x-1">
                                                     <button
                                                         class="bg-yellow-500 text-white p-1 rounded-md hover:bg-yellow-400 cursor-pointer"
                                                         @click="
-                                                            editZonal(zonal)
+                                                            editPdv(pdv)
                                                         "
                                                     >
                                                         <v-icon
@@ -250,19 +249,19 @@ const goToIndex = () => {
                                                         class="text-white p-1 rounded-md"
                                                         :class="{
                                                             'bg-orange-500 hover:bg-orange-400':
-                                                                zonal.estado ==
+                                                                pdv.estado ==
                                                                 1,
                                                             'bg-green-500 hover:bg-green-400':
-                                                                zonal.estado ==
+                                                                pdv.estado ==
                                                                 0,
                                                         }"
                                                         @click="
-                                                            changeStatus(zonal)
+                                                            changeStatus(pdv)
                                                         "
                                                     >
                                                         <v-icon
                                                             v-if="
-                                                                zonal.estado ==
+                                                                pdv.estado ==
                                                                 1
                                                             "
                                                             name="gi-cancel"
@@ -275,14 +274,14 @@ const goToIndex = () => {
                                                     <button
                                                         class="bg-red-500 text-white p-1 rounded-md hover:bg-red-400 cursor-pointer"
                                                         @click="
-                                                            deleteZonal(zonal)
+                                                            deletePdv(pdv)
                                                         "
                                                     >
                                                         <v-icon
                                                             name="bi-trash"
                                                         />
                                                     </button>
-                                                </div> -->
+                                                </div>
                                             </td>
                                         </tr>
                                         <tr v-if="pdvs.data.length <= 0">
@@ -382,20 +381,20 @@ const goToIndex = () => {
                                     </p>
                                 </div>
                                 <!-- Menú de tres puntos -->
-                                <!-- <div class="absolute top-0 right-0 p-2 z-10">
+                                <div class="absolute top-0 right-0 p-2 z-10">
                                     <button
-                                        @click="toggleOptions(zonal.id)"
+                                        @click="toggleOptions(pdv.id)"
                                         class="text-gray-600 hover:text-gray-900 shadow-md shadow-sky-100"
                                     >
                                         <v-icon name="oi-apps" />
                                     </button>
                                     <div
-                                        v-if="openMenuId === zonal.id"
+                                        v-if="openMenuId === pdv.id"
                                         class="bg-white flex justify-between shadow-lg rounded-lg absolute right-0 mt-1 w-[154px] z-20 text-center"
                                     >
                                         <a
                                             href="#"
-                                            @click="editZonal(zonal)"
+                                            @click="editPdv(pdv)"
                                             class="block px-4 py-2 text-sm text-white bg-yellow-500 hover:bg-yellow-400 rounded-l-lg"
                                         >
                                             <v-icon
@@ -405,16 +404,16 @@ const goToIndex = () => {
                                         </a>
                                         <a
                                             href="#"
-                                            @click="changeStatus(zonal)"
+                                            @click="changeStatus(pdv)"
                                             class="block px-4 py-2 text-sm"
                                             :class="
-                                                zonal.estado === 1
+                                                pdv.estado === 1
                                                     ? 'bg-orange-500 hover:bg-orange-400'
                                                     : 'bg-green-500 hover:bg-green-400'
                                             "
                                         >
                                             <v-icon
-                                                v-if="zonal.estado == 1"
+                                                v-if="pdv.estado == 1"
                                                 name="gi-cancel"
                                                 class="text-white"
                                             />
@@ -426,7 +425,7 @@ const goToIndex = () => {
                                         </a>
                                         <a
                                             href="#"
-                                            @click="deleteZonal(zonal)"
+                                            @click="deletePdv(pdv)"
                                             class="block px-4 py-2 text-sm text-white bg-red-500 hover:bg-red-400 rounded-r-lg"
                                         >
                                             <v-icon
@@ -435,10 +434,10 @@ const goToIndex = () => {
                                             />
                                         </a>
                                     </div>
-                                </div>-->
+                                </div>
                             </div>
                         </div>
-                        <!-- <Pagination class="mt-2" :pagination="zonals" /> -->
+                        <Pagination class="mt-2" :pagination="pdvs" />
                     </div>
                     <Modal :show="showModal">
                         <PdvForm

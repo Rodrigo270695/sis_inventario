@@ -37,35 +37,66 @@ class PdvController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Pdv $pdv)
+    public function update(PdvRequest $request, Pdv $pdv): RedirectResponse
     {
-        //
+        try {
+            $pdv->update($request->all());
+            return redirect()->route('pdv.index')->with('toast', ['Pdv actualizado exitosamente!', 'success']);
+        } catch (QueryException $e){
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('toast', ['El Pdv ya existe!', 'warning']);
+            }else{
+                return redirect()->back()->with('toast', ['Ocurrió un error!','danger']);
+            }
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Pdv $pdv)
+    public function change(Pdv $pdv): RedirectResponse
     {
-        //
+
+        if ($pdv->estado == 1) {
+            $pdv->estado = 0;
+        }else {
+            $pdv->estado = 1;
+        }
+
+        $pdv->save();
+        return redirect()->route('pdv.index')->with('toast', ['cambio de estado exitosamente!', 'success']);
+
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Pdv $pdv)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Pdv $pdv)
     {
-        //
+        try {
+            $pdv->delete();
+            return redirect()->route('pdv.index')->with('toast', ['Pdv eliminado exitosamente!', 'success']);
+        } catch (QueryException $e) {
+            return redirect()->back()->with('toast', ['Error al eliminar el Pdv!', 'danger']);
+        }
     }
+
+    public function search(Request $request): Response
+    {
+        $texto = $request->get('texto');
+        $estado = null;
+
+        if (strtolower($texto) === 'activo') {
+            $estado = 1;
+        } elseif (strtolower($texto) === 'inactivo') {
+            $estado = 0;
+        }
+
+        $pdvs = Pdv::with('zonal')->join('zonals', 'pdvs.zonal_id', '=', 'zonals.id')
+            ->where('zonals.unidad_negocio', 'like', '%' . $texto . '%')
+            ->orWhere('zonals.nombre', 'like', '%' . $texto . '%')
+            ->orWhere('pdvs.nombre', 'like', '%' . $texto . '%')
+            ->orWhere('pdvs.estado', $estado)
+            ->orderBy("pdvs.id","desc")
+            ->select('pdvs.*')
+            ->paginate(7)
+            ->appends(['texto' => $texto]);
+
+        return Inertia::render('Zona/Pdv/Index', compact('pdvs', 'texto'));
+    }
+
 }

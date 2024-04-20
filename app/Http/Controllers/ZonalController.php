@@ -65,11 +65,16 @@ class ZonalController extends Controller
 
     public function destroy(Zonal $zonal): RedirectResponse
     {
+
         try {
             $zonal->delete();
             return redirect()->route('zonal.index')->with('toast', ['Zonal eliminado exitosamente!', 'success']);
         } catch (QueryException $e) {
-            return redirect()->back()->with('toast', ['Error al eliminar el zonal!', 'danger']);
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('toast', ['El Zonal no se puede eliminar porque está siendo usado en otra tabla!', 'danger']);
+            }else{
+                return redirect()->back()->with('toast', ['Error al eliminar el zonal!', 'danger']);
+            }
         }
     }
 

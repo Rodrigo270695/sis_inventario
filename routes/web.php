@@ -37,6 +37,8 @@ Route::middleware([
     Route::resource('zona/zonal', ZonalController::class);
     Route::put('zona/zonal/change/{zonal}', [ZonalController::class, 'change'])->name('zonal.change');
 
+    /* Pdv */
+    Route::get('zona/pdv/search', [PdvController::class, 'search' ])->name('pdv.search');
     Route::resource('zona/pdv', PdvController::class);
-
+    Route::put('zona/pdv/change/{pdv}', [PdvController::class, 'change'])->name('pdv.change');
 });
