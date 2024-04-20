@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('zonals', function (Blueprint $table) {
+        Schema::create('stores', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre', 40);
-            $table->enum('unidad_negocio', ['DISTRIBUIDORA', 'FRANQUICIA', 'DAM', 'PROACTIVO', 'REACTIVO']);
+            $table->string('nombre',70)->unique();
+            $table->text('descripcion')->nullable();
             $table->boolean('estado')->default(true);
+            $table->unsignedBigInteger('pdv_id');
+            $table->foreign('pdv_id')->references('id')->on('pdvs')->onUpdate('cascade')->onDelete('restrict');
             $table->timestamps();
-
-            $table->unique(['nombre', 'unidad_negocio']);
         });
     }
 
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('zonals');
+        Schema::dropIfExists('stores');
     }
 };

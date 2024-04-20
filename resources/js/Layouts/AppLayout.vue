@@ -64,7 +64,7 @@ const logout = () => {
                                     Dashboard
                                 </NavLink>
 
-                                <div class="inline-flex items-center">
+                                <div class="inline-flex items-center hover:border-b-2">
                                     <Dropdown align="right" width="60">
                                         <template #trigger>
                                             <span
@@ -92,12 +92,17 @@ const logout = () => {
                                                 >
                                                     Gestionar PDV
                                                 </DropdownLink>
+                                                <DropdownLink
+                                                    :href="route('store.index')"
+                                                >
+                                                    Gestionar Almacén
+                                                </DropdownLink>
                                             </div>
                                         </template>
                                     </Dropdown>
                                 </div>
                                 <NavLink
-                                    :href="route('dashboard')"
+                                    :href="route('user.index')"
                                     :active="route().current('user.index')"
                                 >
                                     Usuarios

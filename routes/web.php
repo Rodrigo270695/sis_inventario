@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PdvController;
+use App\Http\Controllers\StoreController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ZonalController;
 use Illuminate\Foundation\Application;
@@ -41,4 +42,7 @@ Route::middleware([
     Route::get('zona/pdv/search', [PdvController::class, 'search' ])->name('pdv.search');
     Route::resource('zona/pdv', PdvController::class);
     Route::put('zona/pdv/change/{pdv}', [PdvController::class, 'change'])->name('pdv.change');
+
+    /* Store */
+    Route::resource('zona/store', StoreController::class);
 });

@@ -35,6 +35,8 @@ const datos = [
     { id: 1, name: "DISTRIBUIDORA" },
     { id: 2, name: "FRANQUICIA" },
     { id: 3, name: "DAM" },
+    { id: 4, name: "PROACTIVO" },
+    { id: 5, name: "REACTIVO" },
 ];
 </script>
 <template>
