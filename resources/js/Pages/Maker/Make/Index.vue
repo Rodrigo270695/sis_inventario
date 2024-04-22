@@ -1,49 +1,50 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
-import { ref, defineProps, onMounted, onUnmounted, reactive } from "vue";
+import { ref, defineProps, onMounted, onUnmounted } from "vue";
 import Pagination from "@/Components/Pagination.vue";
 import Modal from "@/Components/Modal.vue";
 import Swal from "sweetalert2";
-import ZonalForm from "./ZonalForm.vue";
+import MakeForm from "./MakeForm.vue";
 import { useForm } from "@inertiajs/vue3";
 
 const props = defineProps({
-    zonals: Array,
+    makes: Array,
+    types: Array,
     texto: String,
 });
 
 const form = useForm({
-    zonal: Object,
+    make: Object,
 });
 
-let zonalObj = ref(null);
+let makeObj = ref(null);
 let showModal = ref(false);
 let openMenuId = ref(null);
 let query = ref(props.texto);
 
 
-const toggleOptions = (zonalId) => {
-    if (openMenuId.value === zonalId) {
+const toggleOptions = (makeId) => {
+    if (openMenuId.value === makeId) {
         openMenuId.value = null;
     } else {
-        openMenuId.value = zonalId;
+        openMenuId.value = makeId;
     }
 };
 
-const addZonal = () => {
-    zonalObj.value = null;
+const addMake = () => {
+    makeObj.value = null;
     showModal.value = true;
 };
 
-const editZonal = (zonal) => {
+const editMake = (make) => {
     openMenuId.value = null;
-    zonalObj.value = zonal;
+    makeObj.value = make;
     showModal.value = true;
 };
 
 const closeModal = () => {
     showModal.value = false;
-    zonalObj.value = null;
+    makeObj.value = null;
 };
 
 // Detectar la tecla ESC para cerrar el modal
@@ -61,11 +62,11 @@ onUnmounted(() => {
     window.removeEventListener("keydown", onKeydown);
 });
 
-const changeStatus = (zonal) => {
+const changeStatus = (make) => {
     openMenuId.value = null;
     Swal.fire({
         title: "¿Estás seguro?",
-        text: "¿Quieres cambiar el estado de del Zonal?",
+        text: "¿Quieres cambiar el estado de del Marca?",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
@@ -74,14 +75,14 @@ const changeStatus = (zonal) => {
         cancelButtonText: "No, cancelar!",
     }).then((result) => {
         if (result.isConfirmed) {
-            form.put(route("zonal.change", zonal), {
+            form.put(route("make.change", make), {
                 preserveScroll: true,
             });
         }
     });
 };
 
-const deleteZonal = (zonal) => {
+const deleteMake = (make) => {
     openMenuId.value = null;
     Swal.fire({
         title: "¿Estás seguro?",
@@ -94,7 +95,7 @@ const deleteZonal = (zonal) => {
         cancelButtonText: "No, cancelar!",
     }).then((result) => {
         if (result.isConfirmed) {
-            form.delete(route("zonal.destroy", zonal), {
+            form.delete(route("make.destroy", make), {
                 preserveScroll: true,
             });
         }
@@ -102,11 +103,11 @@ const deleteZonal = (zonal) => {
 };
 
 const search = () => {
-    form.get(route("zonal.search", { texto: query.value }));
+    form.get(route("make.search", { texto: query.value }));
 };
 
 const goToIndex = () => {
-    form.get(route("zonal.index"));
+    form.get(route("make.index"));
 };
 
 </script>
@@ -121,7 +122,7 @@ const goToIndex = () => {
                         <div
                             class="h-11 inline-flex items-center w-full"
                         >
-                            <h2 class="text-xl sm:text-2xl text-slate-700">Gestionar Zonal</h2>
+                            <h2 class="text-xl sm:text-2xl text-slate-700">Gestionar Marca</h2>
                         </div>
                         <button class="bg-green-600 hover:bg-green-500 w-12 rounded-md" @click="goToIndex">
                             <v-icon class="text-white" name="io-reload-circle-sharp" scale="1.7"/>
@@ -134,7 +135,7 @@ const goToIndex = () => {
                                 type="text"
                                 v-model="query"
                                 class="w-64 md:w-72 lg:w-96 hover:border-sky-300 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
-                                placeholder="Buscar Zonal"
+                                placeholder="Buscar Marca"
                                 @input="query = query.toUpperCase()"
                                 @keyup.enter="search"
                             />
@@ -151,7 +152,7 @@ const goToIndex = () => {
                         <div>
                             <button
                                 class="bg-sky-800 hover:bg-sky-700 p-2 text-white rounded-lg flex items-center"
-                                @click="addZonal"
+                                @click="addMake"
                             >
                                 <v-icon
                                     name="io-add-circle-sharp"
@@ -174,7 +175,7 @@ const goToIndex = () => {
                                                 scope="col"
                                                 class="px-6 py-2 text-left text-xs sm:text-base font-semibold text-white uppercase tracking-wider border-l"
                                             >
-                                                Unidad de Negocio
+                                                Tipo
                                             </th>
                                             <th
                                                 scope="col"
@@ -195,19 +196,19 @@ const goToIndex = () => {
                                         class="bg-white divide-y divide-gray-200"
                                     >
                                         <tr
-                                            v-for="zonal in zonals.data"
-                                            :key="zonal.id"
+                                            v-for="make in makes.data"
+                                            :key="make.id"
                                             class="bg-sky-100 hover:bg-sky-200"
                                         >
                                             <td
                                                 class="text-xs md:text-sm px-6 py-3 whitespace-nowrap"
                                             >
-                                                {{ zonal.unidad_negocio }}
+                                                {{ make.equipmenttype.nombre }}
                                             </td>
                                             <td
                                                 class="text-xs md:text-sm px-6 py-3 whitespace-nowrap text-center"
                                             >
-                                                {{ zonal.nombre }}
+                                                {{ make.nombre }}
                                             </td>
                                             <td
                                                 class="text-xs md:text-sm px-6 py-3 whitespace-nowrap text-center"
@@ -216,19 +217,19 @@ const goToIndex = () => {
                                                     class="inline-block px-2 rounded-full h-auto justify-center items-center text-xs md:text-sm"
                                                     :class="{
                                                         ' bg-green-500 text-white':
-                                                            zonal.estado == 1,
+                                                            make.estado == 1,
                                                         'bg-red-500 rounded text-white':
-                                                            zonal.estado == 0,
+                                                            make.estado == 0,
                                                     }"
                                                 >
                                                     {{
-                                                        zonal.estado == 1
+                                                        make.estado == 1
                                                             ? "ACTIVO"
                                                             : "INACTIVO"
                                                     }}
                                                 </p>
                                             </td>
-                                            <td
+<!--                                             <td
                                                 class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium"
                                             >
                                                 <div class="flex items-center justify-center gap-x-1">
@@ -296,9 +297,9 @@ const goToIndex = () => {
                                                         </span>
                                                     </div>
                                                 </div>
-                                            </td>
+                                            </td> -->
                                         </tr>
-                                        <tr v-if="zonals.data.length <= 0">
+                                        <tr v-if="makes.data.length <= 0">
                                             <td
                                                 class="text-center text-slate-800 text-md sm:text-lg font-semibold bg-slate-300"
                                                 colspan="5"
@@ -310,146 +311,13 @@ const goToIndex = () => {
                                 </table>
                             </div>
                         </div>
-                        <div class="block sm:hidden">
-                            <div
-                                v-for="zonal in zonals.data"
-                                :key="zonal.id"
-                                class="p-4 mx-1 mt-4 bg-sky-100 hover:bg-sky-200 rounded-lg shadow-md relative"
-                            >
-                                <!-- Contenido de la tarjeta -->
-                                <div class="flex items-center space-x-2 mb-4">
-                                    <svg
-                                        class="h-6 w-6 text-sky-500"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                    >
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            stroke-width="2"
-                                            d="M3 7h18M3 12h18m-9 5h9"
-                                        />
-                                    </svg>
-                                    <h3 class="text-lg font-bold text-gray-900">
-                                        U. Negocio:
-                                        <span class="font-normal">{{
-                                            zonal.unidad_negocio
-                                        }}</span>
-                                    </h3>
-                                </div>
-                                <!-- Detalles de la tarjeta -->
-                                <div class="text-md">
-                                    <p>
-                                        <strong>Nombre:</strong>
-                                        <span class="text-gray-700 ml-1">{{
-                                            zonal.nombre
-                                        }}</span>
-                                    </p>
-                                    <p
-                                        :class="{
-                                            'text-green-500': zonal.estado == 1,
-                                            'text-red-500': zonal.estado == 0,
-                                        }"
-                                        class="flex items-center"
-                                    >
-                                        <svg
-                                            :class="{
-                                                'text-green-500':
-                                                    zonal.estado == 1,
-                                                'text-red-500':
-                                                    zonal.estado == 0,
-                                            }"
-                                            class="h-5 w-5 mr-2"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M5 13l4 4L19 7"
-                                                v-if="zonal.estado == 1"
-                                            />
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M6 18L18 6M6 6l12 12"
-                                                v-else
-                                            />
-                                        </svg>
-                                        Estado:
-                                        <span class="font-normal">{{
-                                            zonal.estado == 1
-                                                ? "ACTIVO"
-                                                : "INACTIVO"
-                                        }}</span>
-                                    </p>
-                                </div>
-                                <!-- Menú de tres puntos -->
-                                <div class="absolute top-0 right-0 p-2 z-10">
-                                    <button
-                                        @click="toggleOptions(zonal.id)"
-                                        class="text-gray-600 hover:text-gray-900 shadow-md shadow-sky-100"
-                                    >
-                                        <v-icon name="oi-apps" />
-                                    </button>
-                                    <div
-                                        v-if="openMenuId === zonal.id"
-                                        class="bg-white flex justify-between shadow-lg rounded-lg absolute right-0 mt-1 w-[154px] z-20 text-center"
-                                    >
-                                        <a
-                                            href="#"
-                                            @click="editZonal(zonal)"
-                                            class="block px-4 py-2 text-sm text-white bg-yellow-500 hover:bg-yellow-400 rounded-l-lg"
-                                        >
-                                            <v-icon
-                                                name="md-modeedit-round"
-                                                class="text-white"
-                                            />
-                                        </a>
-                                        <a
-                                            href="#"
-                                            @click="changeStatus(zonal)"
-                                            class="block px-4 py-2 text-sm"
-                                            :class="
-                                                zonal.estado === 1
-                                                    ? 'bg-orange-500 hover:bg-orange-400'
-                                                    : 'bg-green-500 hover:bg-green-400'
-                                            "
-                                        >
-                                            <v-icon
-                                                v-if="zonal.estado == 1"
-                                                name="gi-cancel"
-                                                class="text-white"
-                                            />
-                                            <v-icon
-                                                v-else
-                                                name="fa-check"
-                                                class="text-white"
-                                            />
-                                        </a>
-                                        <a
-                                            href="#"
-                                            @click="deleteZonal(zonal)"
-                                            class="block px-4 py-2 text-sm text-white bg-red-500 hover:bg-red-400 rounded-r-lg"
-                                        >
-                                            <v-icon
-                                                name="bi-trash"
-                                                class="text-white"
-                                            />
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <Pagination class="mt-2" :pagination="zonals" />
+                        <!-- tarjetas -->
+                        <Pagination class="mt-2" :pagination="makes" />
                     </div>
                     <Modal :show="showModal">
-                        <ZonalForm
-                            :zonal="zonalObj"
+                        <MakeForm
+                            :make="makeObj"
+                            :types="props.types"
                             @close-modal="closeModal"
                         />
                     </Modal>

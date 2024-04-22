@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\EquipmentTypeController;
+use App\Http\Controllers\MakeController;
 use App\Http\Controllers\PdvController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\UserController;
@@ -48,4 +50,10 @@ Route::middleware([
     Route::resource('zona/store', StoreController::class);
     Route::post('zona/create/storepdv', [StoreController::class, 'createStore'])->name('store.createstore');
     Route::put('zona/store/change/{store}', [StoreController::class, 'change'])->name('store.change');
+
+    /* Make */
+    Route::resource('maker/make', MakeController::class);
+
+    /* types */
+    Route::resource('maker/type', EquipmentTypeController::class);
 });

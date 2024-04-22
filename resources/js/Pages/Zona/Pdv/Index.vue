@@ -117,7 +117,7 @@ const search = () => {
 };
 
 const goToIndex = () => {
-    window.location.href = route("pdv.index");
+    form.get(route("pdv.index"));
 };
 
 </script>
@@ -127,10 +127,15 @@ const goToIndex = () => {
         <div class="pt-5">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                    <div
-                        class="text-xl sm:text-2xl px-4 h-11 inline-flex items-center w-full text-slate-700 font-extrabold border-b"
-                    >
-                        <h2>Gestionar PDV</h2>
+                    <div class="flex justify-between font-extrabold border-b px-4 py-2" title="Refrescar la página">
+                        <div
+                            class="h-11 inline-flex items-center w-full"
+                        >
+                            <h2 class="text-xl sm:text-2xl text-slate-700">Gestionar PDV</h2>
+                        </div>
+                        <button class="bg-green-600 hover:bg-green-500 w-12 rounded-md" @click="goToIndex">
+                            <v-icon class="text-white" name="io-reload-circle-sharp" scale="1.7"/>
+                        </button>
                     </div>
 
                     <div class="flex justify-between py-2 px-4 mr-4 mt-4">
@@ -143,11 +148,11 @@ const goToIndex = () => {
                                 @keyup.enter="search"
                             />
                             <button
-                                @click.prevent="goToIndex"
+                                @click.prevent="search"
                                 class="absolute inset-y-0 right-0 px-3 flex items-center text-white bg-sky-800 rounded-e-md hover:bg-sky-700"
                             >
                                 <v-icon
-                                    name="io-reload-circle-sharp"
+                                    name="fa-search"
                                     scale="1.5"
                                 />
                             </button>
@@ -159,7 +164,7 @@ const goToIndex = () => {
                             >
                                 <v-icon
                                     name="io-add-circle-sharp"
-                                    scale="1.3"
+                                    scale="1.1"
                                 />
                                 <p class="sm:block hidden ml-2">agregar</p>
                             </button>
