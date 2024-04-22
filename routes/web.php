@@ -44,5 +44,8 @@ Route::middleware([
     Route::put('zona/pdv/change/{pdv}', [PdvController::class, 'change'])->name('pdv.change');
 
     /* Store */
+    Route::get('zona/store/search', [StoreController::class, 'search' ])->name('store.search');
     Route::resource('zona/store', StoreController::class);
+    Route::post('zona/create/storepdv', [StoreController::class, 'createStore'])->name('store.createstore');
+    Route::put('zona/store/change/{store}', [StoreController::class, 'change'])->name('store.change');
 });

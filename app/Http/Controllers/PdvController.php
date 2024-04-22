@@ -53,7 +53,6 @@ class PdvController extends Controller
 
     public function change(Pdv $pdv): RedirectResponse
     {
-
         if ($pdv->estado == 1) {
             $pdv->estado = 0;
         }else {
@@ -62,7 +61,6 @@ class PdvController extends Controller
 
         $pdv->save();
         return redirect()->route('pdv.index')->with('toast', ['cambio de estado exitosamente!', 'success']);
-
     }
 
     public function destroy(Pdv $pdv)
@@ -71,7 +69,11 @@ class PdvController extends Controller
             $pdv->delete();
             return redirect()->route('pdv.index')->with('toast', ['Pdv eliminado exitosamente!', 'success']);
         } catch (QueryException $e) {
-            return redirect()->back()->with('toast', ['Error al eliminar el Pdv!', 'danger']);
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('toast', ['El Pdv no se puede eliminar porque está siendo usado en otra tabla!', 'danger']);
+            }else{
+                return redirect()->back()->with('toast', ['Error al eliminar el pdv!', 'danger']);
+            }
         }
     }
 

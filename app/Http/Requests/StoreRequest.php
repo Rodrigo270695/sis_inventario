@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class PdvRequest extends FormRequest
+class StoreRequest extends FormRequest
 {
 
     public function authorize(): bool
@@ -19,12 +19,12 @@ class PdvRequest extends FormRequest
             'nombre' => [
                 'required',
                 'string',
-                'max:30',
+                'max:70',
                 'min:3',
-                Rule::unique('pdvs')->ignore($this->pdv ? $this->pdv->id : null),
+                Rule::unique('stores')->ignore($this->store ? $this->store->id : null),
             ],
-            'direccion' => 'nullable|string|max:255',
-            'zonal_id' => 'required|exists:zonals,id',
+            'descripcion' => 'nullable|string',
+            'pdv_id' => 'required|exists:pdvs,id',
         ];
     }
 }

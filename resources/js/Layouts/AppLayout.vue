@@ -396,6 +396,7 @@ const logout = () => {
                         >
                             Dashboard
                         </ResponsiveNavLink>
+
                         <ResponsiveNavLink
                             :href="route('user.index')"
                             :active="route().current('user.index')"

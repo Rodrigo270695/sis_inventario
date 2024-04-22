@@ -62,6 +62,7 @@ onUnmounted(() => {
 });
 
 const changeStatus = (zonal) => {
+    openMenuId.value = null;
     Swal.fire({
         title: "¿Estás seguro?",
         text: "¿Quieres cambiar el estado de del Zonal?",
@@ -81,6 +82,7 @@ const changeStatus = (zonal) => {
 };
 
 const deleteZonal = (zonal) => {
+    openMenuId.value = null;
     Swal.fire({
         title: "¿Estás seguro?",
         text: "No podrás revertir esto!",
@@ -224,52 +226,69 @@ const goToIndex = () => {
                                                 class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium"
                                             >
                                                 <div class="flex items-center justify-center gap-x-1">
-                                                    <button
-                                                        class="bg-yellow-500 text-white p-1 rounded-md hover:bg-yellow-400 cursor-pointer"
-                                                        @click="
-                                                            editZonal(zonal)
-                                                        "
-                                                    >
-                                                        <v-icon
-                                                            name="md-modeedit-round"
-                                                        />
-                                                    </button>
-                                                    <button
-                                                        class="text-white p-1 rounded-md"
-                                                        :class="{
-                                                            'bg-orange-500 hover:bg-orange-400':
-                                                                zonal.estado ==
-                                                                1,
-                                                            'bg-green-500 hover:bg-green-400':
-                                                                zonal.estado ==
-                                                                0,
-                                                        }"
-                                                        @click="
-                                                            changeStatus(zonal)
-                                                        "
-                                                    >
-                                                        <v-icon
-                                                            v-if="
-                                                                zonal.estado ==
-                                                                1
+                                                    <div class="relative group">
+                                                        <button
+                                                            class="bg-yellow-500 text-white p-1 rounded-md hover:bg-yellow-400 cursor-pointer"
+                                                            @click="editZonal(zonal)"
+                                                            title="Editar Zonal"
+                                                        >
+                                                            <v-icon
+                                                                name="md-modeedit-round"
+                                                            />
+                                                            <span class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
+                                                                style="left: 50%; transform: translateX(-50%); transition: opacity 0.3s;">
+                                                                Editar Zonal
+                                                            </span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="relative group">
+                                                        <button
+                                                            class="text-white p-1 rounded-md"
+                                                            :class="{
+                                                                'bg-orange-500 hover:bg-orange-400':
+                                                                    zonal.estado ==
+                                                                    1,
+                                                                'bg-green-500 hover:bg-green-400':
+                                                                    zonal.estado ==
+                                                                    0,
+                                                            }"
+                                                            @click="
+                                                                changeStatus(zonal)
                                                             "
-                                                            name="gi-cancel"
-                                                        />
-                                                        <v-icon
-                                                            v-else
-                                                            name="fa-check"
-                                                        />
-                                                    </button>
-                                                    <button
-                                                        class="bg-red-500 text-white p-1 rounded-md hover:bg-red-400 cursor-pointer"
-                                                        @click="
-                                                            deleteZonal(zonal)
-                                                        "
-                                                    >
-                                                        <v-icon
-                                                            name="bi-trash"
-                                                        />
-                                                    </button>
+                                                        >
+                                                            <v-icon
+                                                                v-if="
+                                                                    zonal.estado ==
+                                                                    1
+                                                                "
+                                                                name="gi-cancel"
+                                                            />
+                                                            <v-icon
+                                                                v-else
+                                                                name="fa-check"
+                                                            />
+                                                        </button>
+                                                        <span class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
+                                                            style="left: 50%; transform: translateX(-50%); transition: opacity 0.3s;">
+                                                            Cambiar estado
+                                                        </span>
+                                                    </div>
+                                                    <div class="relative group">
+                                                        <button
+                                                            class="bg-red-500 text-white p-1 rounded-md hover:bg-red-400 cursor-pointer"
+                                                            @click="
+                                                                deleteZonal(zonal)
+                                                            "
+                                                        >
+                                                            <v-icon
+                                                                name="bi-trash"
+                                                            />
+                                                        </button>
+                                                        <span class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
+                                                            style="left: 50%; transform: translateX(-50%); transition: opacity 0.3s;">
+                                                            Eliminar zonal
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </td>
                                         </tr>

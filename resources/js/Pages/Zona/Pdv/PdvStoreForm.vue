@@ -7,29 +7,22 @@ import { useForm } from "@inertiajs/vue3";
 import { defineProps } from "vue";
 
 const props = defineProps({
-    store: Object,
-    pdvs: Array,
+    pdv: Object,
 });
 
 const form = useForm({
-    id: props.store ? props.store.id : "",
-    pdv_id: props.store ? props.store.pdv_id : "",
-    nombre: props.store ? props.store.nombre : "",
-    descripcion: props.store ? props.store.descripcion : "",
+    pdv_id: props.pdv ? props.pdv.id : "",
+    nombre: '' ,
+    descripcion: '',
 });
 
 const submit = () => {
-    if (props.store) {
-        form.put(route("store.update", props.store.id), {
-            preserveScroll: true,
-            onSuccess: () => emit("close-modal"),
-        });
-    } else {
-        form.post(route("store.store"), {
-            preserveScroll: true,
-            onSuccess: () => emit("close-modal"),
-        });
-    }
+
+    form.post(route("store.createstore"), {
+        preserveScroll: true,
+        onSuccess: () => emit("close-modal"),
+    });
+
 };
 
 const emit = defineEmits(["close-modal"]);
@@ -37,7 +30,7 @@ const emit = defineEmits(["close-modal"]);
 <template>
     <div class="flex justify-between bg-slate-300 h-12 px-4">
         <div class="text-lg text-slate-700 font-bold inline-flex items-center">
-            {{ form.id == 0 ? "Registrar Almacén" : "Actualizar Almacén" }}
+            Almacén para {{ props.pdv ? props.pdv.nombre : '' }}
         </div>
         <button @click="emit('close-modal')">
             <v-icon
@@ -51,29 +44,6 @@ const emit = defineEmits(["close-modal"]);
         <div class="bg-white shadow-md rounded-md p-4">
             <div class="mb-4">
                 <div class="grid grid-cols-6 gap-3">
-                    <div class="col-span-6 sm:col-span-6">
-                        <InputLabel value="PDV" />
-                        <select
-                            id="select"
-                            v-model="form.pdv_id"
-                            class="bg-gray-50 border border-blue-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 white:bg-gray-700 white:border-gray-600 white:placeholder-gray-400 white:text-white white:focus:ring-blue-500 white:focus:border-blue-500"
-                        >
-                            <option disabled selected value="">
-                                Elija una opción
-                            </option>
-                            <option
-                                v-for="pdv in props.pdvs"
-                                :key="pdv.id"
-                                :value="pdv.id"
-                            >
-                                {{ pdv.nombre }}
-                            </option>
-                        </select>
-                        <InputError
-                            class="w-full"
-                            :message="form.errors.pdv_id"
-                        />
-                    </div>
                     <div class="col-span-6 sm:col-span-6">
                         <InputLabel value="Nombre" />
                         <TextInput
@@ -100,7 +70,7 @@ const emit = defineEmits(["close-modal"]);
                     class="bg-sky-800 hover:bg-sky-700 text-white px-4 py-2 rounded-md mr-2"
                     :disabled="form.processing"
                 >
-                    {{ form.id == 0 ? "Registrar" : "Actualizar" }}
+                    Registrar
                 </button>
             </div>
         </div>

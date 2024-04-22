@@ -4,6 +4,7 @@ import { ref, defineProps, onMounted, onUnmounted, reactive } from "vue";
 import Pagination from "@/Components/Pagination.vue";
 import Modal from "@/Components/Modal.vue";
 import PdvForm from "./PdvForm.vue";
+import PdvStoreForm from "./PdvStoreForm.vue";
 import Swal from "sweetalert2";
 import { useForm } from "@inertiajs/vue3";
 
@@ -19,6 +20,7 @@ const form = useForm({
 
 let pdvObj = ref(null);
 let showModal = ref(false);
+let showModalStore = ref(false);
 let openMenuId = ref(null);
 let query = ref(props.texto);
 
@@ -31,7 +33,14 @@ const toggleOptions = (pdvId) => {
     }
 };
 
+const addStore = (pdv) => {
+    openMenuId.value = null;
+    pdvObj.value = pdv;
+    showModalStore.value = true;
+};
+
 const addPdv = () => {
+    openMenuId.value = null;
     pdvObj.value = null;
     showModal.value = true;
 };
@@ -44,6 +53,7 @@ const editPdv = (pdv) => {
 
 const closeModal = () => {
     showModal.value = false;
+    showModalStore.value = false;
     pdvObj.value = null;
 };
 
@@ -63,6 +73,7 @@ onUnmounted(() => {
 });
 
 const changeStatus = (pdv) => {
+    openMenuId.value = null;
     Swal.fire({
         title: "¿Estás seguro?",
         text: "¿Quieres cambiar el estado de del pdv?",
@@ -82,6 +93,7 @@ const changeStatus = (pdv) => {
 };
 
 const deletePdv = (pdv) => {
+    openMenuId.value = null;
     Swal.fire({
         title: "¿Estás seguro?",
         text: "No podrás revertir esto!",
@@ -235,52 +247,86 @@ const goToIndex = () => {
                                                 class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium"
                                             >
                                                 <div class="flex items-center justify-center gap-x-1">
-                                                    <button
-                                                        class="bg-yellow-500 text-white p-1 rounded-md hover:bg-yellow-400 cursor-pointer"
-                                                        @click="
-                                                            editPdv(pdv)
-                                                        "
-                                                    >
-                                                        <v-icon
-                                                            name="md-modeedit-round"
-                                                        />
-                                                    </button>
-                                                    <button
-                                                        class="text-white p-1 rounded-md"
-                                                        :class="{
-                                                            'bg-orange-500 hover:bg-orange-400':
-                                                                pdv.estado ==
-                                                                1,
-                                                            'bg-green-500 hover:bg-green-400':
-                                                                pdv.estado ==
-                                                                0,
-                                                        }"
-                                                        @click="
-                                                            changeStatus(pdv)
-                                                        "
-                                                    >
-                                                        <v-icon
-                                                            v-if="
-                                                                pdv.estado ==
-                                                                1
+                                                    <div class="relative group">
+                                                        <button
+                                                            class="bg-sky-500 text-white p-1 rounded-md hover:bg-sky-400 cursor-pointer"
+                                                            @click="
+                                                                addStore(pdv)
                                                             "
-                                                            name="gi-cancel"
-                                                        />
-                                                        <v-icon
-                                                            v-else
-                                                            name="fa-check"
-                                                        />
-                                                    </button>
-                                                    <button
-                                                        class="bg-red-500 text-white p-1 rounded-md hover:bg-red-400 cursor-pointer"
-                                                        @click="
-                                                            deletePdv(pdv)
-                                                        "
-                                                    >
-                                                        <v-icon
-                                                            name="bi-trash"
-                                                        />
-                                                    </button>
+                                                        >
+                                                            <v-icon
+                                                                name="md-addbusiness"
+                                                            />
+                                                        </button>
+                                                        <span class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
+                                                            style="left: 50%; transform: translateX(-50%); transition: opacity 0.3s;">
+                                                            Agregar Almacen
+                                                        </span>
+                                                    </div>
+                                                    <div class="relative group">
+                                                        <button
+                                                            class="bg-yellow-500 text-white p-1 rounded-md hover:bg-yellow-400 cursor-pointer"
+                                                            @click="
+                                                                editPdv(pdv)
+                                                            "
+                                                        >
+                                                            <v-icon
+                                                                name="md-modeedit-round"
+                                                            />
+                                                        </button>
+                                                        <span class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
+                                                            style="left: 50%; transform: translateX(-50%); transition: opacity 0.3s;">
+                                                            Editar pdv
+                                                        </span>
+                                                    </div>
+                                                    <div class="relative group">
+                                                        <button
+                                                            class="text-white p-1 rounded-md"
+                                                            :class="{
+                                                                'bg-orange-500 hover:bg-orange-400':
+                                                                    pdv.estado ==
+                                                                    1,
+                                                                'bg-green-500 hover:bg-green-400':
+                                                                    pdv.estado ==
+                                                                    0,
+                                                            }"
+                                                            @click="
+                                                                changeStatus(pdv)
+                                                            "
+                                                        >
+                                                            <v-icon
+                                                                v-if="
+                                                                    pdv.estado ==
+                                                                    1
+                                                                "
+                                                                name="gi-cancel"
+                                                            />
+                                                            <v-icon
+                                                                v-else
+                                                                name="fa-check"
+                                                            />
+                                                        </button>
+                                                        <span class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
+                                                            style="left: 50%; transform: translateX(-50%); transition: opacity 0.3s;">
+                                                            Cambiar estado
+                                                        </span>
+                                                    </div>
+                                                    <div class="relative group">
+                                                        <button
+                                                            class="bg-red-500 text-white p-1 rounded-md hover:bg-red-400 cursor-pointer"
+                                                            @click="
+                                                                deletePdv(pdv)
+                                                            "
+                                                        >
+                                                            <v-icon
+                                                                name="bi-trash"
+                                                            />
+                                                        </button>
+                                                        <span class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
+                                                            style="left: 50%; transform: translateX(-50%); transition: opacity 0.3s;">
+                                                            Eliminar pdv
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </td>
                                         </tr>
@@ -390,12 +436,22 @@ const goToIndex = () => {
                                     </button>
                                     <div
                                         v-if="openMenuId === pdv.id"
-                                        class="bg-white flex justify-between shadow-lg rounded-lg absolute right-0 mt-1 w-[154px] z-20 text-center"
+                                        class="bg-white flex justify-between shadow-lg rounded-lg absolute right-0 mt-1 w-[207] z-20 text-center"
                                     >
                                         <a
                                             href="#"
+                                            @click="addStore(pdv)"
+                                            class="block px-4 py-2 text-sm text-white bg-sky-500 hover:bg-sky-400 rounded-l-lg"
+                                        >
+                                            <v-icon
+                                                name="md-addbusiness"
+                                                class="text-white"
+                                            />
+                                        </a>
+                                        <a
+                                            href="#"
                                             @click="editPdv(pdv)"
-                                            class="block px-4 py-2 text-sm text-white bg-yellow-500 hover:bg-yellow-400 rounded-l-lg"
+                                            class="block px-4 py-2 text-sm text-white bg-yellow-500 hover:bg-yellow-400 "
                                         >
                                             <v-icon
                                                 name="md-modeedit-round"
@@ -443,6 +499,12 @@ const goToIndex = () => {
                         <PdvForm
                             :pdv="pdvObj"
                             :zonals="zonals"
+                            @close-modal="closeModal"
+                        />
+                    </Modal>
+                    <Modal :show="showModalStore">
+                        <PdvStoreForm
+                            :pdv="pdvObj"
                             @close-modal="closeModal"
                         />
                     </Modal>
