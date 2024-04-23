@@ -121,6 +121,11 @@ const logout = () => {
                                         <template #content>
                                             <div class="w-40">
                                                 <DropdownLink
+                                                    :href="route('type.index')"
+                                                >
+                                                    Gestionar Tipo Equipo
+                                                </DropdownLink>
+                                                <DropdownLink
                                                     :href="route('make.index')"
                                                 >
                                                     Gestionar Marca

@@ -52,8 +52,11 @@ Route::middleware([
     Route::put('zona/store/change/{store}', [StoreController::class, 'change'])->name('store.change');
 
     /* Make */
+    Route::get('maker/make/search', [MakeController::class, 'search' ])->name('make.search');
     Route::resource('maker/make', MakeController::class);
+    Route::put('maker/make/change/{make}', [MakeController::class, 'change'])->name('make.change');
 
     /* types */
     Route::resource('maker/type', EquipmentTypeController::class);
+    Route::post('maker/type/storetype', [EquipmentTypeController::class, 'createType'])->name('type.createstore');
 });

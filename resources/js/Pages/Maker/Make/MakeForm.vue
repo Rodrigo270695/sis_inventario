@@ -4,7 +4,7 @@ import TextInput from "@/Components/TextInput.vue";
 import TextArea from "@/Components/TextArea.vue";
 import InputError from "@/Components/InputError.vue";
 import { useForm } from "@inertiajs/vue3";
-import { defineProps } from "vue";
+import { defineProps, ref } from "vue";
 
 const props = defineProps({
     make: Object,
@@ -16,6 +16,12 @@ const form = useForm({
     equipment_type_id: props.make ? props.make.equipment_type_id : "",
     nombre: props.make ? props.make.nombre : "",
 });
+
+const type = useForm({
+    nombre: "",
+});
+
+const showType = ref(false);
 
 const submit = () => {
     if (props.make) {
@@ -32,6 +38,18 @@ const submit = () => {
 };
 
 const emit = defineEmits(["close-modal"]);
+
+const toggleForm = () => {
+    showType.value = !showType.value;
+};
+
+const addType = () => {
+    type.post(route("type.createstore"), {
+        onSuccess: () => {
+            type.reset("nombre");
+        },
+    });
+};
 </script>
 <template>
     <div class="flex justify-between bg-slate-300 h-12 px-4">
@@ -46,11 +64,43 @@ const emit = defineEmits(["close-modal"]);
             />
         </button>
     </div>
+
+    <div class="mt-2">
+        <a
+            @click="toggleForm"
+            class="text-slate-700 py-2 px-4 rounded-md font-semibold hover:text-sky-700 cursor-pointer"
+        >
+            ¿Quieres agregar un Tipo de equipo ?
+        </a>
+        <div v-if="showType" class="mx-4 mt-2">
+            <form @submit.prevent="addType">
+                <div class="grid grid-cols-4">
+                    <div class="col-span-3 sm:col-span-3">
+                        <InputLabel value="Nombre" />
+                        <TextInput class="w-full" v-model="type.nombre" />
+                        <InputError
+                            class="w-full"
+                            :message="type.errors.nombre"
+                        />
+                    </div>
+                    <div class="col-span-1 sm:col-span-1">
+                        <button
+                            class="bg-sky-500 hover:bg-sky-400 text-white rounded-md w-[65px] ml-3 mt-5 py-2"
+                            :disabled="form.processing"
+                        >
+                            <v-icon name="md-addcircle-round" scale="1.2" />
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <form @submit.prevent="submit">
         <div class="bg-white shadow-md rounded-md p-4">
             <div class="mb-4">
                 <div class="grid grid-cols-6 gap-3">
-                    <div class="col-span-5 sm:col-span-5">
+                    <div class="col-span-6 sm:col-span-6">
                         <InputLabel value="Tipo" />
                         <select
                             id="select"
@@ -73,15 +123,10 @@ const emit = defineEmits(["close-modal"]);
                             :message="form.errors.equipment_type_id"
                         />
                     </div>
-                    <div class="col-span-1 sm:col-span-1">
-                        <button class="border mt-5 bg-green-600 hover:bg-green-500 py-2 w-full rounded-md text-white">add</button>
-                    </div>
+
                     <div class="col-span-6 sm:col-span-6">
                         <InputLabel value="Nombre" />
-                        <TextInput
-                            class="w-full"
-                            v-model="form.nombre"
-                        />
+                        <TextInput class="w-full" v-model="form.nombre" />
                         <InputError
                             class="w-full"
                             :message="form.errors.nombre"
@@ -97,7 +142,6 @@ const emit = defineEmits(["close-modal"]);
                     {{ form.id == 0 ? "Registrar" : "Actualizar" }}
                 </button>
             </div>
-
         </div>
     </form>
 </template>

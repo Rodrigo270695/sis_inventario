@@ -22,7 +22,6 @@ let showModal = ref(false);
 let openMenuId = ref(null);
 let query = ref(props.texto);
 
-
 const toggleOptions = (makeId) => {
     if (openMenuId.value === makeId) {
         openMenuId.value = null;
@@ -109,7 +108,6 @@ const search = () => {
 const goToIndex = () => {
     form.get(route("make.index"));
 };
-
 </script>
 
 <template>
@@ -117,15 +115,24 @@ const goToIndex = () => {
         <div class="pt-5">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-
-                    <div class="flex justify-between font-extrabold border-b px-4 py-2" title="Refrescar la página">
-                        <div
-                            class="h-11 inline-flex items-center w-full"
-                        >
-                            <h2 class="text-xl sm:text-2xl text-slate-700">Gestionar Marca</h2>
+                    <div
+                        class="flex justify-between font-extrabold border-b px-4 py-2"
+                        title="Refrescar la página"
+                    >
+                        <div class="h-11 inline-flex items-center w-full">
+                            <h2 class="text-xl sm:text-2xl text-slate-700">
+                                Gestionar Marca
+                            </h2>
                         </div>
-                        <button class="bg-green-600 hover:bg-green-500 w-12 rounded-md" @click="goToIndex">
-                            <v-icon class="text-white" name="io-reload-circle-sharp" scale="1.7"/>
+                        <button
+                            class="bg-green-600 hover:bg-green-500 w-12 rounded-md"
+                            @click="goToIndex"
+                        >
+                            <v-icon
+                                class="text-white"
+                                name="io-reload-circle-sharp"
+                                scale="1.7"
+                            />
                         </button>
                     </div>
 
@@ -136,17 +143,13 @@ const goToIndex = () => {
                                 v-model="query"
                                 class="w-64 md:w-72 lg:w-96 hover:border-sky-300 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
                                 placeholder="Buscar Marca"
-                                @input="query = query.toUpperCase()"
                                 @keyup.enter="search"
                             />
                             <button
                                 @click.prevent="search"
                                 class="absolute inset-y-0 right-0 px-3 flex items-center text-white bg-sky-800 rounded-e-md hover:bg-sky-700"
                             >
-                                <v-icon
-                                    name="fa-search"
-                                    scale="1.5"
-                                />
+                                <v-icon name="fa-search" scale="1.5" />
                             </button>
                         </div>
                         <div>
@@ -229,22 +232,35 @@ const goToIndex = () => {
                                                     }}
                                                 </p>
                                             </td>
-<!--                                             <td
+                                            <td
                                                 class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium"
                                             >
-                                                <div class="flex items-center justify-center gap-x-1">
+                                                <div
+                                                    class="flex items-center justify-center gap-x-1"
+                                                >
                                                     <div class="relative group">
                                                         <button
                                                             class="bg-yellow-500 text-white p-1 rounded-md hover:bg-yellow-400 cursor-pointer"
-                                                            @click="editZonal(zonal)"
+                                                            @click="
+                                                                editMake(make)
+                                                            "
                                                             title="Editar Zonal"
                                                         >
                                                             <v-icon
                                                                 name="md-modeedit-round"
                                                             />
-                                                            <span class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
-                                                                style="left: 50%; transform: translateX(-50%); transition: opacity 0.3s;">
-                                                                Editar Zonal
+                                                            <span
+                                                                class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
+                                                                style="
+                                                                    left: 50%;
+                                                                    transform: translateX(
+                                                                        -50%
+                                                                    );
+                                                                    transition: opacity
+                                                                        0.3s;
+                                                                "
+                                                            >
+                                                                Editar Marca
                                                             </span>
                                                         </button>
                                                     </div>
@@ -253,19 +269,21 @@ const goToIndex = () => {
                                                             class="text-white p-1 rounded-md"
                                                             :class="{
                                                                 'bg-orange-500 hover:bg-orange-400':
-                                                                    zonal.estado ==
+                                                                    make.estado ==
                                                                     1,
                                                                 'bg-green-500 hover:bg-green-400':
-                                                                    zonal.estado ==
+                                                                    make.estado ==
                                                                     0,
                                                             }"
                                                             @click="
-                                                                changeStatus(zonal)
+                                                                changeStatus(
+                                                                    make
+                                                                )
                                                             "
                                                         >
                                                             <v-icon
                                                                 v-if="
-                                                                    zonal.estado ==
+                                                                    make.estado ==
                                                                     1
                                                                 "
                                                                 name="gi-cancel"
@@ -275,8 +293,17 @@ const goToIndex = () => {
                                                                 name="fa-check"
                                                             />
                                                         </button>
-                                                        <span class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
-                                                            style="left: 50%; transform: translateX(-50%); transition: opacity 0.3s;">
+                                                        <span
+                                                            class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
+                                                            style="
+                                                                left: 50%;
+                                                                transform: translateX(
+                                                                    -50%
+                                                                );
+                                                                transition: opacity
+                                                                    0.3s;
+                                                            "
+                                                        >
                                                             Cambiar estado
                                                         </span>
                                                     </div>
@@ -284,20 +311,29 @@ const goToIndex = () => {
                                                         <button
                                                             class="bg-red-500 text-white p-1 rounded-md hover:bg-red-400 cursor-pointer"
                                                             @click="
-                                                                deleteZonal(zonal)
+                                                                deleteMake(make)
                                                             "
                                                         >
                                                             <v-icon
                                                                 name="bi-trash"
                                                             />
                                                         </button>
-                                                        <span class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
-                                                            style="left: 50%; transform: translateX(-50%); transition: opacity 0.3s;">
-                                                            Eliminar zonal
+                                                        <span
+                                                            class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
+                                                            style="
+                                                                left: 50%;
+                                                                transform: translateX(
+                                                                    -50%
+                                                                );
+                                                                transition: opacity
+                                                                    0.3s;
+                                                            "
+                                                        >
+                                                            Eliminar Marca
                                                         </span>
                                                     </div>
                                                 </div>
-                                            </td> -->
+                                            </td>
                                         </tr>
                                         <tr v-if="makes.data.length <= 0">
                                             <td
@@ -312,6 +348,151 @@ const goToIndex = () => {
                             </div>
                         </div>
                         <!-- tarjetas -->
+                        <div class="block sm:hidden">
+                            <div
+                                v-for="make in makes.data"
+                                :key="make.id"
+                                class="p-4 mx-1 mt-4 bg-sky-100 hover:bg-sky-200 rounded-lg shadow-md relative"
+                            >
+                                <!-- Contenido de la tarjeta -->
+                                <div class="flex items-center space-x-2 mb-4">
+                                    <svg
+                                        class="h-6 w-6 text-sky-500"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M3 7h18M3 12h18m-9 5h9"
+                                        />
+                                    </svg>
+                                    <h3 class="text-lg font-bold text-gray-900">
+                                        Tipo Equipo:
+                                        <span class="font-normal">
+                                            {{ make.equipmenttype.nombre }}
+                                        </span>
+                                    </h3>
+                                </div>
+                                <!-- Detalles de la tarjeta -->
+                                <div class="text-md">
+                                    <p>
+                                        <strong>Nombre:</strong>
+                                        <span class="text-gray-700 ml-1">
+                                            {{ make.nombre }}
+                                        </span>
+                                    </p>
+
+                                    <p
+                                        :class="{
+                                            'text-green-500': make.estado == 1,
+                                            'text-red-500': make.estado == 0,
+                                        }"
+                                        class="flex items-center"
+                                    >
+                                        <svg
+                                            :class="{
+                                                'text-green-500':
+                                                    make.estado == 1,
+                                                'text-red-500': make.estado == 0,
+                                            }"
+                                            class="h-5 w-5 mr-2"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M5 13l4 4L19 7"
+                                                v-if="make.estado == 1"
+                                            />
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M6 18L18 6M6 6l12 12"
+                                                v-else
+                                            />
+                                        </svg>
+                                        Estado:
+                                        <span class="font-normal">{{
+                                            make.estado == 1
+                                                ? "ACTIVO"
+                                                : "INACTIVO"
+                                        }}</span>
+                                    </p>
+                                </div>
+                                <!-- Menú de tres puntos -->
+                                <div class="absolute top-0 right-0 p-2 z-10">
+                                    <button
+                                        @click="toggleOptions(make.id)"
+                                        class="text-gray-600 hover:text-gray-900 shadow-md shadow-sky-100"
+                                    >
+                                        <v-icon name="oi-apps" />
+                                    </button>
+                                    <div
+                                        v-if="openMenuId === make.id"
+                                        class="bg-white flex justify-between shadow-lg rounded-lg absolute right-0 mt-1 w-[207] z-20 text-center"
+                                    >
+                                        <a
+                                            href="#"
+                                            @click="addMake(make)"
+                                            class="block px-4 py-2 text-sm text-white bg-sky-500 hover:bg-sky-400 rounded-l-lg"
+                                        >
+                                            <v-icon
+                                                name="md-addbusiness"
+                                                class="text-white"
+                                            />
+                                        </a>
+                                        <a
+                                            href="#"
+                                            @click="editMake(make)"
+                                            class="block px-4 py-2 text-sm text-white bg-yellow-500 hover:bg-yellow-400"
+                                        >
+                                            <v-icon
+                                                name="md-modeedit-round"
+                                                class="text-white"
+                                            />
+                                        </a>
+                                        <a
+                                            href="#"
+                                            @click="changeStatus(make)"
+                                            class="block px-4 py-2 text-sm"
+                                            :class="
+                                                make.estado === 1
+                                                    ? 'bg-orange-500 hover:bg-orange-400'
+                                                    : 'bg-green-500 hover:bg-green-400'
+                                            "
+                                        >
+                                            <v-icon
+                                                v-if="make.estado == 1"
+                                                name="gi-cancel"
+                                                class="text-white"
+                                            />
+                                            <v-icon
+                                                v-else
+                                                name="fa-check"
+                                                class="text-white"
+                                            />
+                                        </a>
+                                        <a
+                                            href="#"
+                                            @click="deleteMake(make)"
+                                            class="block px-4 py-2 text-sm text-white bg-red-500 hover:bg-red-400 rounded-r-lg"
+                                        >
+                                            <v-icon
+                                                name="bi-trash"
+                                                class="text-white"
+                                            />
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <Pagination class="mt-2" :pagination="makes" />
                     </div>
                     <Modal :show="showModal">
