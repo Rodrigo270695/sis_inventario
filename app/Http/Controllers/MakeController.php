@@ -37,7 +37,7 @@ class MakeController extends Controller
         }
     }
 
-    public function update(Request $request, Make $make): RedirectResponse
+    public function update(MakeRequest $request, Make $make): RedirectResponse
     {
         try {
             $make->update($request->all());

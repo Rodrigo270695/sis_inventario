@@ -5,9 +5,11 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class EquipmentTypeRequest extends FormRequest
+class NormRequest extends FormRequest
 {
-
+    /**
+     * Determine if the user is authorized to make this request.
+     */
     public function authorize(): bool
     {
         return true;
@@ -19,10 +21,11 @@ class EquipmentTypeRequest extends FormRequest
             'nombre' => [
                 'required',
                 'string',
-                'max:50',
-                'min:2',
-                Rule::unique('equipment_types')->ignore($this->equipment_type ? $this->equipment_types->id : null),
-            ]
+                'max:70',
+                'min:3',
+                Rule::unique('norms')->ignore($this->norm ? $this->norm->id : null),
+            ],
+            'make_id' => 'required|exists:makes,id',
         ];
     }
 }

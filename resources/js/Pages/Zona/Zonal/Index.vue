@@ -236,7 +236,6 @@ const goToIndex = () => {
                                                         <button
                                                             class="bg-yellow-500 text-white p-1 rounded-md hover:bg-yellow-400 cursor-pointer"
                                                             @click="editZonal(zonal)"
-                                                            title="Editar Zonal"
                                                         >
                                                             <v-icon
                                                                 name="md-modeedit-round"

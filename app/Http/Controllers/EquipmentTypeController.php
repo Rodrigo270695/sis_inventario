@@ -48,35 +48,43 @@ class EquipmentTypeController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(EquipmentType $equipmentType)
+    public function update(EquipmentTypeRequest $request, EquipmentType $type)
     {
-        //
+        try {
+            $type->update($request->all());
+            return redirect()->route('type.index')->with('toast', ['Tipo actualizado exitosamente!', 'success']);
+        } catch (QueryException $e){
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('toast', ['El Tipo ya existe!', 'warning']);
+            }else{
+                return redirect()->back()->with('toast', ['Ocurrió un error!','danger']);
+            }
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(EquipmentType $equipmentType)
+    public function destroy(EquipmentType $type)
     {
-        //
+        try {
+            $type->delete();
+            return redirect()->route('type.index')->with('toast', ['Tipo eliminado exitosamente!', 'success']);
+        } catch (QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('toast', ['El Tipo no se puede eliminar porque está siendo usado en otra tabla!', 'danger']);
+            }else{
+                return redirect()->back()->with('toast', ['Error al eliminar el Tipo!', 'danger']);
+            }
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, EquipmentType $equipmentType)
+    public function search(Request $request)
     {
-        //
+        $texto = $request->get('texto');
+        $types = EquipmentType::where('nombre', 'like', '%' . $texto . '%')
+            ->orderBy("id","desc")
+            ->paginate(7)
+            ->appends(['texto' => $texto]);
+
+        return Inertia::render('Maker/Type/Index', compact('types', 'texto'));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(EquipmentType $equipmentType)
-    {
-        //
-    }
 }

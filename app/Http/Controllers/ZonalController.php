@@ -65,7 +65,6 @@ class ZonalController extends Controller
 
     public function destroy(Zonal $zonal): RedirectResponse
     {
-
         try {
             $zonal->delete();
             return redirect()->route('zonal.index')->with('toast', ['Zonal eliminado exitosamente!', 'success']);

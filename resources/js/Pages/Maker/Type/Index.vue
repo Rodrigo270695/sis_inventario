@@ -16,34 +16,33 @@ const form = useForm({
     type: Object,
 });
 
-let zonalObj = ref(null);
+let typeObj = ref(null);
 let showModal = ref(false);
 let openMenuId = ref(null);
 let query = ref(props.texto);
 
-
-const toggleOptions = (zonalId) => {
-    if (openMenuId.value === zonalId) {
+const toggleOptions = (typeId) => {
+    if (openMenuId.value === typeId) {
         openMenuId.value = null;
     } else {
-        openMenuId.value = zonalId;
+        openMenuId.value = typeId;
     }
 };
 
-const addZonal = () => {
-    zonalObj.value = null;
+const addType = () => {
+    typeObj.value = null;
     showModal.value = true;
 };
 
-const editZonal = (zonal) => {
+const editType = (type) => {
     openMenuId.value = null;
-    zonalObj.value = zonal;
+    typeObj.value = type;
     showModal.value = true;
 };
 
 const closeModal = () => {
     showModal.value = false;
-    zonalObj.value = null;
+    typeObj.value = null;
 };
 
 // Detectar la tecla ESC para cerrar el modal
@@ -61,27 +60,7 @@ onUnmounted(() => {
     window.removeEventListener("keydown", onKeydown);
 });
 
-const changeStatus = (zonal) => {
-    openMenuId.value = null;
-    Swal.fire({
-        title: "¿Estás seguro?",
-        text: "¿Quieres cambiar el estado de del Zonal?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Sí, cambiar!",
-        cancelButtonText: "No, cancelar!",
-    }).then((result) => {
-        if (result.isConfirmed) {
-            form.put(route("zonal.change", zonal), {
-                preserveScroll: true,
-            });
-        }
-    });
-};
-
-const deleteZonal = (zonal) => {
+const deleteType = (type) => {
     openMenuId.value = null;
     Swal.fire({
         title: "¿Estás seguro?",
@@ -94,7 +73,7 @@ const deleteZonal = (zonal) => {
         cancelButtonText: "No, cancelar!",
     }).then((result) => {
         if (result.isConfirmed) {
-            form.delete(route("zonal.destroy", zonal), {
+            form.delete(route("type.destroy", type), {
                 preserveScroll: true,
             });
         }
@@ -102,13 +81,12 @@ const deleteZonal = (zonal) => {
 };
 
 const search = () => {
-    form.get(route("zonal.search", { texto: query.value }));
+    form.get(route("type.search", { texto: query.value }));
 };
 
 const goToIndex = () => {
-    form.get(route("zonal.index"));
+    form.get(route("type.index"));
 };
-
 </script>
 
 <template>
@@ -116,15 +94,24 @@ const goToIndex = () => {
         <div class="pt-5">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-
-                    <div class="flex justify-between font-extrabold border-b px-4 py-2" title="Refrescar la página">
-                        <div
-                            class="h-11 inline-flex items-center w-full"
-                        >
-                            <h2 class="text-xl sm:text-2xl text-slate-700">Gestionar Zonal</h2>
+                    <div
+                        class="flex justify-between font-extrabold border-b px-4 py-2"
+                        title="Refrescar la página"
+                    >
+                        <div class="h-11 inline-flex items-center w-full">
+                            <h2 class="text-xl sm:text-2xl text-slate-700">
+                                Gestionar Tipo de equipo
+                            </h2>
                         </div>
-                        <button class="bg-green-600 hover:bg-green-500 w-12 rounded-md" @click="goToIndex">
-                            <v-icon class="text-white" name="io-reload-circle-sharp" scale="1.7"/>
+                        <button
+                            class="bg-green-600 hover:bg-green-500 w-12 rounded-md"
+                            @click="goToIndex"
+                        >
+                            <v-icon
+                                class="text-white"
+                                name="io-reload-circle-sharp"
+                                scale="1.7"
+                            />
                         </button>
                     </div>
 
@@ -135,23 +122,19 @@ const goToIndex = () => {
                                 v-model="query"
                                 class="w-64 md:w-72 lg:w-96 hover:border-sky-300 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
                                 placeholder="Buscar Tipo de equipo"
-                                @input="query = query.toUpperCase()"
                                 @keyup.enter="search"
                             />
                             <button
                                 @click.prevent="search"
                                 class="absolute inset-y-0 right-0 px-3 flex items-center text-white bg-sky-800 rounded-e-md hover:bg-sky-700"
                             >
-                                <v-icon
-                                    name="fa-search"
-                                    scale="1.5"
-                                />
+                                <v-icon name="fa-search" scale="1.5" />
                             </button>
                         </div>
                         <div>
                             <button
                                 class="bg-sky-800 hover:bg-sky-700 p-2 text-white rounded-lg flex items-center"
-                                @click="addZonal"
+                                @click="addType"
                             >
                                 <v-icon
                                     name="io-add-circle-sharp"
@@ -172,21 +155,9 @@ const goToIndex = () => {
                                         <tr class="">
                                             <th
                                                 scope="col"
-                                                class="px-6 py-2 text-left text-xs sm:text-base font-semibold text-white uppercase tracking-wider border-l"
-                                            >
-                                                Unidad de Negocio
-                                            </th>
-                                            <th
-                                                scope="col"
                                                 class="px-6 py-2 text-center text-xs sm:text-base font-semibold text-white uppercase tracking-wider border-l"
                                             >
                                                 Nombre
-                                            </th>
-                                            <th
-                                                scope="col"
-                                                class="px-6 py-2 text-center text-xs sm:text-base font-semibold text-white uppercase tracking-wider border-l"
-                                            >
-                                                Estado
                                             </th>
                                             <th class="border-l"></th>
                                         </tr>
@@ -194,110 +165,75 @@ const goToIndex = () => {
                                     <tbody
                                         class="bg-white divide-y divide-gray-200"
                                     >
-                                        <!-- <tr
-                                            v-for="zonal in zonals.data"
-                                            :key="zonal.id"
+                                        <tr
+                                            v-for="type in types.data"
+                                            :key="type.id"
                                             class="bg-sky-100 hover:bg-sky-200"
                                         >
                                             <td
-                                                class="text-xs md:text-sm px-6 py-3 whitespace-nowrap"
-                                            >
-                                                {{ zonal.unidad_negocio }}
-                                            </td>
-                                            <td
                                                 class="text-xs md:text-sm px-6 py-3 whitespace-nowrap text-center"
                                             >
-                                                {{ zonal.nombre }}
-                                            </td>
-                                            <td
-                                                class="text-xs md:text-sm px-6 py-3 whitespace-nowrap text-center"
-                                            >
-                                                <p
-                                                    class="inline-block px-2 rounded-full h-auto justify-center items-center text-xs md:text-sm"
-                                                    :class="{
-                                                        ' bg-green-500 text-white':
-                                                            zonal.estado == 1,
-                                                        'bg-red-500 rounded text-white':
-                                                            zonal.estado == 0,
-                                                    }"
-                                                >
-                                                    {{
-                                                        zonal.estado == 1
-                                                            ? "ACTIVO"
-                                                            : "INACTIVO"
-                                                    }}
-                                                </p>
+                                                {{ type.nombre }}
                                             </td>
                                             <td
                                                 class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium"
                                             >
-                                                <div class="flex items-center justify-center gap-x-1">
+                                                <div
+                                                    class="flex items-center justify-center gap-x-1"
+                                                >
                                                     <div class="relative group">
                                                         <button
                                                             class="bg-yellow-500 text-white p-1 rounded-md hover:bg-yellow-400 cursor-pointer"
-                                                            @click="editZonal(zonal)"
-                                                            title="Editar Zonal"
+                                                            @click="
+                                                                editType(type)
+                                                            "
                                                         >
                                                             <v-icon
                                                                 name="md-modeedit-round"
                                                             />
-                                                            <span class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
-                                                                style="left: 50%; transform: translateX(-50%); transition: opacity 0.3s;">
-                                                                Editar Zonal
+                                                            <span
+                                                                class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
+                                                                style="
+                                                                    left: 50%;
+                                                                    transform: translateX(
+                                                                        -50%
+                                                                    );
+                                                                    transition: opacity
+                                                                        0.3s;
+                                                                "
+                                                            >
+                                                                Editar Tipo
                                                             </span>
                                                         </button>
                                                     </div>
                                                     <div class="relative group">
                                                         <button
-                                                            class="text-white p-1 rounded-md"
-                                                            :class="{
-                                                                'bg-orange-500 hover:bg-orange-400':
-                                                                    zonal.estado ==
-                                                                    1,
-                                                                'bg-green-500 hover:bg-green-400':
-                                                                    zonal.estado ==
-                                                                    0,
-                                                            }"
-                                                            @click="
-                                                                changeStatus(zonal)
-                                                            "
-                                                        >
-                                                            <v-icon
-                                                                v-if="
-                                                                    zonal.estado ==
-                                                                    1
-                                                                "
-                                                                name="gi-cancel"
-                                                            />
-                                                            <v-icon
-                                                                v-else
-                                                                name="fa-check"
-                                                            />
-                                                        </button>
-                                                        <span class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
-                                                            style="left: 50%; transform: translateX(-50%); transition: opacity 0.3s;">
-                                                            Cambiar estado
-                                                        </span>
-                                                    </div>
-                                                    <div class="relative group">
-                                                        <button
                                                             class="bg-red-500 text-white p-1 rounded-md hover:bg-red-400 cursor-pointer"
                                                             @click="
-                                                                deleteZonal(zonal)
+                                                                deleteType(type)
                                                             "
                                                         >
                                                             <v-icon
                                                                 name="bi-trash"
                                                             />
                                                         </button>
-                                                        <span class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
-                                                            style="left: 50%; transform: translateX(-50%); transition: opacity 0.3s;">
-                                                            Eliminar zonal
+                                                        <span
+                                                            class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
+                                                            style="
+                                                                left: 50%;
+                                                                transform: translateX(
+                                                                    -50%
+                                                                );
+                                                                transition: opacity
+                                                                    0.3s;
+                                                            "
+                                                        >
+                                                            Eliminar Tipo
                                                         </span>
                                                     </div>
                                                 </div>
                                             </td>
-                                        </tr> -->
+                                        </tr>
                                         <tr v-if="types.data.length <= 0">
                                             <td
                                                 class="text-center text-slate-800 text-md sm:text-lg font-semibold bg-slate-300"
@@ -311,14 +247,80 @@ const goToIndex = () => {
                             </div>
                         </div>
                         <!-- Tarjetas -->
+                        <div class="block sm:hidden">
+                            <div
+                                v-for="type in types.data"
+                                :key="type.id"
+                                class="p-4 mx-1 mt-4 bg-sky-100 hover:bg-sky-200 rounded-lg shadow-md relative"
+                            >
+                                <!-- Contenido de la tarjeta -->
+                                <div class="flex items-center space-x-2 mb-4">
+                                    <svg
+                                        class="h-6 w-6 text-sky-500"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M3 7h18M3 12h18m-9 5h9"
+                                        />
+                                    </svg>
+                                    <h3 class="text-lg font-bold text-gray-900">
+                                        Tipo:
+                                        <span class="font-normal">{{
+                                            type.nombre
+                                        }}</span>
+                                    </h3>
+                                </div>
+                                <!-- Detalles de la tarjeta -->
+                                <div class="text-md">
+
+
+                                </div>
+                                <!-- Menú de tres puntos -->
+                                <div class="absolute top-0 right-0 p-2 z-10">
+                                    <button
+                                        @click="toggleOptions(type.id)"
+                                        class="text-gray-600 hover:text-gray-900 shadow-md shadow-sky-100"
+                                    >
+                                        <v-icon name="oi-apps" />
+                                    </button>
+                                    <div
+                                        v-if="openMenuId === type.id"
+                                        class="bg-white flex justify-between shadow-lg rounded-lg absolute right-[6px] mt-1 w-24 z-20 text-center"
+                                    >
+                                        <a
+                                            href="#"
+                                            @click="editType(type)"
+                                            class="block px-4 py-2 text-sm text-white bg-yellow-500 hover:bg-yellow-400 rounded-l-lg"
+                                        >
+                                            <v-icon
+                                                name="md-modeedit-round"
+                                                class="text-white"
+                                            />
+                                        </a>
+                                        <a
+                                            href="#"
+                                            @click="deleteType(type)"
+                                            class="block px-4 py-2 text-sm text-white bg-red-500 hover:bg-red-400 rounded-r-lg"
+                                        >
+                                            <v-icon
+                                                name="bi-trash"
+                                                class="text-white"
+                                            />
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <Pagination class="mt-2" :pagination="types" />
                     </div>
-<!--                     <Modal :show="showModal">
-                        <ZonalForm
-                            :zonal="zonalObj"
-                            @close-modal="closeModal"
-                        />
-                    </Modal> -->
+                    <Modal :show="showModal">
+                        <TypeForm :type="typeObj" @close-modal="closeModal" />
+                    </Modal>
                 </div>
             </div>
         </div>

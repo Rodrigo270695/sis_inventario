@@ -131,7 +131,7 @@ const logout = () => {
                                                     Gestionar Marca
                                                 </DropdownLink>
                                                 <DropdownLink
-                                                    :href="route('pdv.index')"
+                                                    :href="route('model.index')"
                                                 >
                                                     Gestionar Modelo
                                                 </DropdownLink>

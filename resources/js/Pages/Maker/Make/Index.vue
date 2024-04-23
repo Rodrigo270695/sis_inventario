@@ -5,6 +5,7 @@ import Pagination from "@/Components/Pagination.vue";
 import Modal from "@/Components/Modal.vue";
 import Swal from "sweetalert2";
 import MakeForm from "./MakeForm.vue";
+import MakeModelForm from "./MakeModelForm.vue";
 import { useForm } from "@inertiajs/vue3";
 
 const props = defineProps({
@@ -19,6 +20,7 @@ const form = useForm({
 
 let makeObj = ref(null);
 let showModal = ref(false);
+let showModalModel = ref(false);
 let openMenuId = ref(null);
 let query = ref(props.texto);
 
@@ -33,6 +35,12 @@ const toggleOptions = (makeId) => {
 const addMake = () => {
     makeObj.value = null;
     showModal.value = true;
+};
+
+const addModel = (make) => {
+    openMenuId.value = null;
+    makeObj.value = make;
+    showModalModel.value = true;
 };
 
 const editMake = (make) => {
@@ -238,6 +246,32 @@ const goToIndex = () => {
                                                 <div
                                                     class="flex items-center justify-center gap-x-1"
                                                 >
+                                                    <div class="relative group">
+                                                        <button
+                                                            class="bg-sky-500 text-white p-1 rounded-md hover:bg-sky-400 cursor-pointer"
+                                                            @click="
+                                                                addModel(make)
+                                                            "
+                                                            title="Editar Zonal"
+                                                        >
+                                                            <v-icon
+                                                                name="md-addlink-sharp"
+                                                            />
+                                                            <span
+                                                                class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
+                                                                style="
+                                                                    left: 50%;
+                                                                    transform: translateX(
+                                                                        -50%
+                                                                    );
+                                                                    transition: opacity
+                                                                        0.3s;
+                                                                "
+                                                            >
+                                                                Registrar modelos
+                                                            </span>
+                                                        </button>
+                                                    </div>
                                                     <div class="relative group">
                                                         <button
                                                             class="bg-yellow-500 text-white p-1 rounded-md hover:bg-yellow-400 cursor-pointer"
@@ -501,6 +535,9 @@ const goToIndex = () => {
                             :types="props.types"
                             @close-modal="closeModal"
                         />
+                    </Modal>
+                    <Modal :show="showModalModel">
+                        <MakeModelForm />
                     </Modal>
                 </div>
             </div>
