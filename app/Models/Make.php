@@ -18,8 +18,14 @@ class Make extends Model
         return $this->belongsTo(EquipmentType::class);
     }
 
-    public function norms(): HasMany
+    public function teams(): HasMany
     {
-        return $this->hasMany(Norm::class);
+        return $this->hasMany(Team::class);
     }
+
+    public function accessories(): HasMany
+    {
+        return $this->hasMany(Accessory::class);
+    }
+
 }

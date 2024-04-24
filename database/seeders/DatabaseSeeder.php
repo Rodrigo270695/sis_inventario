@@ -17,6 +17,10 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             UserSeeder::class,
             ZonalSeeder::class,
+            PdvSeeder::class,
+            StoreSeeder::class,
+            TypeSeeder::class,
+            MakeSeeder::class
         ]);
     }
 }

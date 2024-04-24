@@ -130,12 +130,6 @@ const logout = () => {
                                                 >
                                                     Gestionar Marca
                                                 </DropdownLink>
-                                                <DropdownLink
-                                                    :href="route('model.index')"
-                                                >
-                                                    Gestionar Modelo
-                                                </DropdownLink>
-
                                             </div>
                                         </template>
                                     </Dropdown>

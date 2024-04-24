@@ -64,12 +64,6 @@ Route::middleware([
     Route::resource('maker/type', EquipmentTypeController::class);
     Route::post('maker/type/storetype', [EquipmentTypeController::class, 'createType'])->name('type.createstore');
 
-    /* Model */
-    Route::get('maker/model/search', [NormController::class, 'search' ])->name('model.search');
-    Route::resource('maker/model', NormController::class);
-    Route::post('maker/model/makemodel', [NormController::class, 'createModel'])->name('model.createmodel');
-    Route::put('maker/model/change/{model}', [NormController::class, 'change'])->name('model.change');
-
     /* Ingresos */
     /* Equipos */
     Route::resource('income/team', TeamController::class);

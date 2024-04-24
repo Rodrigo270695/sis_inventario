@@ -20,7 +20,7 @@ class MakeRequest extends FormRequest
                 'required',
                 'string',
                 'max:50',
-                'min:3',
+                'min:2',
                 Rule::unique('makes')->ignore($this->make ? $this->make->id : null),
             ],
             'equipment_type_id' => 'required|exists:zonals,id',

@@ -13,6 +13,31 @@ return new class extends Migration
     {
         Schema::create('accessories', function (Blueprint $table) {
             $table->id();
+            $table->string('nombre',50)->unique();
+            $table->string('modelo',50)->nullable();
+            $table->string('capacidad',8)->nullable();
+            $table->string('serie',40)->nullable();
+            $table->enum('estado_asignado', [
+                'ASIGNADO',
+                'NO ASIGNADO'
+            ])->default('NO ASIGNADO');
+            $table->integer('garantia_tienda');
+            $table->integer('garantia_marca')->nullable();
+            $table->string('codigo_barras', 100);
+            $table->enum('estado', [
+                'BAJA',
+                'DESECHADO',
+                'MANTENIMIENTO-DAÑO',
+                'MANTENIMIENTO-GARANTIA',
+                'RESERVADO',
+                'USO'
+                ])->default('USO');
+            $table->text('descripcion')->nullable();
+            $table->string('documento', 255)->nullable();
+            $table->unsignedBigInteger('make_id');
+            $table->foreign('make_id')->references('id')->on('makes')->onUpdate('cascade')->onDelete('restrict');
+            $table->unsignedBigInteger('store_id');
+            $table->foreign('store_id')->references('id')->on('stores')->onUpdate('cascade')->onDelete('restrict');
             $table->timestamps();
         });
     }

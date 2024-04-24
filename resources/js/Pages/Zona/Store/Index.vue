@@ -201,7 +201,7 @@ const goToIndex = () => {
                                             <td
                                                 class="text-xs md:text-sm px-6 py-3 whitespace-nowrap"
                                             >
-                                                {{ store.pdv.zonal.nombre }} - {{ store.pdv.nombre }}
+                                                {{ store.pdv.zonal.nombre }} - {{ store.pdv.nombre }} 
                                             </td>
                                             <td
                                                 class="text-xs md:text-sm px-6 py-3 whitespace-nowrap text-center"

@@ -103,7 +103,7 @@ class StoreController extends Controller
             $estado = 0;
         }
 
-        $stores = Store::with('pdv')->join('pdvs', 'stores.pdv_id', '=', 'pdvs.id')
+        $stores = Store::with('pdv.zonal')->join('pdvs', 'stores.pdv_id', '=', 'pdvs.id')
             ->orWhere('pdvs.nombre', 'like', '%' . $texto . '%')
             ->orWhere('stores.nombre', 'like', '%' . $texto . '%')
             ->orWhere('stores.estado', $estado)
