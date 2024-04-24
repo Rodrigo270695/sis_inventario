@@ -16,8 +16,8 @@ class StoreController extends Controller
 
     public function index(): Response
     {
-        $stores = Store::with('pdv')->orderBy('id','desc')->paginate(7);
-        $pdvs = Pdv::where('estado', 1)->orderBy('nombre', 'asc')->get();
+        $stores = Store::with('pdv.zonal')->orderBy('id','desc')->paginate(7);
+        $pdvs = Pdv::with('zonal')->where('estado', 1)->orderBy('nombre', 'asc')->get();
 
         return Inertia::render('Zona/Store/Index',compact(['stores','pdvs']));
     }

@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\AccessoryController;
 use App\Http\Controllers\EquipmentTypeController;
 use App\Http\Controllers\MakeController;
 use App\Http\Controllers\NormController;
 use App\Http\Controllers\PdvController;
 use App\Http\Controllers\StoreController;
+use App\Http\Controllers\TeamController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ZonalController;
 use Illuminate\Foundation\Application;
@@ -65,5 +67,12 @@ Route::middleware([
     /* Model */
     Route::get('maker/model/search', [NormController::class, 'search' ])->name('model.search');
     Route::resource('maker/model', NormController::class);
+    Route::post('maker/model/makemodel', [NormController::class, 'createModel'])->name('model.createmodel');
     Route::put('maker/model/change/{model}', [NormController::class, 'change'])->name('model.change');
+
+    /* Ingresos */
+    /* Equipos */
+    Route::resource('income/team', TeamController::class);
+    /* Eccesorios */
+    Route::resource('income/accessory', AccessoryController::class);
 });

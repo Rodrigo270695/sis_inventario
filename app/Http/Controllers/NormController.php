@@ -22,12 +22,26 @@ class NormController extends Controller
         return Inertia::render('Maker/Model/Index', compact('models','makes'));
     }
 
-
     public function store(NormRequest $request): RedirectResponse
     {
         try {
             Norm::create($request->all());
             return redirect()->route('model.index')->with('toast', ['Modelo creado exitosamente!','success']);
+        } catch (QueryException $e) {
+
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('toast', ['El Modelo ya existe!','warning']);
+            }else{
+                return redirect()->back()->with('toast', ['Ocurrió un error!','danger']);
+            }
+        }
+    }
+
+    public function createModel(NormRequest $request): RedirectResponse
+    {
+        try {
+            Norm::create($request->all());
+            return redirect()->route('make.index')->with('toast', ['Modelo creado exitosamente!','success']);
         } catch (QueryException $e) {
 
             if ($e->getCode() == 23000) {

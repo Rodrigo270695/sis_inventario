@@ -119,7 +119,7 @@ const addType = () => {
                             </option>
                         </select>
                         <InputError
-                            class="w-full"
+                            class="w-full" 
                             :message="form.errors.equipment_type_id"
                         />
                     </div>

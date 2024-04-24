@@ -21,7 +21,10 @@ class StoreRequest extends FormRequest
                 'string',
                 'max:70',
                 'min:3',
-                Rule::unique('stores')->ignore($this->store ? $this->store->id : null),
+                // Asegura que la combinación de nombre y pdv_id sea única
+                Rule::unique('stores')->where(function ($query) {
+                    return $query->where('pdv_id', $this->pdv_id);
+                })->ignore($this->store ? $this->store->id : null),
             ],
             'descripcion' => 'nullable|string',
             'pdv_id' => 'required|exists:pdvs,id',

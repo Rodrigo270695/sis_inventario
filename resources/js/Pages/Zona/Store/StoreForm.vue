@@ -66,7 +66,7 @@ const emit = defineEmits(["close-modal"]);
                                 :key="pdv.id"
                                 :value="pdv.id"
                             >
-                                {{ pdv.nombre }}
+                                {{ pdv.zonal.nombre }} - {{ pdv.nombre }}
                             </option>
                         </select>
                         <InputError

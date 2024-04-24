@@ -11,13 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('stores', function (Blueprint $table) {
+        Schema::create('accessories', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre',70);
-            $table->text('descripcion')->nullable();
-            $table->boolean('estado')->default(true);
-            $table->unsignedBigInteger('pdv_id');
-            $table->foreign('pdv_id')->references('id')->on('pdvs')->onUpdate('cascade')->onDelete('restrict');
             $table->timestamps();
         });
     }
@@ -27,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('stores');
+        Schema::dropIfExists('accessories');
     }
 };

@@ -50,6 +50,7 @@ const editMake = (make) => {
 };
 
 const closeModal = () => {
+    showModalModel.value = false;
     showModal.value = false;
     makeObj.value = null;
 };
@@ -474,11 +475,11 @@ const goToIndex = () => {
                                     >
                                         <a
                                             href="#"
-                                            @click="addMake(make)"
+                                            @click="addModel(make)"
                                             class="block px-4 py-2 text-sm text-white bg-sky-500 hover:bg-sky-400 rounded-l-lg"
                                         >
                                             <v-icon
-                                                name="md-addbusiness"
+                                                name="md-addlink-sharp"
                                                 class="text-white"
                                             />
                                         </a>
@@ -537,7 +538,7 @@ const goToIndex = () => {
                         />
                     </Modal>
                     <Modal :show="showModalModel">
-                        <MakeModelForm />
+                        <MakeModelForm :make="makeObj" @close-modal="closeModal" />
                     </Modal>
                 </div>
             </div>
