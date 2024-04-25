@@ -3,7 +3,6 @@
 use App\Http\Controllers\AccessoryController;
 use App\Http\Controllers\EquipmentTypeController;
 use App\Http\Controllers\MakeController;
-use App\Http\Controllers\NormController;
 use App\Http\Controllers\PdvController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\TeamController;
@@ -12,6 +11,7 @@ use App\Http\Controllers\ZonalController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Response;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -67,6 +67,14 @@ Route::middleware([
     /* Ingresos */
     /* Equipos */
     Route::resource('income/team', TeamController::class);
+    Route::get('/team/download/{file}', function ($file) {
+        $pathToFile = public_path('storage/documentos/' . $file);
+        if (file_exists($pathToFile)) {
+            return Response::download($pathToFile);
+        } else {
+            abort(404, 'Archivo no encontrado.');
+        }
+    });
     /* Eccesorios */
     Route::resource('income/accessory', AccessoryController::class);
 });

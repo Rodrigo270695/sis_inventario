@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TeamRequest;
 use App\Models\Make;
+use App\Models\Pdv;
 use App\Models\Store;
 use App\Models\Team;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Support\Str;
@@ -18,15 +20,26 @@ class TeamController extends Controller
 
     public function index(): Response
     {
-        $teams = Team::with(['accessories', 'store.pdv', 'make']) // Carga los accesorios y la tienda asociada
-                      ->join('stores', 'teams.store_id', '=', 'stores.id')
-                      ->orderBy('stores.nombre', 'asc') // Ordena por el nombre de la tienda
-                      ->select('teams.*') // Evita seleccionar columnas de la tabla stores en el resultado final
-                      ->paginate(7);
-        $stores = Store::with('pdv.zonal')->where('estado', 1)->orderBy('nombre','asc')->get();
-        $makes = Make::with('equipmenttype')->where('estado', 1)->orderBy('nombre','asc')->get();
+        $pdvs = Pdv::with(['stores.teams.accessories', 'stores.teams.make.equipmenttype'])
+        ->orderBy('nombre', 'asc')
+        ->paginate(2);
+        $stores = Store::with(['pdv.zonal'])
+            ->join('pdvs', 'stores.pdv_id', '=', 'pdvs.id')
+            ->join('zonals', 'pdvs.zonal_id', '=', 'zonals.id')
+            ->where('stores.estado', 1)
+            ->orderBy('zonals.nombre', 'asc')
+            ->select('stores.*', 'pdvs.nombre as pdv_nombre', 'zonals.nombre as zonal_nombre')
+            ->distinct()
+            ->get();
+        $makes = Make::with('equipmenttype')
+            ->join('equipment_types', 'makes.equipment_type_id', '=', 'equipment_types.id')
+            ->where('makes.estado', 1)
+            ->orderBy('equipment_types.nombre', 'asc')
+            ->select('makes.*', 'equipment_types.nombre as equipmenttype_nombre')
+            ->distinct()
+            ->get();
 
-        return Inertia::render('Income/Team/Index', compact(['teams','stores','makes']));
+        return Inertia::render('Income/Team/Index', compact(['pdvs', 'stores', 'makes']));
     }
 
     public function store(TeamRequest $request): RedirectResponse
@@ -42,8 +55,10 @@ class TeamController extends Controller
                 $allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx'];
                 if (in_array($extension, $allowedExtensions)) {
                     $filename = time() . '.' . $extension;
-                    $path = $documento->storeAs('documentos', $filename, 'public');
-                    $data['documento'] = 'storage/' . $path;
+                    // Guarda el archivo en el disco 'public' y especifica la carpeta 'documentos'
+                    $documento->storeAs('documentos', $filename, 'public');
+                    // Guarda solo el nombre del archivo en la base de datos
+                    $data['documento'] = $filename;
                 } else {
                     return redirect()->back()->with('toast', ['Tipo de archivo no permitido!', 'danger']);
                 }
@@ -59,9 +74,14 @@ class TeamController extends Controller
         }
     }
 
-    public function update(Request $request, Team $team)
+    public function update(TeamRequest $request, Team $team)
     {
-        //
+        try {
+            $team->update($request->all());
+            return redirect()->route('team.index')->with('toast', ['Equipo actualizado exitosamente!', 'success']);
+        } catch (QueryException $e){
+            return redirect()->back()->with('toast', ['Ocurrió un error!','danger']);
+        }
     }
 
     /**
@@ -71,4 +91,6 @@ class TeamController extends Controller
     {
         //
     }
+
+
 }

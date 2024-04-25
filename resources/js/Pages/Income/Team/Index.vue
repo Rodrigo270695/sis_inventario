@@ -1,14 +1,15 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
-import { ref, defineProps, onMounted, onUnmounted, reactive } from "vue";
+import { ref, defineProps, onMounted, onUnmounted } from "vue";
 import Pagination from "@/Components/Pagination.vue";
 import Modal from "@/Components/Modal.vue";
-import TeamForm from './TeamForm.vue';
+import CardTeam from "@/Components/CardTeam.vue";
+import TeamForm from "./TeamForm.vue";
 import Swal from "sweetalert2";
 import { useForm } from "@inertiajs/vue3";
 
 const props = defineProps({
-    teams: Array,
+    pdvs: Array,
     makes: Array,
     stores: Array,
     texto: String,
@@ -22,7 +23,6 @@ let teamObj = ref(null);
 let showModal = ref(false);
 let openMenuId = ref(null);
 let query = ref(props.texto);
-
 
 const toggleOptions = (teamId) => {
     if (openMenuId.value === teamId) {
@@ -110,7 +110,6 @@ const search = () => {
 const goToIndex = () => {
     form.get(route("team.index"));
 };
-
 </script>
 
 <template>
@@ -118,15 +117,24 @@ const goToIndex = () => {
         <div class="pt-5">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-
-                    <div class="flex justify-between font-extrabold border-b px-4 py-2" title="Refrescar la página">
-                        <div
-                            class="h-11 inline-flex items-center w-full"
-                        >
-                            <h2 class="text-xl sm:text-2xl text-slate-700">Gestionar Equipos</h2>
+                    <div
+                        class="flex justify-between font-extrabold border-b px-4 py-2"
+                        title="Refrescar la página"
+                    >
+                        <div class="h-11 inline-flex items-center w-full">
+                            <h2 class="text-xl sm:text-2xl text-slate-700">
+                                Gestionar Equipos
+                            </h2>
                         </div>
-                        <button class="bg-green-600 hover:bg-green-500 w-12 rounded-md" @click="goToIndex">
-                            <v-icon class="text-white" name="io-reload-circle-sharp" scale="1.7"/>
+                        <button
+                            class="bg-green-600 hover:bg-green-500 w-12 rounded-md"
+                            @click="goToIndex"
+                        >
+                            <v-icon
+                                class="text-white"
+                                name="io-reload-circle-sharp"
+                                scale="1.7"
+                            />
                         </button>
                     </div>
 
@@ -144,10 +152,7 @@ const goToIndex = () => {
                                 @click.prevent="search"
                                 class="absolute inset-y-0 right-0 px-3 flex items-center text-white bg-sky-800 rounded-e-md hover:bg-sky-700"
                             >
-                                <v-icon
-                                    name="fa-search"
-                                    scale="1.5"
-                                />
+                                <v-icon name="fa-search" scale="1.5" />
                             </button>
                         </div>
                         <div>
@@ -164,17 +169,23 @@ const goToIndex = () => {
                         </div>
                     </div>
 
-                    <div class="p-3">
-                        <div class="hidden sm:block">
+                    <div class="p-3 bg-3D-50">
+
+                        <div class="block">
                             <div class="overflow-x-auto rounded-lg">
-                                
+                                <CardTeam :pdvs="pdvs" @edit-team="editTeam" />
                             </div>
                         </div>
-                        <!-- Tarjetas -->
-                        <!-- <Pagination class="mt-2" :pagination="teams" /> -->
+
+                        <Pagination class="mt-2" :pagination="pdvs" />
                     </div>
                     <Modal :show="showModal" maxWidth="3xl">
-                        <TeamForm :team="teamObj" :makes="makes" :stores="stores" @close-modal="closeModal"/>
+                        <TeamForm
+                            :team="teamObj"
+                            :makes="makes"
+                            :stores="stores"
+                            @close-modal="closeModal"
+                        />
                     </Modal>
                 </div>
             </div>

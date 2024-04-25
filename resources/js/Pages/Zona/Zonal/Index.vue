@@ -163,7 +163,7 @@ const goToIndex = () => {
                     </div>
 
                     <div class="p-3">
-                        <div class="hidden sm:block">
+                        <div class="hidden sm:block ">
                             <div class="overflow-x-auto rounded-lg">
                                 <table
                                     class="min-w-full divide-y divide-gray-200"
