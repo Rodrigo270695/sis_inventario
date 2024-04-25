@@ -167,7 +167,7 @@ const goToIndex = () => {
                     <div class="p-3">
                         <div class="hidden sm:block">
                             <div class="overflow-x-auto rounded-lg">
-
+                                
                             </div>
                         </div>
                         <!-- Tarjetas -->

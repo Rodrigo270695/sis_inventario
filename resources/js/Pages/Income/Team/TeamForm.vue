@@ -12,6 +12,10 @@ const props = defineProps({
     makes: Array,
 });
 
+const onFileChange = (event) => {
+    form.documento = event.target.files[0];
+};
+
 const form = useForm({
     id: props.team ? props.team.id : "",
     nombre: props.team ? props.team.nombre : "",
@@ -24,8 +28,8 @@ const form = useForm({
     garantia_tienda: props.team ? props.team.garantia_tienda : "",
     garantia_marca: props.team ? props.team.garantia_marca : "",
     descripcion: props.team ? props.team.descripcion : "",
-    documento: props.team ? props.team.documento : "",
-    codigo_barras: props.team ? props.team.codigo_barras : "123456789",
+    documento: "",
+    codigo_barras: props.team ? props.team.codigo_barras : "",
     make_id: props.team ? props.team.make_id : "",
     store_id: props.team ? props.team.store_id : "",
 });
