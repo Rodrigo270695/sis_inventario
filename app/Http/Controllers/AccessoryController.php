@@ -3,16 +3,38 @@
 namespace App\Http\Controllers;
 
 use App\Models\Accessory;
+use App\Models\Make;
+use App\Models\Pdv;
+use App\Models\Store;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class AccessoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+
+    public function index(): Response
     {
-        //
+        $pdvs = Pdv::with(['stores.teams.accessories', 'stores.teams.make.equipmenttype'])
+        ->orderBy('nombre', 'asc')
+        ->paginate(1);
+    $stores = Store::with(['pdv.zonal'])
+        ->join('pdvs', 'stores.pdv_id', '=', 'pdvs.id')
+        ->join('zonals', 'pdvs.zonal_id', '=', 'zonals.id')
+        ->where('stores.estado', 1)
+        ->orderBy('zonals.nombre', 'asc')
+        ->select('stores.*', 'pdvs.nombre as pdv_nombre', 'zonals.nombre as zonal_nombre')
+        ->distinct()
+        ->get();
+    $makes = Make::with('equipmenttype')
+        ->join('equipment_types', 'makes.equipment_type_id', '=', 'equipment_types.id')
+        ->where('makes.estado', 1)
+        ->orderBy('equipment_types.nombre', 'asc')
+        ->select('makes.*', 'equipment_types.nombre as equipmenttype_nombre')
+        ->distinct()
+        ->get();
+
+    return Inertia::render('Income/Accessory/Index', compact(['pdvs', 'stores', 'makes']));
     }
 
     /**

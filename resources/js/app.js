@@ -14,7 +14,7 @@ import
     ViFileTypePdf, ViFileTypeWord, ViFileTypeImage, ViDefaultFile, ViFileTypeExcel, BiFileEarmarkExcelFill,
     FaSearch, BiEyeFill, BiEyeSlashFill, GiExitDoor, MdDelete, MdChangecircleRound, MdPassword, MdAddphotoalternateRound, BiUpload,
     GiHamburgerMenu, MdMonitorTwotone, HiSolidPlusSm, HiMinusSm, HiSolidChevronDown, IoClose, OiApps, MdAddbusiness, MdAddcircleRound,
-    MdAddlinkSharp 
+    MdAddlinkSharp, MdFileuploadRound
 } from "oh-vue-icons/icons";
 
 addIcons(
@@ -23,7 +23,7 @@ PrImages, BiTrash, FaEye, BiCartFill, BiClockFill, IoReloadCircleSharp,
 ViFileTypePdf, ViFileTypeWord, ViFileTypeImage, ViDefaultFile, ViFileTypeExcel, BiFileEarmarkExcelFill,
 FaSearch, BiEyeFill, BiEyeSlashFill, GiExitDoor, MdDelete, MdChangecircleRound, MdPassword, MdAddphotoalternateRound, BiUpload,
 GiHamburgerMenu, MdMonitorTwotone, HiSolidPlusSm, HiMinusSm, HiSolidChevronDown, IoClose, OiApps, MdAddbusiness, MdAddcircleRound,
-MdAddlinkSharp 
+MdAddlinkSharp, MdFileuploadRound
 );
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';

@@ -21,8 +21,8 @@ class TeamController extends Controller
     public function index(): Response
     {
         $pdvs = Pdv::with(['stores.teams.accessories', 'stores.teams.make.equipmenttype'])
-        ->orderBy('nombre', 'asc')
-        ->paginate(2);
+            ->orderBy('nombre', 'asc')
+            ->paginate(1);
         $stores = Store::with(['pdv.zonal'])
             ->join('pdvs', 'stores.pdv_id', '=', 'pdvs.id')
             ->join('zonals', 'pdvs.zonal_id', '=', 'zonals.id')
@@ -74,23 +74,67 @@ class TeamController extends Controller
         }
     }
 
-    public function update(TeamRequest $request, Team $team)
+    public function update(TeamRequest $request, Team $team): RedirectResponse
     {
         try {
-            $team->update($request->all());
+            $validatedData = $request->validated();
+
+            $team->nombre = $validatedData['nombre'];
+            $team->modelo = $validatedData['modelo'];
+            $team->ip = $validatedData['ip'];
+            $team->serie = $validatedData['serie'];
+            $team->procesador = $validatedData['procesador'];
+            $team->mac = $validatedData['mac'];
+            $team->fecha_compra = $validatedData['fecha_compra'];
+            $team->garantia_tienda = $validatedData['garantia_tienda'];
+            $team->garantia_marca = $validatedData['garantia_marca'];
+            $team->descripcion = $validatedData['descripcion'];
+            $team->make_id = $validatedData['make_id'];
+            $team->store_id = $validatedData['store_id'];
+
+            $team->save();
+
             return redirect()->route('team.index')->with('toast', ['Equipo actualizado exitosamente!', 'success']);
-        } catch (QueryException $e){
-            return redirect()->back()->with('toast', ['Ocurrió un error!','danger']);
+        } catch (QueryException $e) {
+            return redirect()->back()->with('toast', ['Ocurrió un error al actualizar los datos!', 'danger']);
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    public function updateDocument(Request $request, $id): RedirectResponse
+    {
+        $request->validate([
+            'documento' => 'nullable|mimes:jpg,jpeg,png,doc,docx,pdf|max:3072',
+        ]);
+        $team = Team::findOrFail($id);
+        
+        if ($request->hasFile('documento') && $request->file('documento')->isValid()) {
+            $documento = $request->file('documento');
+            $extension = $documento->getClientOriginalExtension();
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx'];
+
+            if (in_array($extension, $allowedExtensions)) {
+                // Elimina el documento anterior si existe
+                if ($team->documento) {
+                    Storage::disk('public')->delete('documentos/' . $team->documento);
+                }
+
+                // Guarda el nuevo documento
+                $filename = time() . '.' . $extension;
+                $documento->storeAs('documentos', $filename, 'public');
+                $team->documento = $filename;
+                $team->save();
+
+                return redirect()->route('team.index')->with('toast', ['Documento actualizado exitosamente!', 'success']);
+            } else {
+                return redirect()->back()->with('toast', ['Tipo de archivo no permitido!', 'danger']);
+            }
+        }
+
+        return redirect()->back()->with('toast', ['No se proporcionó un documento válido.', 'danger']);
+    }
+
     public function destroy(Team $team)
     {
         //
     }
-
-
 }

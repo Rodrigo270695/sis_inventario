@@ -28,7 +28,8 @@ const form = useForm({
     garantia_tienda: props.team ? props.team.garantia_tienda : "",
     garantia_marca: props.team ? props.team.garantia_marca : "",
     descripcion: props.team ? props.team.descripcion : "",
-    documento: props.team ? props.team.documento : "",
+    documento: "",
+    documento_descarga: props.team ? props.team.documento:'',
     make_id: props.team ? props.team.make_id : "",
     store_id: props.team ? props.team.store_id : "",
 });
@@ -203,7 +204,7 @@ const emit = defineEmits(["close-modal"]);
                         />
                     </div>
                     <div
-                        v-if="!form.documento"
+                        v-if="!form.id"
                         :class="
                             form.documento
                                 ? 'col-span-11 sm:col-span-11'
@@ -225,13 +226,14 @@ const emit = defineEmits(["close-modal"]);
                     </div>
                     <div
                         :class="
-                            form.documento
-                                ? 'col-span-1 sm:col-span-1 mt-0'
+                            form.id
+                                ? 'col-span-3 sm:col-span-3 mt-0'
                                 : 'col-span-0 sm:col-span-0 hidden'
                         "
                     >
+                        <InputLabel value="Descargar Documento" />
                         <a
-                        v-if="form.documento"
+                            v-if="form.documento_descarga"
                             class=""
                             :href="`/team/download/${team.documento}`"
                             :download="team.documento"
@@ -241,7 +243,7 @@ const emit = defineEmits(["close-modal"]);
                                     team.documento &&
                                     team.documento.endsWith('.pdf')
                                 "
-                                class="mt-6"
+                                class=""
                                 name="vi-file-type-pdf"
                                 scale="2"
                             />
@@ -252,7 +254,7 @@ const emit = defineEmits(["close-modal"]);
                                     (team.documento &&
                                         team.documento.endsWith('.doc'))
                                 "
-                                class="mt-6"
+                                class=""
                                 name="vi-file-type-word"
                                 scale="2"
                             />
@@ -263,7 +265,7 @@ const emit = defineEmits(["close-modal"]);
                                         team.documento.endsWith('.jpg') ||
                                         team.documento.endsWith('.jpeg'))
                                 "
-                                class="mt-6"
+                                class=""
                                 name="vi-file-type-image"
                                 scale="2"
                             />

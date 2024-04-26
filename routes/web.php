@@ -75,6 +75,8 @@ Route::middleware([
             abort(404, 'Archivo no encontrado.');
         }
     });
+    Route::put('/team/update/document/{id}', [TeamController::class, 'updateDocument'])->name('team.update.document');
+
     /* Eccesorios */
     Route::resource('income/accessory', AccessoryController::class);
 });

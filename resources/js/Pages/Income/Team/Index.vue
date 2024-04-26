@@ -5,6 +5,7 @@ import Pagination from "@/Components/Pagination.vue";
 import Modal from "@/Components/Modal.vue";
 import CardTeam from "@/Components/CardTeam.vue";
 import TeamForm from "./TeamForm.vue";
+import UpdateDocument from "./UpdateDocument.vue";
 import Swal from "sweetalert2";
 import { useForm } from "@inertiajs/vue3";
 
@@ -21,16 +22,13 @@ const form = useForm({
 
 let teamObj = ref(null);
 let showModal = ref(false);
-let openMenuId = ref(null);
+let showModalDoc = ref(false);
 let query = ref(props.texto);
 
-const toggleOptions = (teamId) => {
-    if (openMenuId.value === teamId) {
-        openMenuId.value = null;
-    } else {
-        openMenuId.value = teamId;
-    }
-};
+const addDoc = (team) => {
+    showModalDoc.value = true;
+    teamObj.value = team
+}
 
 const addTeam = () => {
     teamObj.value = null;
@@ -38,12 +36,12 @@ const addTeam = () => {
 };
 
 const editTeam = (team) => {
-    openMenuId.value = null;
     teamObj.value = team;
     showModal.value = true;
 };
 
 const closeModal = () => {
+    showModalDoc.value = false;
     showModal.value = false;
     teamObj.value = null;
 };
@@ -64,7 +62,6 @@ onUnmounted(() => {
 });
 
 /* const changeStatus = (team) => {
-    openMenuId.value = null;
     Swal.fire({
         title: "¿Estás seguro?",
         text: "¿Quieres cambiar el estado de del team?",
@@ -84,7 +81,6 @@ onUnmounted(() => {
 }; */
 
 const deleteTeam = (team) => {
-    openMenuId.value = null;
     Swal.fire({
         title: "¿Estás seguro?",
         text: "No podrás revertir esto!",
@@ -173,7 +169,7 @@ const goToIndex = () => {
 
                         <div class="block">
                             <div class="overflow-x-auto rounded-lg">
-                                <CardTeam :pdvs="pdvs" @edit-team="editTeam" />
+                                <CardTeam :pdvs="pdvs" @edit-team="editTeam" @add-doc="addDoc"/>
                             </div>
                         </div>
 
@@ -186,6 +182,9 @@ const goToIndex = () => {
                             :stores="stores"
                             @close-modal="closeModal"
                         />
+                    </Modal>
+                    <Modal :show="showModalDoc" maxWidth="lg">
+                        <UpdateDocument :team="teamObj" @close-modal="closeModal"/>
                     </Modal>
                 </div>
             </div>
