@@ -33,7 +33,7 @@ const teamStatusBackground = (status) => {
             <div
                 v-for="pdv in pdvs.data"
                 :key="pdv.id"
-                class="bg-3D-50 rounded-2xl shadow-abajo-2 mb-8 p-5 sizing"
+                class="bg-3D-50 rounded-2xl shadow-abajo-1 mb-8 p-5 sizing"
             >
                 <h2
                     class="text-xl sm:text-2xl font-extrabold text-gray-600 mb-4 border-slate-300 uppercase"

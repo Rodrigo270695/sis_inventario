@@ -79,4 +79,16 @@ Route::middleware([
 
     /* Eccesorios */
     Route::resource('income/accessory', AccessoryController::class);
+    Route::get('/accessory/download/{file}', function ($file) {
+        $pathToFile = public_path('storage/documentos/' . $file);
+        if (file_exists($pathToFile)) {
+            return Response::download($pathToFile);
+        } else {
+            abort(404, 'Archivo no encontrado.');
+        }
+    });
+    Route::put('/accessory/update/document/{id}', [AccessoryController::class, 'updateDocument'])->name('accessory.update.document');
+    Route::post('/accessories/assign-to-team', [AccessoryController::class, 'assignToTeam'])->name('accessory.assignToTeam');
+
+    
 });

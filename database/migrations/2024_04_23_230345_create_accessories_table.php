@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('accessories', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre',50)->unique();
+            $table->string('nombre',50);
             $table->string('modelo',50)->nullable();
             $table->string('capacidad',8)->nullable();
             $table->string('serie',40)->nullable();
@@ -21,9 +21,10 @@ return new class extends Migration
                 'ASIGNADO',
                 'NO ASIGNADO'
             ])->default('NO ASIGNADO');
+            $table->date('fecha_compra');
             $table->integer('garantia_tienda');
             $table->integer('garantia_marca')->nullable();
-            $table->string('codigo_barras', 100);
+            $table->string('codigo_barras', 14)->unique();
             $table->enum('estado', [
                 'BAJA',
                 'DESECHADO',

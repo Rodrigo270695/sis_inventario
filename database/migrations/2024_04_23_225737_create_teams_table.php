@@ -30,7 +30,7 @@ return new class extends Migration
             $table->date('fecha_compra');
             $table->unsignedTinyInteger('garantia_tienda');
             $table->unsignedTinyInteger('garantia_marca')->nullable();
-            $table->string('codigo_barras', 100)->unique();
+            $table->string('codigo_barras', 14)->unique();
             $table->text('descripcion')->nullable();
             $table->string('documento', 255)->nullable();
             $table->unsignedBigInteger('make_id');
