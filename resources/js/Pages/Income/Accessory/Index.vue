@@ -3,14 +3,14 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import { ref, defineProps, onMounted, onUnmounted, nextTick } from "vue";
 import Pagination from "@/Components/Pagination.vue";
 import Modal from "@/Components/Modal.vue";
-import AccesoryForm from './AccesoryForm.vue'
-import UpdateDocument from './UpdateDocument.vue'
-import AssignAccessory from './AssignAccessory.vue'
+import AccesoryForm from "./AccesoryForm.vue";
+import UpdateDocument from "./UpdateDocument.vue";
+import AssignAccessory from "./AssignAccessory.vue";
 import Swal from "sweetalert2";
 import { useForm } from "@inertiajs/vue3";
-import JsBarcode from 'jsbarcode';
-import { jsPDF } from 'jspdf';
-import { parseISO, format, addMonths } from 'date-fns';
+import JsBarcode from "jsbarcode";
+import { jsPDF } from "jspdf";
+import { parseISO, format, addMonths } from "date-fns";
 
 const props = defineProps({
     accessories: Array,
@@ -32,13 +32,13 @@ let query = ref(props.texto);
 
 const addDoc = (accesory) => {
     showModalDoc.value = true;
-    accesoryObj.value = accesory
-}
+    accesoryObj.value = accesory;
+};
 
 const assign = (accesory) => {
     showModalAssign.value = true;
-    accesoryObj.value = accesory
-}
+    accesoryObj.value = accesory;
+};
 
 const addAccesory = () => {
     accesoryObj.value = null;
@@ -91,7 +91,7 @@ onUnmounted(() => {
     });
 }; */
 
-const deleteTeam = (accesory) => {
+const deleteAccesory = (accesory) => {
     Swal.fire({
         title: "¿Estás seguro?",
         text: "No podrás revertir esto!",
@@ -118,65 +118,67 @@ const goToIndex = () => {
     form.get(route("accessory.index"));
 };
 
-
 /* Codigo de barras */
 const generateBarcode = (elementId, codigo) => {
-  nextTick(() => {
-    JsBarcode(`#${elementId}`, codigo, {
-      format: "CODE128",
-      lineColor: "#000",
-      width: 2,
-      height: 30,
-      displayValue: true
+    nextTick(() => {
+        JsBarcode(`#${elementId}`, codigo, {
+            format: "CODE128",
+            lineColor: "#000",
+            width: 2,
+            height: 30,
+            displayValue: true,
+        });
     });
-  });
 };
 
 const downloadPdf = (elementId, nombreArchivo) => {
-  const canvas = document.getElementById(elementId);
-  if (canvas) {
-    const imgData = canvas.toDataURL("image/jpeg");
-    const doc = new jsPDF();
-    doc.text('Código de Barras:', 10, 10);
-    doc.addImage(imgData, 'JPEG', 10, 20);
-    doc.save(`${nombreArchivo}.pdf`);
-  } else {
-    console.error('No se pudo encontrar el elemento canvas para generar el PDF');
-  }
+    const canvas = document.getElementById(elementId);
+    if (canvas) {
+        const imgData = canvas.toDataURL("image/jpeg");
+        const doc = new jsPDF();
+        doc.text(nombreArchivo, 8, 17);
+        doc.addImage(imgData, "JPEG", 10, 20);
+        doc.save(`${nombreArchivo}.pdf`);
+    } else {
+        console.error(
+            "No se pudo encontrar el elemento canvas para generar el PDF"
+        );
+    }
 };
 
 onMounted(() => {
-  if (props.accessories && props.accessories.data) {
-    props.accessories.data.forEach(accesory => {
-      generateBarcode(`barcode-${accesory.id}`, accesory.codigo_barras);
-    });
-  } else {
-    console.error('No se encontraron accesorios o la estructura de datos no es la esperada.');
-  }
+    if (props.accessories && props.accessories.data) {
+        props.accessories.data.forEach((accesory) => {
+            generateBarcode(`barcode-${accesory.id}`, accesory.codigo_barras);
+        });
+    } else {
+        console.error(
+            "No se encontraron accesorios o la estructura de datos no es la esperada."
+        );
+    }
 });
 
 /* Calcular garantia */
 const formatDate = (dateString) => {
-  const date = parseISO(dateString);
-  return format(date, 'dd/MM/yy'); // Formatea la fecha en el formato dd/mm/YYYY
+    const date = parseISO(dateString);
+    return format(date, "dd/MM/yy"); // Formatea la fecha en el formato dd/mm/YYYY
 };
 
 // Función para calcular la fecha de finalización de la garantía
 const calculateWarrantyEnd = (purchaseDate, warrantyMonths) => {
-  const date = parseISO(purchaseDate);
-  const warrantyEndDate = addMonths(date, warrantyMonths);
-  return format(warrantyEndDate, 'dd/MM/yyyy');
+    const date = parseISO(purchaseDate);
+    const warrantyEndDate = addMonths(date, warrantyMonths);
+    return format(warrantyEndDate, "dd/MM/yyyy");
 };
 
 // Función para calcular los días restantes hasta el final de la garantía
 const daysUntilWarrantyEnds = (purchaseDate, warrantyMonths) => {
-  const today = new Date();
-  const warrantyEndDate = addMonths(parseISO(purchaseDate), warrantyMonths);
-  const timeDiff = warrantyEndDate.getTime() - today.getTime();
-  const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-  return daysDiff > 0 ? daysDiff : 0;
+    const today = new Date();
+    const warrantyEndDate = addMonths(parseISO(purchaseDate), warrantyMonths);
+    const timeDiff = warrantyEndDate.getTime() - today.getTime();
+    const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    return daysDiff > 0 ? daysDiff : 0;
 };
-
 </script>
 
 <template>
@@ -236,10 +238,9 @@ const daysUntilWarrantyEnds = (purchaseDate, warrantyMonths) => {
                     </div>
 
                     <div class="p-3 bg-white">
-
                         <div class="block">
                             <div class="overflow-x-auto rounded-lg">
-                                                                <table
+                                <table
                                     class="min-w-full divide-y divide-gray-200"
                                 >
                                     <thead class="bg-cyan-800">
@@ -294,7 +295,9 @@ const daysUntilWarrantyEnds = (purchaseDate, warrantyMonths) => {
                                             <td
                                                 class="text-xs md:text-sm pl-3 py-3 whitespace-nowrap"
                                             >
-                                                {{ accesory.store.pdv.nombre }}/{{ accesory.store.nombre }}
+                                                {{
+                                                    accesory.store.pdv.nombre
+                                                }}/{{ accesory.store.nombre }}
                                             </td>
                                             <td
                                                 class="text-xs md:text-sm py-3 whitespace-nowrap text-center"
@@ -304,21 +307,68 @@ const daysUntilWarrantyEnds = (purchaseDate, warrantyMonths) => {
                                             <td
                                                 class="text-xs md:text-sm py-2 whitespace-nowrap text-center"
                                             >
-                                                <div :class="daysUntilWarrantyEnds(accesory.fecha_compra, accesory.garantia_tienda) > 30 ? 'bg-green-300':'bg-red-300'" class="rounded-md">
-                                                    {{ formatDate(accesory.fecha_compra) }}
-                                                    ({{ daysUntilWarrantyEnds(accesory.fecha_compra, accesory.garantia_tienda) }} días restantes)
+                                                <div
+                                                    :class="
+                                                        daysUntilWarrantyEnds(
+                                                            accesory.fecha_compra,
+                                                            accesory.garantia_tienda
+                                                        ) > 30
+                                                            ? 'bg-green-300'
+                                                            : 'bg-red-300'
+                                                    "
+                                                    class="rounded-md h-7 inline-flex items-center justify-center px-2"
+                                                >
+                                                    {{
+                                                        formatDate(
+                                                            accesory.fecha_compra
+                                                        )
+                                                    }}
+                                                    ({{
+                                                        daysUntilWarrantyEnds(
+                                                            accesory.fecha_compra,
+                                                            accesory.garantia_tienda
+                                                        )
+                                                    }}
+                                                    días restantes)
                                                 </div>
                                             </td>
                                             <td
                                                 class="text-xs md:text-sm py-3 whitespace-nowrap text-center"
                                             >
-                                                {{ accesory.estado_asignado }}
+                                                <div
+                                                    class="h-7 inline-flex items-center justify-center font-bold rounded-md px-2 text-white"
+                                                    :class="
+                                                        accesory.estado_asignado ===
+                                                        'NO ASIGNADO'
+                                                            ? 'bg-slate-600 '
+                                                            : 'bg-violet-400'
+                                                    "
+                                                >
+                                                    {{
+                                                        accesory.estado_asignado
+                                                    }}
+                                                </div>
                                             </td>
                                             <td
                                                 class="text-xs md:text-sm py-3 whitespace-nowrap text-center"
                                             >
-                                                <div class="flex justify-around">
-                                                    <canvas class="w-36 cursor-pointer rounded-md" :id="'barcode-' + accesory.id" @click="downloadPdf('barcode-' + accesory.id, 'Codigo_barras' + accesory.id)">
+                                                <div
+                                                    class="flex justify-around"
+                                                >
+                                                    <canvas
+                                                        class="w-36 cursor-pointer rounded-md"
+                                                        :id="
+                                                            'barcode-' +
+                                                            accesory.id
+                                                        "
+                                                        @click="
+                                                            downloadPdf(
+                                                                'barcode-' +
+                                                                    accesory.id,
+                                                                `${accesory.store.pdv.nombre}/${accesory.store.nombre}/${accesory.nombre}`
+                                                            )
+                                                        "
+                                                    >
                                                     </canvas>
                                                 </div>
                                             </td>
@@ -330,17 +380,32 @@ const daysUntilWarrantyEnds = (purchaseDate, warrantyMonths) => {
                                             <td
                                                 class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium"
                                             >
-                                                <div class="flex items-center justify-center gap-x-1">
+                                                <div
+                                                    class="flex items-center justify-center gap-x-1"
+                                                >
                                                     <div class="relative group">
                                                         <button
                                                             class="bg-yellow-500 text-white p-1 rounded-md hover:bg-yellow-400 cursor-pointer"
-                                                            @click="editAccesory(accesory)"
+                                                            @click="
+                                                                editAccesory(
+                                                                    accesory
+                                                                )
+                                                            "
                                                         >
                                                             <v-icon
                                                                 name="md-modeedit-round"
                                                             />
-                                                            <span class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
-                                                                style="left: 50%; transform: translateX(-50%); transition: opacity 0.3s;">
+                                                            <span
+                                                                class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
+                                                                style="
+                                                                    left: 50%;
+                                                                    transform: translateX(
+                                                                        -50%
+                                                                    );
+                                                                    transition: opacity
+                                                                        0.3s;
+                                                                "
+                                                            >
                                                                 Editar Accesorio
                                                             </span>
                                                         </button>
@@ -348,39 +413,94 @@ const daysUntilWarrantyEnds = (purchaseDate, warrantyMonths) => {
                                                     <div class="relative group">
                                                         <button
                                                             class="bg-slate-500 text-white p-1 rounded-md hover:bg-slate-400 cursor-pointer"
-                                                            @click="addDoc(accesory)"
+                                                            @click="
+                                                                addDoc(accesory)
+                                                            "
                                                         >
                                                             <v-icon
                                                                 name="md-fileupload-round"
                                                             />
-                                                            <span class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
-                                                                style="left: 50%; transform: translateX(-50%); transition: opacity 0.3s;">
+                                                            <span
+                                                                class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
+                                                                style="
+                                                                    left: 50%;
+                                                                    transform: translateX(
+                                                                        -50%
+                                                                    );
+                                                                    transition: opacity
+                                                                        0.3s;
+                                                                "
+                                                            >
                                                                 Cargar Doc.
                                                             </span>
                                                         </button>
                                                     </div>
-                                                    <div v-if="accesory.estado_asignado==='NO ASIGNADO'" class="relative group">
+                                                    <div
+                                                        v-if="
+                                                            accesory.estado_asignado ===
+                                                            'NO ASIGNADO'
+                                                        "
+                                                        class="relative group"
+                                                    >
                                                         <button
                                                             class="bg-violet-500 text-white p-1 rounded-md hover:bg-violet-400 cursor-pointer"
-                                                            @click="assign(accesory)"
+                                                            @click="
+                                                                assign(accesory)
+                                                            "
                                                         >
                                                             <v-icon
                                                                 name="bi-node-plus-fill"
                                                             />
-                                                            <span class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
-                                                                style="left: 50%; transform: translateX(-50%); transition: opacity 0.3s;">
+                                                            <span
+                                                                class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
+                                                                style="
+                                                                    left: 50%;
+                                                                    transform: translateX(
+                                                                        -50%
+                                                                    );
+                                                                    transition: opacity
+                                                                        0.3s;
+                                                                "
+                                                            >
                                                                 Asignar Equipo
                                                             </span>
                                                         </button>
                                                     </div>
-
+                                                    <div class="relative group">
+                                                        <button
+                                                            class="bg-red-500 text-white p-1 rounded-md hover:bg-red-400 cursor-pointer"
+                                                            @click="
+                                                                deleteAccesory(
+                                                                    accesory
+                                                                )
+                                                            "
+                                                        >
+                                                            <v-icon
+                                                                name="md-delete"
+                                                            />
+                                                            <span
+                                                                class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
+                                                                style="
+                                                                    left: 50%;
+                                                                    transform: translateX(
+                                                                        -50%
+                                                                    );
+                                                                    transition: opacity
+                                                                        0.3s;
+                                                                "
+                                                            >
+                                                                Eliminar
+                                                                Accesorio
+                                                            </span>
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </td>
                                         </tr>
                                         <tr v-if="accessories.data.length <= 0">
                                             <td
                                                 class="text-center text-slate-800 text-md sm:text-lg font-semibold bg-slate-300"
-                                                colspan="5"
+                                                colspan="7"
                                             >
                                                 No hay registros
                                             </td>
@@ -401,10 +521,17 @@ const daysUntilWarrantyEnds = (purchaseDate, warrantyMonths) => {
                         />
                     </Modal>
                     <Modal :show="showModalDoc" maxWidth="lg">
-                        <UpdateDocument :accessory="accesoryObj" @close-modal="closeModal"/>
+                        <UpdateDocument
+                            :accessory="accesoryObj"
+                            @close-modal="closeModal"
+                        />
                     </Modal>
                     <Modal :show="showModalAssign" maxWidth="lg">
-                        <AssignAccessory :accessory="accesoryObj" :teams="teams" @close-modal="closeModal"/>
+                        <AssignAccessory
+                            :accessory="accesoryObj"
+                            :teams="teams"
+                            @close-modal="closeModal"
+                        />
                     </Modal>
                 </div>
             </div>

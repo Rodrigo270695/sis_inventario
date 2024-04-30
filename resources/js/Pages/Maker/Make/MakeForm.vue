@@ -53,7 +53,7 @@ const addType = () => {
 </script>
 <template>
     <div class="flex justify-between bg-slate-300 h-12 px-4">
-        <div class="text-lg text-slate-700 font-bold inline-flex items-center">
+        <div class="text-lg sm:text-xl text-slate-700 font-bold inline-flex items-center">
             {{ form.id == 0 ? "Registrar Marca" : "Actualizar Marca" }}
         </div>
         <button @click="emit('close-modal')">
@@ -119,7 +119,7 @@ const addType = () => {
                             </option>
                         </select>
                         <InputError
-                            class="w-full" 
+                            class="w-full"
                             :message="form.errors.equipment_type_id"
                         />
                     </div>

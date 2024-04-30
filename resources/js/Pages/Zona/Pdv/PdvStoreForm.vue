@@ -29,7 +29,7 @@ const emit = defineEmits(["close-modal"]);
 </script>
 <template>
     <div class="flex justify-between bg-slate-300 h-12 px-4">
-        <div class="text-lg text-slate-700 font-bold inline-flex items-center">
+        <div class="text-lg sm:text-xl text-slate-700 font-bold inline-flex items-center">
             Almacén para {{ props.pdv ? props.pdv.nombre : '' }}
         </div>
         <button @click="emit('close-modal')">

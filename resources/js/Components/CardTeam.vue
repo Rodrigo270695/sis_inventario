@@ -1,5 +1,8 @@
 <script setup>
 import { defineProps } from "vue";
+import { onMounted, nextTick } from "vue";
+import JsBarcode from "jsbarcode";
+import { jsPDF } from "jspdf";
 
 const props = defineProps({
     pdvs: Array,
@@ -7,24 +10,63 @@ const props = defineProps({
 
 const teamStatusBackground = (status) => {
     switch (status) {
-        case 'BAJA':
-            return 'bg-red-100';
-        case 'DESECHADO':
-            return 'bg-violet-100';
-        case 'MANTENIMIENTO-DAÑO':
-            return 'bg-yellow-100';
-        case 'MANTENIMIENTO-GARANTIA':
-            return 'bg-ambar-100';
-        case 'RESERVADO':
-            return 'bg-purple-100';
-        case 'USO':
-            return 'bg-green-100';
+        case "BAJA":
+            return "bg-red-100";
+        case "DESECHADO":
+            return "bg-violet-100";
+        case "MANTENIMIENTO-DAÑO":
+            return "bg-yellow-100";
+        case "MANTENIMIENTO-GARANTIA":
+            return "bg-ambar-100";
+        case "RESERVADO":
+            return "bg-purple-100";
+        case "USO":
+            return "bg-green-100";
         default:
-            return 'bg-white';
+            return "bg-white";
     }
 };
 
+const generateBarcode = (elementId, codigo) => {
+    nextTick(() => {
+        JsBarcode(`#${elementId}`, codigo, {
+            format: "CODE128",
+            lineColor: "#000",
+            width: 2,
+            height: 30,
+            displayValue: true,
+        });
+    });
+};
 
+onMounted(() => {
+    if (Array.isArray(props.pdvs.data)) {
+        props.pdvs.data.forEach((pdv) => {
+            pdv.stores.forEach((store) => {
+                store.teams.forEach((team) => {
+                    generateBarcode(`barcode-${team.id}`, team.codigo_barras);
+                });
+            });
+        });
+    } else {
+        console.error("Error: 'pdvs' no es un array o no está definido.");
+    }
+});
+
+const downloadPdf = (elementId, nombreArchivo) => {
+    const canvas = document.getElementById(elementId);
+    if (canvas) {
+        const imgData = canvas.toDataURL("image/jpeg");
+        const doc = new jsPDF();
+        doc.text(nombreArchivo, 8, 17);
+        doc.addImage(imgData, "JPEG", 10, 20);
+        doc.save(`${nombreArchivo}.pdf`);
+    } else {
+        console.error(
+            "No se pudo encontrar el elemento canvas para generar el PDF"
+        );
+    }
+};
 </script>
 
 <template>
@@ -62,9 +104,9 @@ const teamStatusBackground = (status) => {
                             >
                                 {{ team.make.equipmenttype.nombre }}->{{
                                     team.make.nombre
-                                }}
+                                }}->{{ team.nombre }}
                             </h4>
-                            <div class="flex justify-center gap-2">
+                            <div class="flex justify-center gap-2 mt-2">
                                 <div class="relative group">
                                     <button
                                         class="bg-yellow-100 hover:bg-yellow-200 text-white font-bold py-1 px-2 rounded-full shadow-abajo-1 focus:ring-1 focus:ring-sky-600"
@@ -76,8 +118,7 @@ const teamStatusBackground = (status) => {
                                         />
                                     </button>
                                     <span
-                                        class="absolute bottom-full mb-2 hidden group-hover:block w-[90px] p-2 text-xs text-white bg-sky-950 rounded-md"
-
+                                        class="absolute bottom-full mb-2 hidden group-hover:block w-[90px] p-2 text-xs text-white bg-sky-950 rounded-md z-50 -translate-x-1/2 left-1/2"
                                     >
                                         Editar Equipo
                                     </span>
@@ -93,9 +134,33 @@ const teamStatusBackground = (status) => {
                                         />
                                     </button>
                                     <span
-                                        class="absolute bottom-full mb-2 hidden group-hover:block w-[90px] p-2 text-xs text-white bg-sky-950 rounded-md"
+                                        class="absolute bottom-full mb-2 hidden group-hover:block w-[90px] p-2 text-xs text-white bg-sky-950 rounded-md z-50 -translate-x-1/2 left-1/2"
                                     >
                                         Cargar Documento
+                                    </span>
+                                </div>
+                                <div class="relative group">
+                                    <button
+                                        class="bg-green-100 hover:bg-green-200 text-white font-bold py-1 px-2 rounded-full shadow-abajo-1 focus:ring-1 focus:ring-sky-600"
+                                        @click="
+                                            downloadPdf(
+                                                `barcode-${team.id}`,
+                                                `${pdv.nombre}/${store.nombre}/${team.nombre}`
+                                            )
+                                        "
+                                    >
+                                        <v-icon
+                                            class="text-gray-600"
+                                            name="hi-solid-download"
+                                        />
+                                    </button>
+                                    <span
+                                        class="absolute bottom-full mb-2 hidden group-hover:block w-44 h-16 p-2 text-xs text-white bg-sky-950 rounded-md z-50 -translate-x-1/2 left-1/2"
+                                    >
+                                        <canvas
+                                            :id="'barcode-' + team.id"
+                                            class="w-40 rounded-md"
+                                        ></canvas>
                                     </span>
                                 </div>
                             </div>
@@ -106,7 +171,10 @@ const teamStatusBackground = (status) => {
                                     class="bg-blue-50 rounded-lg p-2 shadow-abajo-2 flex items-center justify-center cursor-pointer hover:shadow-abajo-2-cambio"
                                 >
                                     <h5
-                                        class="text-xs sm:text-sm font-extrabold text-slate-600"
+                                        class="text-xs sm:text-sm font-extrabold text-slate-600 cursor-pointer w-full h-5 flex items-center justify-center p-2"
+                                        @click="
+                                            $emit('view-accessory', accessory)
+                                        "
                                     >
                                         {{ accessory.nombre }}
                                     </h5>

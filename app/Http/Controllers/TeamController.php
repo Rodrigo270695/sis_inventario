@@ -47,7 +47,7 @@ class TeamController extends Controller
         try {
             $data = $request->validated();
 
-            $data['codigo_barras'] = Str::ulid();
+            $data['codigo_barras'] = $this->generateRandomNumber(14);
 
             if ($request->hasFile('documento') && $request->file('documento')->isValid()) {
                 $documento = $request->file('documento');
@@ -70,6 +70,7 @@ class TeamController extends Controller
 
             return redirect()->route('team.index')->with('toast', ['Equipo creado exitosamente!', 'success']);
         } catch (QueryException $e) {
+            dd($e);
             return redirect()->back()->with('toast', ['Ocurrió un error al guardar los datos!', 'danger']);
         }
     }
@@ -106,19 +107,17 @@ class TeamController extends Controller
             'documento' => 'nullable|mimes:jpg,jpeg,png,doc,docx,pdf|max:3072',
         ]);
         $team = Team::findOrFail($id);
-        
+
         if ($request->hasFile('documento') && $request->file('documento')->isValid()) {
             $documento = $request->file('documento');
             $extension = $documento->getClientOriginalExtension();
             $allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx'];
 
             if (in_array($extension, $allowedExtensions)) {
-                // Elimina el documento anterior si existe
                 if ($team->documento) {
                     Storage::disk('public')->delete('documentos/' . $team->documento);
                 }
 
-                // Guarda el nuevo documento
                 $filename = time() . '.' . $extension;
                 $documento->storeAs('documentos', $filename, 'public');
                 $team->documento = $filename;
@@ -136,5 +135,14 @@ class TeamController extends Controller
     public function destroy(Team $team)
     {
         //
+    }
+
+    private function generateRandomNumber($length = 14): string
+    {
+        $number = '';
+        for ($i = 0; $i < $length; $i++) {
+            $number .= random_int(0, 9);
+        }
+        return $number;
     }
 }

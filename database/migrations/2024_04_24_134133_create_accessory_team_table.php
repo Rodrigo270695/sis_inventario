@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('accessory_id');
             $table->unsignedBigInteger('team_id');
-            $table->foreign('accessory_id')->references('id')->on('accessories')->onUpdate('cascade')->onDelete('restrict');
+            $table->foreign('accessory_id')->references('id')->on('accessories')->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('team_id')->references('id')->on('teams')->onUpdate('cascade')->onDelete('restrict');
             $table->timestamps();
         });

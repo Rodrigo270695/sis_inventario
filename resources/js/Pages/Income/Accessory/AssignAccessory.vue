@@ -1,10 +1,8 @@
 <script setup>
 import InputLabel from "@/Components/InputLabel.vue";
-import TextInput from "@/Components/TextInput.vue";
-import TextArea from "@/Components/TextArea.vue";
 import InputError from "@/Components/InputError.vue";
 import { useForm } from "@inertiajs/vue3";
-import { defineProps } from "vue";
+import { computed, defineProps, defineEmits } from "vue";
 
 const props = defineProps({
     teams: Array,
@@ -23,11 +21,15 @@ const submit = () => {
     });
 };
 
+const filteredTeams = computed(() => {
+    return props.teams.filter(team => team.store_id === props.accessory.store_id);
+});
+
 const emit = defineEmits(["close-modal"]);
 </script>
 <template>
     <div class="flex justify-between bg-slate-300 h-12 px-4">
-        <div class="text-lg text-slate-700 font-bold inline-flex items-center">
+        <div class="text-lg sm:text-xl text-slate-700 font-bold inline-flex items-center">
             Asignar a un equipo
         </div>
         <button @click="emit('close-modal')">
@@ -53,7 +55,7 @@ const emit = defineEmits(["close-modal"]);
                                 Elija una opción
                             </option>
                             <option
-                                v-for="team in props.teams"
+                                v-for="team in filteredTeams"
                                 :key="team.id"
                                 :value="team.id"
                             >

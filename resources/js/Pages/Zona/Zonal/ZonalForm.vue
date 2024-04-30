@@ -41,7 +41,7 @@ const datos = [
 </script>
 <template>
     <div class="flex justify-between bg-slate-300 h-12 px-4">
-        <div class="text-lg text-slate-700 font-bold inline-flex items-center">
+        <div class="text-lg sm:text-xl text-slate-700 font-bold inline-flex items-center">
             {{ form.id == 0 ? "Registrar Zonal" : "Actualizar Zonal" }}
         </div>
         <button @click="emit('close-modal')">

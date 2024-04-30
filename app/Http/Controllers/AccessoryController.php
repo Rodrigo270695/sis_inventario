@@ -111,7 +111,16 @@ class AccessoryController extends Controller
      */
     public function destroy(Accessory $accessory)
     {
-        //
+        try {
+            $accessory->delete();
+            return redirect()->route('accessory.index')->with('toast', ['Accesorio eliminado exitosamente!', 'success']);
+        } catch (QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->back()->with('toast', ['El Accesorio no se puede eliminar porque está siendo usado en otra tabla!', 'danger']);
+            } else {
+                return redirect()->back()->with('toast', ['Error al eliminar el Accesorio!', 'danger']);
+            }
+        }
     }
 
     private function generateRandomNumber($length = 14): string
@@ -189,5 +198,52 @@ class AccessoryController extends Controller
             DB::rollBack();
             return redirect()->back()->with('toast', ['Ocurrió un error al asignar el accesorio!', 'danger']);
         }
+    }
+
+    public function search(Request $request): Response
+    {
+        $texto = $request->get('texto');
+
+        $accessories = Accessory::with(['store.pdv', 'make.equipmenttype', 'teams'])
+            ->join('stores', 'accessories.store_id', '=', 'stores.id')
+            ->join('pdvs', 'stores.pdv_id', '=', 'pdvs.id')
+            ->where(function ($query) use ($texto) {
+                $query->where('stores.nombre', 'like', '%' . $texto . '%')
+                    ->orWhere('pdvs.nombre', 'like', '%' . $texto . '%')
+                    ->orWhere('accessories.nombre', 'like', '%' . $texto . '%')
+                    ->orWhere('accessories.estado_asignado', 'like', '%' . $texto . '%')
+                    ->orWhere('accessories.estado', 'like', '%' . $texto . '%');
+            })
+            ->orderBy('accessories.id', 'desc')
+            ->select('accessories.*', 'pdvs.nombre as pdv_nombre', 'stores.nombre as store_nombre')
+            ->paginate(7)
+            ->appends(['texto' => $texto]);
+
+        $stores = Store::with(['pdv.zonal'])
+            ->join('pdvs', 'stores.pdv_id', '=', 'pdvs.id')
+            ->join('zonals', 'pdvs.zonal_id', '=', 'zonals.id')
+            ->where('stores.estado', 1)
+            ->orderBy('zonals.nombre', 'asc')
+            ->select('stores.*', 'pdvs.nombre as pdv_nombre', 'zonals.nombre as zonal_nombre')
+            ->distinct()
+            ->get();
+
+        $makes = Make::with('equipmenttype')
+            ->join('equipment_types', 'makes.equipment_type_id', '=', 'equipment_types.id')
+            ->where('makes.estado', 1)
+            ->orderBy('equipment_types.nombre', 'asc')
+            ->select('makes.*', 'equipment_types.nombre as equipmenttype_nombre')
+            ->distinct()
+            ->get();
+
+        $teams = Team::with(['store.pdv'])
+            ->select('teams.*', 'pdvs.nombre as pdv_nombre')
+            ->join('stores', 'teams.store_id', '=', 'stores.id')
+            ->join('pdvs', 'stores.pdv_id', '=', 'pdvs.id')
+            ->where('teams.estado', 'USO')
+            ->orderBy('pdvs.nombre', 'asc')
+            ->get();
+
+        return Inertia::render('Income/Accessory/Index', compact(['accessories', 'stores', 'makes', 'teams', 'texto']));
     }
 }

@@ -78,6 +78,7 @@ Route::middleware([
     Route::put('/team/update/document/{id}', [TeamController::class, 'updateDocument'])->name('team.update.document');
 
     /* Eccesorios */
+    Route::get('income/accessory/search', [AccessoryController::class, 'search' ])->name('accessory.search');
     Route::resource('income/accessory', AccessoryController::class);
     Route::get('/accessory/download/{file}', function ($file) {
         $pathToFile = public_path('storage/documentos/' . $file);
@@ -90,5 +91,5 @@ Route::middleware([
     Route::put('/accessory/update/document/{id}', [AccessoryController::class, 'updateDocument'])->name('accessory.update.document');
     Route::post('/accessories/assign-to-team', [AccessoryController::class, 'assignToTeam'])->name('accessory.assignToTeam');
 
-    
+
 });

@@ -5,6 +5,7 @@ import Pagination from "@/Components/Pagination.vue";
 import Modal from "@/Components/Modal.vue";
 import CardTeam from "@/Components/CardTeam.vue";
 import TeamForm from "./TeamForm.vue";
+import ViewAccessory from "./ViewAccessory.vue";
 import UpdateDocument from "./UpdateDocument.vue";
 import Swal from "sweetalert2";
 import { useForm } from "@inertiajs/vue3";
@@ -21,13 +22,21 @@ const form = useForm({
 });
 
 let teamObj = ref(null);
+let accessoryObj = ref(null);
 let showModal = ref(false);
 let showModalDoc = ref(false);
+let showModalViewA = ref(false);
 let query = ref(props.texto);
 
 const addDoc = (team) => {
     showModalDoc.value = true;
     teamObj.value = team
+}
+
+const viewAccessory = (accesory) => {
+    console.log(accesory)
+    showModalViewA.value = true;
+    accessoryObj.value = accesory;
 }
 
 const addTeam = () => {
@@ -42,6 +51,7 @@ const editTeam = (team) => {
 
 const closeModal = () => {
     showModalDoc.value = false;
+    showModalViewA.value = false;
     showModal.value = false;
     teamObj.value = null;
 };
@@ -169,7 +179,7 @@ const goToIndex = () => {
 
                         <div class="block">
                             <div class="overflow-x-auto rounded-lg">
-                                <CardTeam :pdvs="pdvs" @edit-team="editTeam" @add-doc="addDoc"/>
+                                <CardTeam :pdvs="pdvs" @edit-team="editTeam" @add-doc="addDoc" @view-accessory="viewAccessory" />
                             </div>
                         </div>
 
@@ -185,6 +195,9 @@ const goToIndex = () => {
                     </Modal>
                     <Modal :show="showModalDoc" maxWidth="lg">
                         <UpdateDocument :team="teamObj" @close-modal="closeModal"/>
+                    </Modal>
+                    <Modal :show="showModalViewA" maxWidth="2xl">
+                        <ViewAccessory  @close-modal="closeModal" :accessory="accessoryObj" />
                     </Modal>
                 </div>
             </div>
