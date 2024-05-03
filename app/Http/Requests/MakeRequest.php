@@ -21,7 +21,9 @@ class MakeRequest extends FormRequest
                 'string',
                 'max:50',
                 'min:2',
-                Rule::unique('makes')->ignore($this->make ? $this->make->id : null),
+                Rule::unique('makes')->where(function ($query) {
+                    return $query->where('equipment_type_id', $this->equipment_type_id);
+                })->ignore($this->make ? $this->make->id : null),
             ],
             'equipment_type_id' => 'required|exists:zonals,id',
         ];

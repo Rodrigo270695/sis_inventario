@@ -22,7 +22,7 @@ class TeamController extends Controller
     {
         $pdvs = Pdv::with(['stores.teams.accessories', 'stores.teams.make.equipmenttype'])
             ->orderBy('nombre', 'asc')
-            ->paginate(1);
+            ->paginate(7);
         $stores = Store::with(['pdv.zonal'])
             ->join('pdvs', 'stores.pdv_id', '=', 'pdvs.id')
             ->join('zonals', 'pdvs.zonal_id', '=', 'zonals.id')

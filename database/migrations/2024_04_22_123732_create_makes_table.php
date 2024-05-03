@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('makes', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre',50)->unique();
+            $table->string('nombre',50);
             $table->boolean('estado')->default(true);
             $table->unsignedBigInteger('equipment_type_id');
             $table->foreign('equipment_type_id')->references('id')->on('equipment_types')->onUpdate('cascade')->onDelete('restrict');

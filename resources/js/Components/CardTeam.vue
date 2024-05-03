@@ -1,195 +1,98 @@
 <script setup>
-import { defineProps } from "vue";
-import { onMounted, nextTick } from "vue";
-import JsBarcode from "jsbarcode";
-import { jsPDF } from "jspdf";
+import { defineProps, computed, ref } from "vue";
 
 const props = defineProps({
     pdvs: Array,
 });
 
+const desgloce = ref(true);
+
 const teamStatusBackground = (status) => {
     switch (status) {
         case "BAJA":
-            return "bg-red-100";
+            return "bg-red-100 text-black";
         case "DESECHADO":
-            return "bg-violet-100";
+            return "bg-violet-100 text-black";
         case "MANTENIMIENTO-DAÑO":
-            return "bg-yellow-100";
+            return "bg-yellow-100 text-black";
         case "MANTENIMIENTO-GARANTIA":
-            return "bg-ambar-100";
+            return "bg-amber-100 text-black";
         case "RESERVADO":
-            return "bg-purple-100";
+            return "bg-purple-100 text-black";
         case "USO":
-            return "bg-green-100";
+            return "bg-green-100 text-black";
         default:
-            return "bg-white";
+            return "bg-gray-50 text-black";
     }
 };
 
-const generateBarcode = (elementId, codigo) => {
-    nextTick(() => {
-        JsBarcode(`#${elementId}`, codigo, {
-            format: "CODE128",
-            lineColor: "#000",
-            width: 2,
-            height: 30,
-            displayValue: true,
-        });
-    });
-};
-
-onMounted(() => {
-    if (Array.isArray(props.pdvs.data)) {
-        props.pdvs.data.forEach((pdv) => {
-            pdv.stores.forEach((store) => {
-                store.teams.forEach((team) => {
-                    generateBarcode(`barcode-${team.id}`, team.codigo_barras);
-                });
-            });
-        });
-    } else {
-        console.error("Error: 'pdvs' no es un array o no está definido.");
-    }
+const groupedByPdv = computed(() => {
+    return props.pdvs.data.map(pdv => ({
+        pdvName: pdv.nombre,
+        stores: pdv.stores.map(store => ({
+            storeName: store.nombre,
+            equipmentTypes: store.teams.reduce((acc, team) => {
+                const type = team.make.equipmenttype.nombre;
+                if (!acc[type]) {
+                    acc[type] = { teams: [], type, isOpen: ref(false) };
+                }
+                const teamWithAccessories = {
+                    ...team,
+                    isOpen: ref(false),
+                    accessories: team.accessories || []
+                };
+                acc[type].teams.push(teamWithAccessories);
+                return acc;
+            }, {})
+        }))
+    }));
 });
 
-const downloadPdf = (elementId, nombreArchivo) => {
-    const canvas = document.getElementById(elementId);
-    if (canvas) {
-        const imgData = canvas.toDataURL("image/jpeg");
-        const doc = new jsPDF();
-        doc.text(nombreArchivo, 8, 17);
-        doc.addImage(imgData, "JPEG", 10, 20);
-        doc.save(`${nombreArchivo}.pdf`);
-    } else {
-        console.error(
-            "No se pudo encontrar el elemento canvas para generar el PDF"
-        );
-    }
+const toggleEquipmentType = (equipmentType) => {
+    equipmentType.isOpen.value = !equipmentType.isOpen.value;
+    desgloce.value = !desgloce.value;
 };
+
+const toggleTeam = (team) => {
+    team.isOpen.value = !team.isOpen.value;
+};
+
 </script>
 
 <template>
-    <div class="pt-2">
-        <div class="max-w-7xl mx-auto sm:px-4 lg:px-6">
-            <div
-                v-for="pdv in pdvs.data"
-                :key="pdv.id"
-                class="bg-3D-50 rounded-2xl shadow-abajo-1 mb-8 p-5 sizing"
-            >
-                <h2
-                    class="text-xl sm:text-2xl font-extrabold text-gray-600 mb-4 border-slate-300 uppercase"
-                >
-                    PDV: {{ pdv.nombre }}
+    <div class="pt-2 ">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div v-for="pdv in groupedByPdv" :key="pdv.pdvName" class="rounded-xl mb-8 p-6 shadow-abajo-1 bg-3D-50">
+                <h2 class="text-2xl font-bold text-gray-800 inline-block mb-4">
+                    PDV: {{ pdv.pdvName }}
                 </h2>
-                <div
-                    v-for="store in pdv.stores"
-                    :key="store.id"
-                    class="bg-3D-50 rounded-lg m-3 p-4 shadow-abajo-2"
-                >
-                    <h3 class="text-lg sm:text-xl font-semibold text-gray-600">
-                        Tienda: {{ store.nombre }}
+                <div v-for="store in pdv.stores" :key="store.storeName">
+                    <h3 class="text-xl font-semibold text-gray-700 ">
+                        Tienda: {{ store.storeName }}
                     </h3>
-                    <div
-                        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 p-3"
-                    >
-                        <div
-                            v-for="team in store.teams"
-                            :key="team.id"
-                            class="relative rounded-lg p-3 shadow-abajo-2"
-                            :class="teamStatusBackground(team.estado)"
-                        >
-                            <h4
-                                class="text-base sm:text-lg font-medium text-gray-700"
-                            >
-                                {{ team.make.equipmenttype.nombre }}->{{
-                                    team.make.nombre
-                                }}->{{ team.nombre }}
-                            </h4>
-                            <div class="flex justify-center gap-2 mt-2">
-                                <div class="relative group">
-                                    <button
-                                        class="bg-yellow-100 hover:bg-yellow-200 text-white font-bold py-1 px-2 rounded-full shadow-abajo-1 focus:ring-1 focus:ring-sky-600"
-                                        @click="$emit('edit-team', team)"
-                                    >
-                                        <v-icon
-                                            class="text-gray-600"
-                                            name="md-modeedit-round"
-                                        />
-                                    </button>
-                                    <span
-                                        class="absolute bottom-full mb-2 hidden group-hover:block w-[90px] p-2 text-xs text-white bg-sky-950 rounded-md z-50 -translate-x-1/2 left-1/2"
-                                    >
-                                        Editar Equipo
-                                    </span>
-                                </div>
-                                <div class="relative group">
-                                    <button
-                                        class="bg-green-100 hover:bg-green-200 text-white font-bold py-1 px-2 rounded-full shadow-abajo-1 focus:ring-1 focus:ring-sky-600"
-                                        @click="$emit('add-doc', team)"
-                                    >
-                                        <v-icon
-                                            class="text-gray-600"
-                                            name="md-fileupload-round"
-                                        />
-                                    </button>
-                                    <span
-                                        class="absolute bottom-full mb-2 hidden group-hover:block w-[90px] p-2 text-xs text-white bg-sky-950 rounded-md z-50 -translate-x-1/2 left-1/2"
-                                    >
-                                        Cargar Documento
-                                    </span>
-                                </div>
-                                <div class="relative group">
-                                    <button
-                                        class="bg-green-100 hover:bg-green-200 text-white font-bold py-1 px-2 rounded-full shadow-abajo-1 focus:ring-1 focus:ring-sky-600"
-                                        @click="
-                                            downloadPdf(
-                                                `barcode-${team.id}`,
-                                                `${pdv.nombre}/${store.nombre}/${team.nombre}`
-                                            )
-                                        "
-                                    >
-                                        <v-icon
-                                            class="text-gray-600"
-                                            name="hi-solid-download"
-                                        />
-                                    </button>
-                                    <span
-                                        class="absolute bottom-full mb-2 hidden group-hover:block w-44 h-16 p-2 text-xs text-white bg-sky-950 rounded-md z-50 -translate-x-1/2 left-1/2"
-                                    >
-                                        <canvas
-                                            :id="'barcode-' + team.id"
-                                            class="w-40 rounded-md"
-                                        ></canvas>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-3 gap-2 mt-2">
-                                <div
-                                    v-for="accessory in team.accessories"
-                                    :key="accessory.id"
-                                    class="bg-blue-50 rounded-lg p-2 shadow-abajo-2 flex items-center justify-center cursor-pointer hover:shadow-abajo-2-cambio"
-                                >
-                                    <h5
-                                        class="text-xs sm:text-sm font-extrabold text-slate-600 cursor-pointer w-full h-5 flex items-center justify-center p-2"
-                                        @click="
-                                            $emit('view-accessory', accessory)
-                                        "
-                                    >
-                                        {{ accessory.nombre }}
-                                    </h5>
-                                </div>
-                            </div>
+                    <div v-for="(data, type) in store.equipmentTypes" :key="type" class="mt-4">
+                        <div class="flex items-center bg-blue-200 text-gray-800 font-bold uppercase rounded-md hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-opacity-50 transition-colors duration-300">
+                            <button @click="toggleEquipmentType(data)" class="text-left w-full py-3 px-4">
+                                <v-icon v-if="desgloce" name="hi-chevron-right" class="text-gray-600" />
+                                <v-icon v-else name="hi-chevron-down" class="text-gray-600" />
+                                Tipo de Equipo: {{ type }}
+                            </button>
                         </div>
+                        <ul v-if="data.isOpen.value" class="mt-2 divide-y divide-gray-300 ">
+                            <li v-for="team in data.teams" :key="team.id" :class="teamStatusBackground(team.estado)" class="py-2 rounded-md ml-4">
+                                <button @click="toggleTeam(team)" class="w-full text-left">
+                                    {{ team.make.nombre }} -> {{ team.nombre }} (Estado: {{ team.estado }})
+                                </button>
+                                <div v-if="team.isOpen.value" class="flex space-x-2 pl-8 pt-2">
+                                    <button v-for="accessory in team.accessories" :key="accessory.id" class="bg-gray-200 hover:bg-gray-300 text-black font-medium py-1 px-2 rounded">
+                                        {{ accessory.nombre }}
+                                    </button>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </template>
-
-<style scope>
-.sizing {
-    box-sizing: border-box;
-}
-</style>

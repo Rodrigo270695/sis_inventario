@@ -19,7 +19,7 @@ export default {
             },
             boxShadow: {
                 'arriba-1': '9px 9px 15px #cbced1, -9px -9px 15px white',
-                'arriba-2': '7px 7px 10px #cbced1, -7px -7px 10px white',
+                'arriba-2': '6px 6px 10px #cbced1, -6px -6px 10px white',
                 'abajo-2': 'inset 6px 6px 6px #cbced1, inset -6px -6px 6px white',
                 'abajo-2-cambio': 'inset 6px 6px 6px white, inset -6px -6px 6px #cbced1',
                 'abajo-1':  '4px 4px 4px #cbced1,  -4px -4px 4px white',
