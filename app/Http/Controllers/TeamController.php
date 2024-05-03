@@ -145,4 +145,34 @@ class TeamController extends Controller
         }
         return $number;
     }
+
+    public function search(Request $request): Response
+    {
+        $texto = $request->get('texto');
+
+        $pdvs = Pdv::with(['stores.teams.accessories', 'stores.teams.make.equipmenttype'])
+            ->where('nombre', 'like', '%' . $texto . '%')
+            ->orderBy('nombre', 'asc')
+            ->paginate(7)
+            ->appends(['texto' => $texto]);
+
+        $stores = Store::with(['pdv.zonal'])
+            ->join('pdvs', 'stores.pdv_id', '=', 'pdvs.id')
+            ->join('zonals', 'pdvs.zonal_id', '=', 'zonals.id')
+            ->where('stores.estado', 1)
+            ->orderBy('zonals.nombre', 'asc')
+            ->select('stores.*', 'pdvs.nombre as pdv_nombre', 'zonals.nombre as zonal_nombre')
+            ->distinct()
+            ->get();
+
+        $makes = Make::with('equipmenttype')
+            ->join('equipment_types', 'makes.equipment_type_id', '=', 'equipment_types.id')
+            ->where('makes.estado', 1)
+            ->orderBy('equipment_types.nombre', 'asc')
+            ->select('makes.*', 'equipment_types.nombre as equipmenttype_nombre')
+            ->distinct()
+            ->get();
+
+        return Inertia::render('Income/Team/Index', compact(['pdvs', 'stores', 'makes','texto']));
+    }
 }

@@ -150,7 +150,7 @@ const goToIndex = () => {
                                 type="text"
                                 v-model="query"
                                 class="w-64 md:w-72 lg:w-96 hover:border-sky-300 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
-                                placeholder="Buscar Equipo"
+                                placeholder="Buscar Punto de venta"
                                 @input="query = query.toUpperCase()"
                                 @keyup.enter="search"
                             />

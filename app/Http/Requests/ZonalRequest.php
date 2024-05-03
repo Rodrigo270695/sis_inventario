@@ -16,7 +16,7 @@ class ZonalRequest extends FormRequest
     {
         return [
             'nombre' => 'required|string|max:40|min:3|unique:zonals,nombre',
-            'unidad_negocio' => 'required|in:Distribuidora,FRANQUICIA,DAM',
+            'unidad_negocio' => 'required|in:ADMINISTRACION,DISTRIBUIDORA,FRANQUICIA,DAM,PROACTIVO,REACTIVO',
         ];
     }
 }

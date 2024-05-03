@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('zonals', function (Blueprint $table) {
+        Schema::create('type_requests', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre', 40);
-            $table->enum('unidad_negocio', ['ADMINISTRACION','DISTRIBUIDORA', 'FRANQUICIA', 'DAM', 'PROACTIVO', 'REACTIVO']);
+            $table->string('nombre',50)->unique();
+            $table->text('descripcion')->nullable();
             $table->boolean('estado')->default(true);
             $table->timestamps();
-
-            $table->unique(['nombre', 'unidad_negocio']);
         });
     }
 
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('zonals');
+        Schema::dropIfExists('type_requests');
     }
 };

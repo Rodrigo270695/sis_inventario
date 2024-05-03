@@ -6,6 +6,7 @@ use App\Http\Controllers\MakeController;
 use App\Http\Controllers\PdvController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\TypeRequestController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ZonalController;
 use Illuminate\Foundation\Application;
@@ -66,6 +67,7 @@ Route::middleware([
 
     /* Ingresos */
     /* Equipos */
+    Route::get('income/team/search', [TeamController::class, 'search' ])->name('team.search');
     Route::resource('income/team', TeamController::class);
     Route::get('/team/download/{file}', function ($file) {
         $pathToFile = public_path('storage/documentos/' . $file);
@@ -91,5 +93,7 @@ Route::middleware([
     Route::put('/accessory/update/document/{id}', [AccessoryController::class, 'updateDocument'])->name('accessory.update.document');
     Route::post('/accessories/assign-to-team', [AccessoryController::class, 'assignToTeam'])->name('accessory.assignToTeam');
 
+    /* Operaciones */
+    Route::resource('operation/typer', TypeRequestController::class);
 
 });

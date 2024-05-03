@@ -2,27 +2,28 @@
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
+import TextArea from "@/Components/TextArea.vue";
 import { useForm } from "@inertiajs/vue3";
 import { defineProps } from "vue";
 
 const props = defineProps({
-    zonal: Object,
+    typer: Object,
 });
 
 const form = useForm({
-    id: props.zonal ? props.zonal.id : "",
-    nombre: props.zonal ? props.zonal.nombre : "",
-    unidad_negocio: props.zonal ? props.zonal.unidad_negocio : "",
+    id: props.typer ? props.typer.id : "",
+    nombre: props.typer ? props.typer.nombre : "",
+    descripcion: props.typer ? props.typer.descripcion : "",
 });
 
 const submit = () => {
-    if (props.zonal) {
-        form.put(route("zonal.update", props.zonal.id), {
+    if (props.typer) {
+        form.put(route("typer.update", props.typer.id), {
             preserveScroll: true,
             onSuccess: () => emit("close-modal"),
         });
     } else {
-        form.post(route("zonal.store"), {
+        form.post(route("typer.store"), {
             preserveScroll: true,
             onSuccess: () => emit("close-modal"),
         });
@@ -31,19 +32,11 @@ const submit = () => {
 
 const emit = defineEmits(["close-modal"]);
 
-const datos = [
-    { id: 1, name: "ADMINISTRACION" },
-    { id: 2, name: "DISTRIBUIDORA" },
-    { id: 3, name: "FRANQUICIA" },
-    { id: 4, name: "DAM" },
-    { id: 5, name: "PROACTIVO" },
-    { id: 6, name: "REACTIVO" },
-];
 </script>
 <template>
     <div class="flex justify-between bg-slate-300 h-12 px-4">
         <div class="text-lg sm:text-xl text-slate-700 font-bold inline-flex items-center">
-            {{ form.id == 0 ? "Registrar Zonal" : "Actualizar Zonal" }}
+            {{ form.id == 0 ? "Registrar Tipo" : "Actualizar Tipo" }}
         </div>
         <button @click="emit('close-modal')">
             <v-icon
@@ -58,29 +51,6 @@ const datos = [
             <div class="mb-4">
                 <div class="grid grid-cols-6 gap-3">
                     <div class="col-span-6 sm:col-span-6">
-                        <InputLabel value="Unidad de negocio" />
-                        <select
-                            id="select"
-                            v-model="form.unidad_negocio"
-                            class="bg-gray-50 border border-blue-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 white:bg-gray-700 white:border-gray-600 white:placeholder-gray-400 white:text-white white:focus:ring-blue-500 white:focus:border-blue-500"
-                        >
-                            <option disabled selected value="">
-                                Elija una opción
-                            </option>
-                            <option
-                                v-for="dato in datos"
-                                :key="dato.id"
-                                :value="dato.name"
-                            >
-                                {{ dato.name }}
-                            </option>
-                        </select>
-                        <InputError
-                            class="w-full"
-                            :message="form.errors.unidad_negocio"
-                        />
-                    </div>
-                    <div class="col-span-6 sm:col-span-6">
                         <InputLabel value="Nombre" />
                         <TextInput
                             class="w-full"
@@ -90,6 +60,14 @@ const datos = [
                         <InputError
                             class="w-full"
                             :message="form.errors.nombre"
+                        />
+                    </div>
+                    <div class="col-span-6 sm:col-span-6">
+                        <InputLabel value="Descripción" />
+                        <TextArea class="w-full" v-model="form.descripcion" />
+                        <InputError
+                            class="w-full"
+                            :message="form.errors.descripcion"
                         />
                     </div>
                 </div>
