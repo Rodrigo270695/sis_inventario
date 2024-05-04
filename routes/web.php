@@ -4,6 +4,7 @@ use App\Http\Controllers\AccessoryController;
 use App\Http\Controllers\EquipmentTypeController;
 use App\Http\Controllers\MakeController;
 use App\Http\Controllers\PdvController;
+use App\Http\Controllers\SolicitudeController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TypeRequestController;
@@ -94,6 +95,11 @@ Route::middleware([
     Route::post('/accessories/assign-to-team', [AccessoryController::class, 'assignToTeam'])->name('accessory.assignToTeam');
 
     /* Operaciones */
+    /* tipos */
+    Route::get('operation/typer/search', [TypeRequestController::class, 'search' ])->name('typer.search');
     Route::resource('operation/typer', TypeRequestController::class);
+    Route::put('operation/typer/change/{type}', [TypeRequestController::class, 'change'])->name('typer.change');
+    /* solicitud */
+    Route::resource('operation/solicitude', SolicitudeController::class);
 
 });

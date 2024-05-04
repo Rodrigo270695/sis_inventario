@@ -81,6 +81,7 @@ const changeStatus = (type) => {
     });
 };
 
+
 const deleteType = (type) => {
     openMenuId.value = null;
     Swal.fire({
@@ -94,7 +95,7 @@ const deleteType = (type) => {
         cancelButtonText: "No, cancelar!",
     }).then((result) => {
         if (result.isConfirmed) {
-            form.delete(route("type.destroy", type), {
+            form.delete(route("typer.destroy", type), {
                 preserveScroll: true,
             });
         }
