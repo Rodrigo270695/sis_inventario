@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -27,6 +28,8 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'dni',
+        'pdv_id',
         'email',
         'password',
     ];
@@ -63,5 +66,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function pdv():BelongsTo
+    {
+        return $this->belongsTo(Pdv::class, 'pdv_id');
     }
 }

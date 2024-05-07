@@ -8,7 +8,7 @@ import MakeForm from "./MakeForm.vue";
 import { useForm } from "@inertiajs/vue3";
 
 const props = defineProps({
-    makes: Array,
+    makes: Object,
     types: Array,
     texto: String,
 });

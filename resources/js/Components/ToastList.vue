@@ -9,7 +9,8 @@ import toast from '@/Stores/toast'
 const page = usePage()
 
 let removeFinishEventListener = Inertia.on('finish', () => {
-    if(page.props.toast[0]) {
+    // Asegúrate de que page.props.toast es un array antes de intentar acceder a sus elementos
+    if (Array.isArray(page.props.toast) && page.props.toast.length > 0) {
         toast.add({
             message: page.props.toast[0],
             action: page.props.toast[1]
@@ -28,9 +29,7 @@ function remove(index) {
 <template>
 
     <TransitionGroup tag="div" enter-active-class="duration-500" enter-from-class="traslate-x-full opacity-0" leave-active-class="duration-500" leave-to-class="traslate-x-full opacity-0" class="fixed top-4 right-4 z-50 space-y-4 w-full max-w-xs">
-
         <ToastListItem v-for="(item, index) in toast.items" :key="item.key" :message="item.message" :action="item.action" :duration="5000" @remove="remove(index)"/>
-
     </TransitionGroup>
 
 </template>

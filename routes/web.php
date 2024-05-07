@@ -15,13 +15,13 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Response;
 
+
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+    if (auth()->check()) { // Verifica si el usuario está autenticado
+        return redirect('/dashboard'); // Redirige al dashboard
+    }
+
+    return redirect('/login'); // Redirige al login si no está autenticado
 });
 
 Route::middleware([
@@ -33,13 +33,16 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
 });
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
 
+    /* Usuarios */
     Route::resource('user', UserController::class);
+
     /* Zonal */
     Route::get('zona/zonal/search', [ZonalController::class, 'search' ])->name('zonal.search');
     Route::resource('zona/zonal', ZonalController::class);

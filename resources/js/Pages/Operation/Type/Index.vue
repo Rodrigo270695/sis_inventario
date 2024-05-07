@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 import { useForm } from "@inertiajs/vue3";
 
 const props = defineProps({
-    types: Array,
+    types: Object,
     texto: String,
 });
 
@@ -310,6 +310,141 @@ const goToIndex = () => {
                             </div>
                         </div>
                         <!-- Tarjetas -->
+                        <div class="block sm:hidden">
+                            <div
+                                v-for="type in types.data"
+                                :key="type.id"
+                                class="p-4 mx-1 mt-4 bg-sky-100 hover:bg-sky-200 rounded-lg shadow-md relative"
+                            >
+                                <!-- Contenido de la tarjeta -->
+                                <div class="flex items-center space-x-2 mb-4">
+                                    <svg
+                                        class="h-6 w-6 text-sky-500"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M3 7h18M3 12h18m-9 5h9"
+                                        />
+                                    </svg>
+                                    <h3 class="text-lg font-bold text-gray-900">
+                                        Nombre:
+                                        <span class="font-normal">{{
+                                            type.nombre
+                                        }}</span>
+                                    </h3>
+                                </div>
+                                <!-- Detalles de la tarjeta -->
+                                <div class="text-md">
+                                    <p>
+                                        <strong>Descripción:</strong>
+                                        <span class="text-gray-700 ml-1">{{
+                                            type.descripcion
+                                        }}</span>
+                                    </p>
+                                    <p
+                                        :class="{
+                                            'text-green-500': type.estado == 1,
+                                            'text-red-500': type.estado == 0,
+                                        }"
+                                        class="flex items-center"
+                                    >
+                                        <svg
+                                            :class="{
+                                                'text-green-500':
+                                                    type.estado == 1,
+                                                'text-red-500':
+                                                    type.estado == 0,
+                                            }"
+                                            class="h-5 w-5 mr-2"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M5 13l4 4L19 7"
+                                                v-if="type.estado == 1"
+                                            />
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M6 18L18 6M6 6l12 12"
+                                                v-else
+                                            />
+                                        </svg>
+                                        Estado:
+                                        <span class="font-normal">{{
+                                            type.estado == 1
+                                                ? "ACTIVO"
+                                                : "INACTIVO"
+                                        }}</span>
+                                    </p>
+                                </div>
+                                <!-- Menú de tres puntos -->
+                                <div class="absolute top-0 right-0 p-2 z-10">
+                                    <button
+                                        @click="toggleOptions(type.id)"
+                                        class="text-gray-600 hover:text-gray-900 shadow-md shadow-sky-100"
+                                    >
+                                        <v-icon name="oi-apps" />
+                                    </button>
+                                    <div
+                                        v-if="openMenuId === type.id"
+                                        class="bg-white flex justify-between shadow-lg rounded-lg absolute right-0 mt-1 w-[154px] z-20 text-center"
+                                    >
+                                        <a
+                                            href="#"
+                                            @click="editType(type)"
+                                            class="block px-4 py-2 text-sm text-white bg-yellow-500 hover:bg-yellow-400 rounded-l-lg"
+                                        >
+                                            <v-icon
+                                                name="md-modeedit-round"
+                                                class="text-white"
+                                            />
+                                        </a>
+                                        <a
+                                            href="#"
+                                            @click="changeStatus(type)"
+                                            class="block px-4 py-2 text-sm"
+                                            :class="
+                                                type.estado === 1
+                                                    ? 'bg-orange-500 hover:bg-orange-400'
+                                                    : 'bg-green-500 hover:bg-green-400'
+                                            "
+                                        >
+                                            <v-icon
+                                                v-if="type.estado == 1"
+                                                name="gi-cancel"
+                                                class="text-white"
+                                            />
+                                            <v-icon
+                                                v-else
+                                                name="fa-check"
+                                                class="text-white"
+                                            />
+                                        </a>
+                                        <a
+                                            href="#"
+                                            @click="deleteType(type)"
+                                            class="block px-4 py-2 text-sm text-white bg-red-500 hover:bg-red-400 rounded-r-lg"
+                                        >
+                                            <v-icon
+                                                name="bi-trash"
+                                                class="text-white"
+                                            />
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <Pagination class="mt-2" :pagination="types" />
                     </div>
                     <Modal :show="showModal" maxWidth="xl">

@@ -11,7 +11,7 @@ import Swal from "sweetalert2";
 import { useForm } from "@inertiajs/vue3";
 
 const props = defineProps({
-    pdvs: Array,
+    pdvs: Object,
     makes: Array,
     stores: Array,
     texto: String,

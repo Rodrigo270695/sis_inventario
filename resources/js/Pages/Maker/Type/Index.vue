@@ -8,7 +8,7 @@ import TypeForm from "./TypeForm.vue";
 import { useForm } from "@inertiajs/vue3";
 
 const props = defineProps({
-    types: Array,
+    types: Object,
     texto: String,
 });
 

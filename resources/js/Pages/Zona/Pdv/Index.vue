@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 import { useForm } from "@inertiajs/vue3";
 
 const props = defineProps({
-    pdvs: Array,
+    pdvs: Object,
     zonals: Array,
     texto: String,
 });

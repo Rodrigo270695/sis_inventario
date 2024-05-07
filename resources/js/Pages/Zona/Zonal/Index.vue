@@ -8,7 +8,7 @@ import ZonalForm from "./ZonalForm.vue";
 import { useForm } from "@inertiajs/vue3";
 
 const props = defineProps({
-    zonals: Array,
+    zonals: Object,
     texto: String,
 });
 

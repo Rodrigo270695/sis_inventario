@@ -4,7 +4,7 @@ import JsBarcode from "jsbarcode";
 import { jsPDF } from "jspdf";
 
 const props = defineProps({
-    pdvs: Array,
+    pdvs: Object,
 });
 
 const teamStatusBackground = (status) => {

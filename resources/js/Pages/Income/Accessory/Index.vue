@@ -13,7 +13,7 @@ import { jsPDF } from "jspdf";
 import { parseISO, format, addMonths } from "date-fns";
 
 const props = defineProps({
-    accessories: Array,
+    accessories: Object,
     makes: Array,
     stores: Array,
     teams: Array,
