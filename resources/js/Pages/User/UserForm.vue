@@ -16,7 +16,7 @@ const form = useForm({
     name: props.user ? props.user.name : "",
     dni: props.user ? props.user.dni : "",
     email: props.user ? props.user.email : "",
-    pdv_id: props.user ? props.user.pdv.name : "",
+    pdv_id: props.user ? props.user.pdv.id : "",
     rol: props.user ? props.user.roles[0].name : "",
 });
 
@@ -80,7 +80,7 @@ const emit = defineEmits(["close-modal"]);
                     </div>
                     <div class="col-span-6 sm:col-span-6">
                         <InputLabel value="Correo" />
-                        <TextInput class="w-full" v-model="form.email" />
+                        <TextInput type="email" class="w-full" v-model="form.email" />
                         <InputError
                             class="w-full"
                             :message="form.errors.email"

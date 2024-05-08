@@ -41,7 +41,9 @@ Route::middleware([
 ])->group(function () {
 
     /* Usuarios */
+    Route::get('user/search', [UserController::class, 'search' ])->name('user.search');
     Route::resource('user', UserController::class);
+    Route::put('user/change/{user}', [UserController::class, 'change'])->name('user.change');
 
     /* Zonal */
     Route::get('zona/zonal/search', [ZonalController::class, 'search' ])->name('zonal.search');

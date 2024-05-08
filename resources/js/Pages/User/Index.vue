@@ -187,7 +187,7 @@ const goToIndex = () => {
                                                 scope="col"
                                                 class="px-6 py-2 text-center text-xs sm:text-base font-semibold text-white uppercase tracking-wider border-l"
                                             >
-                                                DNI
+                                                Rol
                                             </th>
                                             <th
                                                 scope="col"
@@ -220,12 +220,12 @@ const goToIndex = () => {
                                             <td
                                                 class="text-xs md:text-sm px-6 py-3 whitespace-nowrap text-center"
                                             >
-                                                {{ user.name }}
+                                            {{ user.dni }} - {{ user.name }}
                                             </td>
                                             <td
                                                 class="text-xs md:text-sm px-6 py-3 whitespace-nowrap text-center"
                                             >
-                                                {{ user.dni }}
+                                                {{ user.roles[0].name }}
                                             </td>
                                             <td
                                                 class="text-xs md:text-sm px-6 py-3 whitespace-nowrap text-center"
@@ -251,21 +251,21 @@ const goToIndex = () => {
                                                     }}
                                                 </p>
                                             </td>
-<!--                                             <td
+                                            <td
                                                 class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium"
                                             >
                                                 <div class="flex items-center justify-center gap-x-1">
                                                     <div class="relative group">
                                                         <button
                                                             class="bg-yellow-500 text-white p-1 rounded-md hover:bg-yellow-400 cursor-pointer"
-                                                            @click="editZonal(zonal)"
+                                                            @click="editUser(user)"
                                                         >
                                                             <v-icon
                                                                 name="md-modeedit-round"
                                                             />
                                                             <span class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
                                                                 style="left: 50%; transform: translateX(-50%); transition: opacity 0.3s;">
-                                                                Editar Zonal
+                                                                Editar usuario
                                                             </span>
                                                         </button>
                                                     </div>
@@ -274,19 +274,19 @@ const goToIndex = () => {
                                                             class="text-white p-1 rounded-md"
                                                             :class="{
                                                                 'bg-orange-500 hover:bg-orange-400':
-                                                                    zonal.estado ==
+                                                                    user.estado ==
                                                                     1,
                                                                 'bg-green-500 hover:bg-green-400':
-                                                                    zonal.estado ==
+                                                                    user.estado ==
                                                                     0,
                                                             }"
                                                             @click="
-                                                                changeStatus(zonal)
+                                                                changeStatus(user)
                                                             "
                                                         >
                                                             <v-icon
                                                                 v-if="
-                                                                    zonal.estado ==
+                                                                    user.estado ==
                                                                     1
                                                                 "
                                                                 name="gi-cancel"
@@ -305,7 +305,7 @@ const goToIndex = () => {
                                                         <button
                                                             class="bg-red-500 text-white p-1 rounded-md hover:bg-red-400 cursor-pointer"
                                                             @click="
-                                                                deleteZonal(zonal)
+                                                                deleteUser(user)
                                                             "
                                                         >
                                                             <v-icon
@@ -313,12 +313,12 @@ const goToIndex = () => {
                                                             />
                                                         </button>
                                                         <span class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
-                                                            style="left: 50%; transform: translateX(-50%); transition: opacity 0.3s;">
-                                                            Eliminar zonal
+                                                            style="left: 10%; transform: translateX(-50%); transition: opacity 0.3s;">
+                                                            Eliminar usuario
                                                         </span>
                                                     </div>
                                                 </div>
-                                            </td> -->
+                                            </td>
                                         </tr>
                                         <tr v-if="users.data.length <= 0">
                                             <td
@@ -333,6 +333,153 @@ const goToIndex = () => {
                             </div>
                         </div>
                         <!-- Tarjetas -->
+                        <div class="block sm:hidden">
+                            <div
+                                v-for="user in users.data"
+                                :key="user.id"
+                                class="p-4 mx-1 mt-4 bg-sky-100 hover:bg-sky-200 rounded-lg shadow-md relative"
+                            >
+                                <!-- Contenido de la tarjeta -->
+                                <div class="flex items-center space-x-2 mb-4">
+                                    <svg
+                                        class="h-6 w-6 text-sky-500"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M3 7h18M3 12h18m-9 5h9"
+                                        />
+                                    </svg>
+                                    <h3 class="text-lg font-bold text-gray-900">
+                                        Nombre:
+                                        <span class="font-normal">{{
+                                            user.name
+                                        }}</span>
+                                    </h3>
+                                </div>
+                                <!-- Detalles de la tarjeta -->
+                                <div class="text-md">
+                                    <p>
+                                        <strong>PDV:</strong>
+                                        <span class="text-gray-700 ml-1">
+                                            {{user.pdv.zonal.nombre}}/{{ user.pdv.nombre}}
+                                        </span>
+                                    </p>
+                                    <p>
+                                        <strong>Rol:</strong>
+                                        <span class="text-gray-700 ml-1">
+                                            {{user.roles[0].name}}
+                                        </span>
+                                    </p>
+                                    <p>
+                                        <strong>Correo:</strong>
+                                        <span class="text-gray-700 ml-1">
+                                            {{user.email}}
+                                        </span>
+                                    </p>
+                                    <p
+                                        :class="{
+                                            'text-green-500': user.estado == 1,
+                                            'text-red-500': user.estado == 0,
+                                        }"
+                                        class="flex items-center"
+                                    >
+                                        <svg
+                                            :class="{
+                                                'text-green-500':
+                                                    user.estado == 1,
+                                                'text-red-500':
+                                                    user.estado == 0,
+                                            }"
+                                            class="h-5 w-5 mr-2"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M5 13l4 4L19 7"
+                                                v-if="user.estado == 1"
+                                            />
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M6 18L18 6M6 6l12 12"
+                                                v-else
+                                            />
+                                        </svg>
+                                        Estado:
+                                        <span class="font-normal">{{
+                                            user.estado == 1
+                                                ? "ACTIVO"
+                                                : "INACTIVO"
+                                        }}</span>
+                                    </p>
+                                </div>
+                                <!-- Menú de tres puntos -->
+                                <div class="absolute top-0 right-0 p-2 z-10">
+                                    <button
+                                        @click="toggleOptions(user.id)"
+                                        class="text-gray-600 hover:text-gray-900 shadow-md shadow-sky-100"
+                                    >
+                                        <v-icon name="oi-apps" />
+                                    </button>
+                                    <div
+                                        v-if="openMenuId === user.id"
+                                        class="bg-white flex justify-between shadow-lg rounded-lg absolute right-0 mt-1 w-[154px] z-20 text-center"
+                                    >
+                                        <a
+                                            href="#"
+                                            @click="editUser(user)"
+                                            class="block px-4 py-2 text-sm text-white bg-yellow-500 hover:bg-yellow-400 rounded-l-lg"
+                                        >
+                                            <v-icon
+                                                name="md-modeedit-round"
+                                                class="text-white"
+                                            />
+                                        </a>
+                                        <a
+                                            href="#"
+                                            @click="changeStatus(user)"
+                                            class="block px-4 py-2 text-sm"
+                                            :class="
+                                                user.estado === 1
+                                                    ? 'bg-orange-500 hover:bg-orange-400'
+                                                    : 'bg-green-500 hover:bg-green-400'
+                                            "
+                                        >
+                                            <v-icon
+                                                v-if="user.estado == 1"
+                                                name="gi-cancel"
+                                                class="text-white"
+                                            />
+                                            <v-icon
+                                                v-else
+                                                name="fa-check"
+                                                class="text-white"
+                                            />
+                                        </a>
+                                        <a
+                                            href="#"
+                                            @click="deleteUser(user)"
+                                            class="block px-4 py-2 text-sm text-white bg-red-500 hover:bg-red-400 rounded-r-lg"
+                                        >
+                                            <v-icon
+                                                name="bi-trash"
+                                                class="text-white"
+                                            />
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <Pagination class="mt-2" :pagination="users" />
                     </div>
                     <Modal :show="showModal">
