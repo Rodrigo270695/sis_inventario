@@ -11,6 +11,15 @@ return new class extends Migration
     {
         Schema::create('solicitudes', function (Blueprint $table) {
             $table->id();
+            $table->text('mensaje');
+            $table->boolean('aprobacion_local')->default(0);
+            $table->boolean('aprobacion_gerencia')->default(0);
+            $table->text('observacion_local')->nullable();
+            $table->text('observacion_gerencia')->nullable();
+            $table->unsignedBigInteger('pdv_id');
+            $table->foreign('pdv_id')->references('id')->on('pdvs')->onUpdate('cascade')->onDelete('restrict');
+            $table->unsignedBigInteger('type_request_id');
+            $table->foreign('type_request_id')->references('id')->on('type_requests')->onUpdate('cascade')->onDelete('restrict');
             $table->timestamps();
         });
     }

@@ -201,7 +201,7 @@ const logout = () => {
                                                 </DropdownLink>
                                                 <DropdownLink
                                                     class="border-b"
-                                                    :href="route('accessory.index')"
+                                                    :href="route('solicitude.index')"
                                                 >
                                                     Solicitudes
                                                 </DropdownLink>

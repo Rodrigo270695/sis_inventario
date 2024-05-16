@@ -27,5 +27,9 @@ class Pdv extends Model
     {
         return $this->hasMany(User::class);
     }
+    public function solicitudes(): HasMany
+    {
+        return $this->hasMany(Solicitude::class);
+    }
 
 }
