@@ -4,6 +4,7 @@ import { ref, defineProps, onMounted, onUnmounted, reactive } from "vue";
 import Pagination from "@/Components/Pagination.vue";
 import Modal from "@/Components/Modal.vue";
 import SolicitudeForm from "./SolicitudeForm.vue";
+import ViewSolicitude from "./ViewSolicitude.vue";
 import Swal from "sweetalert2";
 import { useForm } from "@inertiajs/vue3";
 
@@ -19,6 +20,7 @@ const form = useForm({
 
 let solicitudeObj = ref(null);
 let showModal = ref(false);
+let viewModal = ref(false);
 let openMenuId = ref(null);
 let query = ref(props.texto);
 
@@ -36,6 +38,11 @@ const addSolicitude = () => {
     showModal.value = true;
 };
 
+const viewSolicitude = (solicitude) => {
+    solicitudeObj.value = solicitude;
+    viewModal.value = true;
+};
+
 const editSolicitude = (solicitude) => {
     openMenuId.value = null;
     solicitudeObj.value = solicitude;
@@ -44,6 +51,7 @@ const editSolicitude = (solicitude) => {
 
 const closeModal = () => {
     showModal.value = false;
+    viewModal.value = false;
     solicitudeObj.value = null;
 };
 
@@ -244,10 +252,10 @@ const goToIndex = () => {
                                                 {{ solicitude.id }}
                                             </td>
                                             <td
-                                                v-if="solicitude.aprobacion_local===1"
+                                                v-if="$page.props.user.roles.includes('Supervisor 1') | $page.props.user.roles.includes('Supervisor 2')"
                                                 class="text-xs md:text-sm py-3 whitespace-nowrap text-center"
                                             >
-                                                {{ new Date(solicitude.updated_at).toLocaleDateString('es-PE', { day: '2-digit', month: '2-digit', year: 'numeric' }) }}
+                                                {{ new Date(solicitude.created_at).toLocaleDateString('es-PE', { day: '2-digit', month: '2-digit', year: 'numeric' }) }}
                                             </td>
                                             <td
                                                 v-else
@@ -292,7 +300,35 @@ const goToIndex = () => {
                                                 class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium"
                                             >
                                                 <div class="flex items-center justify-center gap-x-1">
+                                                    <div class="relative group">
+                                                        <button
+                                                            class="bg-blue-500 text-white p-1 rounded-md hover:bg-blue-400 cursor-pointer"
+                                                            @click="viewSolicitude(solicitude)"
+                                                        >
+                                                            <v-icon
+                                                                name="fa-eye"
+                                                            />
+                                                            <span class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
+                                                                style="left: 50%; transform: translateX(-50%); transition: opacity 0.3s;">
+                                                                Ver solicitud
+                                                            </span>
+                                                        </button>
+                                                    </div>
                                                     <div v-if="solicitude.aprobacion_local === 0" class="relative group">
+                                                        <button
+                                                            class="bg-yellow-500 text-white p-1 rounded-md hover:bg-yellow-400 cursor-pointer"
+                                                            @click="editSolicitude(solicitude)"
+                                                        >
+                                                            <v-icon
+                                                                name="md-modeedit-round"
+                                                            />
+                                                            <span class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
+                                                                style="left: 50%; transform: translateX(-50%); transition: opacity 0.3s;">
+                                                                Editar solic.
+                                                            </span>
+                                                        </button>
+                                                    </div>
+                                                    <div v-if="solicitude.aprobacion_local === 1" class="relative group">
                                                         <button
                                                             class="bg-yellow-500 text-white p-1 rounded-md hover:bg-yellow-400 cursor-pointer"
                                                             @click="editSolicitude(solicitude)"
@@ -323,7 +359,7 @@ const goToIndex = () => {
                                                     <div v-if="($page.props.user.roles.includes('Aprobador') | $page.props.user.roles.includes('Administrador')) & solicitude.aprobacion_gerencia === 0" class="relative group">
                                                         <button
                                                             class="bg-slate-500 text-white p-1 rounded-md hover:bg-slate-400 cursor-pointer"
-                                                            @click="changeStatusManagement(solicitude)"
+                                                            @click="changeStatusManagement (solicitude)"
                                                         >
                                                             <v-icon
                                                                 name="bi-arrow-left-right"
@@ -399,10 +435,17 @@ const goToIndex = () => {
                         </div>
                         <!-- Tarjetas -->
 
-                        <Pagination class="mt-2" :pagination="types" />
+                        <Pagination class="mt-2" :pagination="solicitudes" />
                     </div>
                     <Modal :show="showModal" maxWidth="xl">
                         <SolicitudeForm
+                            :solicitude="solicitudeObj"
+                            :types="types"
+                            @close-modal="closeModal"
+                        />
+                    </Modal>
+                    <Modal :show="viewModal" maxWidth="2xl">
+                        <ViewSolicitude
                             :solicitude="solicitudeObj"
                             :types="types"
                             @close-modal="closeModal"

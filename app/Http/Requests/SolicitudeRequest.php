@@ -24,6 +24,8 @@ class SolicitudeRequest extends FormRequest
         return [
             'mensaje' => 'required|string',
             'type_request_id' => 'required|exists:type_requests,id',
+            'observacion_local' => 'nullable|string',
+            'observacion_gerencia' => 'nullable|string',
         ];
     }
 }

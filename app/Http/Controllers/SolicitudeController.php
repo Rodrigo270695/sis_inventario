@@ -48,9 +48,8 @@ class SolicitudeController extends Controller
 
     public function update(SolicitudeRequest $request, Solicitude $solicitude)
     {
-        if ($solicitude->aprobacion_local === 0) {
+        if ($solicitude->aprobacion_local === 0 || $solicitude->aprobacion_gerencia === 0) {
             $data = $request->validated();
-
             try {
                 $solicitude->update($data);
                 return redirect()->route('solicitude.index')->with('toast', ['Solicitud actualizada exitosamente!', 'success']);
@@ -105,5 +104,37 @@ class SolicitudeController extends Controller
     public function destroy(Solicitude $solicitude)
     {
         //
+    }
+
+    public function search(Request $request): Response
+    {
+        $texto = $request->get('texto');
+        $currentUser = auth()->user();
+        $query = Solicitude::with(['typerequest', 'pdv']);
+
+        if ($currentUser->hasAnyRole(['Administrador', 'Aprobador'])) {
+            $query->where('aprobacion_local', 1);
+            $query->where(function ($q) use ($texto) {
+                $q->whereHas('pdv', function ($q) use ($texto) {
+                    $q->where('nombre', 'like', '%' . $texto . '%');
+                })->orWhereHas('typerequest', function ($q) use ($texto) {
+                    $q->where('nombre', 'like', '%' . $texto . '%');
+                });
+            });
+        } elseif ($currentUser->hasAnyRole(['Supervisor 1', 'Supervisor 2'])) {
+            $query->where('pdv_id', $currentUser->pdv_id);
+            $query->where(function ($q) use ($texto) {
+                $q->whereHas('pdv', function ($q) use ($texto) {
+                    $q->where('nombre', 'like', '%' . $texto . '%');
+                })->orWhereHas('typerequest', function ($q) use ($texto) {
+                    $q->where('nombre', 'like', '%' . $texto . '%');
+                });
+            });
+        }
+
+        $solicitudes = $query->orderBy('id', 'desc')->paginate(7)->appends(['texto' => $texto]);
+        $types = TypeRequest::where('estado', 1)->orderBy('nombre', 'asc')->get();
+
+        return Inertia::render('Operation/Solicitude/Index', compact('solicitudes', 'types', 'texto'));
     }
 }

@@ -165,9 +165,15 @@ const logout = () => {
                                                     Equipos
                                                 </DropdownLink>
                                                 <DropdownLink
+                                                class="border-b"
                                                     :href="route('accessory.index')"
                                                 >
                                                     Accesorios
+                                                </DropdownLink>
+                                                <DropdownLink
+                                                    :href="route('accessory.index')"
+                                                >
+                                                    Proveedores
                                                 </DropdownLink>
 
                                             </div>
@@ -205,6 +211,52 @@ const logout = () => {
                                                 >
                                                     Solicitudes
                                                 </DropdownLink>
+                                                <DropdownLink
+                                                    :href="route('typer.index')"
+                                                >
+                                                    Traslados
+                                                </DropdownLink>
+
+                                            </div>
+                                        </template>
+                                    </Dropdown>
+                                </div>
+
+                                <div class="inline-flex items-center hover:border-b-2">
+                                    <Dropdown align="right" width="60">
+                                        <template #trigger>
+                                            <span
+                                                class="inline-flex rounded-md"
+                                            >
+                                                <button
+                                                    type="button"
+                                                    class="inline-flex items-center px-1 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150"
+                                                >
+                                                    Reportes
+                                                    <v-icon class="ms-2 -me-0.5 h-4 w-4" name="hi-solid-chevron-down" />
+                                                </button>
+                                            </span>
+                                        </template>
+
+                                        <template #content>
+                                            <div class="w-40">
+
+   <!--                                              <DropdownLink
+                                                    :href="route('typer.index')"
+                                                >
+                                                    Tipos de Solicitud
+                                                </DropdownLink>
+                                                <DropdownLink
+                                                    class="border-b"
+                                                    :href="route('solicitude.index')"
+                                                >
+                                                    Solicitudes
+                                                </DropdownLink>
+                                                <DropdownLink
+                                                    :href="route('typer.index')"
+                                                >
+                                                    Traslados
+                                                </DropdownLink> -->
 
                                             </div>
                                         </template>
