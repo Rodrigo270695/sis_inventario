@@ -212,9 +212,9 @@ const logout = () => {
                                                     Solicitudes
                                                 </DropdownLink>
                                                 <DropdownLink
-                                                    :href="route('typer.index')"
+                                                    :href="route('move.index')"
                                                 >
-                                                    Traslados
+                                                    Traslados 
                                                 </DropdownLink>
 
                                             </div>

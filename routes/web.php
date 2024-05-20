@@ -3,6 +3,7 @@
 use App\Http\Controllers\AccessoryController;
 use App\Http\Controllers\EquipmentTypeController;
 use App\Http\Controllers\MakeController;
+use App\Http\Controllers\MoveController;
 use App\Http\Controllers\PdvController;
 use App\Http\Controllers\SolicitudeController;
 use App\Http\Controllers\StoreController;
@@ -114,5 +115,5 @@ Route::middleware([
     Route::put('operation/solicitude/rejectManagement/{solicitude}', [SolicitudeController::class, 'rejectManagement'])->name('solicitude.rejectManagement');
 
     /* Traslados */
-    Route::resource('operation/move', SolicitudeController::class);
+    Route::resource('operation/move', MoveController::class);
 });
