@@ -1,10 +1,12 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
-import { ref, defineProps, onMounted, onUnmounted, reactive } from "vue";
+import { ref, defineProps, onMounted, onUnmounted } from "vue";
 import Pagination from "@/Components/Pagination.vue";
+import TextSearch from "@/Components/TextSearch.vue";
+import TypeForm from "./TypeForm.vue";
+import IndexHeader from "@/Components/IndexHeader.vue";
 import Modal from "@/Components/Modal.vue";
 import Swal from "sweetalert2";
-import TypeForm from "./TypeForm.vue";
 import { useForm } from "@inertiajs/vue3";
 
 const props = defineProps({
@@ -40,12 +42,6 @@ const editType = (type) => {
     showModal.value = true;
 };
 
-const closeModal = () => {
-    showModal.value = false;
-    typeObj.value = null;
-};
-
-// Detectar la tecla ESC para cerrar el modal
 const onKeydown = (e) => {
     if (e.key === "Escape") {
         closeModal();
@@ -59,6 +55,11 @@ onMounted(() => {
 onUnmounted(() => {
     window.removeEventListener("keydown", onKeydown);
 });
+
+const closeModal = () => {
+    showModal.value = false;
+    typeObj.value = null;
+};
 
 const deleteType = (type) => {
     openMenuId.value = null;
@@ -80,6 +81,26 @@ const deleteType = (type) => {
     });
 };
 
+const changeStatus = (type) => {
+    openMenuId.value = null;
+    Swal.fire({
+        title: "¿Estás seguro?",
+        text: "¿Quieres cambiar el estado del tipo?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, cambiar!",
+        cancelButtonText: "No, cancelar!",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            form.put(route("type.change", type), {
+                preserveScroll: true,
+            });
+        }
+    });
+};
+
 const search = () => {
     form.get(route("type.search", { texto: query.value }));
 };
@@ -90,60 +111,20 @@ const goToIndex = () => {
 </script>
 
 <template>
-    <AppLayout title="Dashboard">
+    <AppLayout title="Tipos de equipo">
+        <template #header>
+            <IndexHeader title="Gestionar Tipo de equipo" @reload="goToIndex" />
+        </template>
         <div class="pt-5">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                    <div
-                        class="flex justify-between font-extrabold border-b px-4 py-2"
-                        title="Refrescar la página"
-                    >
-                        <div class="h-11 inline-flex items-center w-full">
-                            <h2 class="text-xl sm:text-2xl text-slate-700">
-                                Gestionar Tipo de equipo
-                            </h2>
-                        </div>
-                        <button
-                            class="bg-green-600 hover:bg-green-500 w-12 rounded-md"
-                            @click="goToIndex"
-                        >
-                            <v-icon
-                                class="text-white"
-                                name="io-reload-circle-sharp"
-                                scale="1.7"
-                            />
-                        </button>
-                    </div>
-
-                    <div class="flex justify-between py-2 px-4 mr-4 mt-4">
-                        <div class="relative">
-                            <input
-                                type="text"
-                                v-model="query"
-                                class="w-64 md:w-72 lg:w-96 hover:border-sky-300 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
-                                placeholder="Buscar Tipo de equipo"
-                                @keyup.enter="search"
-                            />
-                            <button
-                                @click.prevent="search"
-                                class="absolute inset-y-0 right-0 px-3 flex items-center text-white bg-sky-800 rounded-e-md hover:bg-sky-700"
-                            >
-                                <v-icon name="fa-search" scale="1.5" />
-                            </button>
-                        </div>
-                        <div>
-                            <button
-                                class="bg-sky-800 hover:bg-sky-700 p-2 text-white rounded-lg flex items-center"
-                                @click="addType"
-                            >
-                                <v-icon
-                                    name="io-add-circle-sharp"
-                                    scale="1.1"
-                                />
-                                <p class="sm:block hidden ml-2">agregar</p>
-                            </button>
-                        </div>
-                    </div>
+            <div class="">
+                <div class="bg-3D-50 overflow-hidden shadow-abajo-2 rounded-lg">
+                    <TextSearch
+                        :query="query"
+                        :search="search"
+                        :add="addType"
+                        @update:query="query = $event"
+                        placeholder="Buscar Tipo de equipo"
+                    />
 
                     <div class="p-3">
                         <div class="hidden sm:block">
@@ -151,39 +132,42 @@ const goToIndex = () => {
                                 <table
                                     class="min-w-full divide-y divide-gray-200"
                                 >
-                                    <thead class="bg-cyan-800">
+                                    <thead class="bg-blue-200 shadow-abajo-2">
                                         <tr class="">
                                             <th
                                                 scope="col"
-                                                class="px-6 py-2 text-center text-xs sm:text-base font-semibold text-white uppercase tracking-wider border-l"
+                                                class="px-2 py-2 text-left text-xs sm:text-base font-bold text-slate-500 uppercase tracking-wider border-l"
                                             >
                                                 Nombre
                                             </th>
-                                            <th class="border-l"></th>
+                                            <th
+                                                scope="col"
+                                                class="px-2 py-2 text-right text-xs sm:text-base font-bold text-slate-500 uppercase tracking-wider border-l"
+                                            >
+
+                                            </th>
                                         </tr>
                                     </thead>
-                                    <tbody
-                                        class="bg-white divide-y divide-gray-200"
-                                    >
+                                    <tbody class="bg-3D-50 divide-gray-200">
                                         <tr
                                             v-for="type in types.data"
                                             :key="type.id"
-                                            class="bg-sky-100 hover:bg-sky-200"
+                                            class="bg-3D-50 hover:bg-blue-50 border-2 shadow-abajo-2"
                                         >
                                             <td
-                                                class="text-xs md:text-sm px-6 py-3 whitespace-nowrap text-center"
+                                                class="px-2 py-3 whitespace-nowrap text-sm text-slate-500"
                                             >
                                                 {{ type.nombre }}
                                             </td>
                                             <td
-                                                class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium"
+                                                class="px-2 py-3 whitespace-nowrap text-right text-sm font-medium"
                                             >
                                                 <div
-                                                    class="flex items-center justify-center gap-x-1"
+                                                    class="flex items-center justify-center gap-x-3"
                                                 >
                                                     <div class="relative group">
                                                         <button
-                                                            class="bg-yellow-500 text-white p-1 rounded-md hover:bg-yellow-400 cursor-pointer"
+                                                            class="bg-yellow-200 text-slate-500 p-1 rounded-md hover:bg-yellow-300 cursor-pointer shadow-abajo-1"
                                                             @click="
                                                                 editType(type)
                                                             "
@@ -208,9 +192,11 @@ const goToIndex = () => {
                                                     </div>
                                                     <div class="relative group">
                                                         <button
-                                                            class="bg-red-500 text-white p-1 rounded-md hover:bg-red-400 cursor-pointer"
+                                                            class="bg-red-300 text-slate-500 p-1 rounded-md hover:bg-red-400 shadow-abajo-1 cursor-pointer"
                                                             @click="
-                                                                deleteType(type)
+                                                                deleteType(
+                                                                    type
+                                                                )
                                                             "
                                                         >
                                                             <v-icon
@@ -236,8 +222,8 @@ const goToIndex = () => {
                                         </tr>
                                         <tr v-if="types.data.length <= 0">
                                             <td
-                                                class="text-center text-slate-800 text-md sm:text-lg font-semibold bg-slate-300"
-                                                colspan="5"
+                                                class="text-center font-bold text-slate-500 text-md sm:text-lg bg-3D-50 shadow-abajo-2"
+                                                colspan="2"
                                             >
                                                 No hay registros
                                             </td>
@@ -246,12 +232,12 @@ const goToIndex = () => {
                                 </table>
                             </div>
                         </div>
-                        <!-- Tarjetas -->
-                        <div class="block sm:hidden">
+                        <!-- Versión mobile -->
+                        <div class="block sm:hidden rounded-lg">
                             <div
                                 v-for="type in types.data"
                                 :key="type.id"
-                                class="p-4 mx-1 mt-4 bg-sky-100 hover:bg-sky-200 rounded-lg shadow-md relative"
+                                class="p-4 mx-1 mt-4 bg-blue-50 hover:bg-blue-100 rounded-lg relative shadow-abajo-1"
                             >
                                 <!-- Contenido de la tarjeta -->
                                 <div class="flex items-center space-x-2 mb-4">
@@ -268,18 +254,35 @@ const goToIndex = () => {
                                             d="M3 7h18M3 12h18m-9 5h9"
                                         />
                                     </svg>
-                                    <h3 class="text-lg font-bold text-gray-900">
+                                    <h3
+                                        class="text-lg font-bold text-slate-700"
+                                    >
                                         Tipo:
-                                        <span class="font-normal">{{
-                                            type.nombre
-                                        }}</span>
+                                        <span class="font-normal">
+                                            {{ type.nombre }}
+                                        </span>
                                     </h3>
                                 </div>
                                 <!-- Detalles de la tarjeta -->
-                                <div class="text-md">
-
-
-                                </div>
+<!--                                 <div class="text-md text-slate-700">
+                                    <p>
+                                        <strong>Estado:</strong>
+                                        <span
+                                            class="ml-1"
+                                            :class="
+                                                type.estado === 1
+                                                    ? 'text-green-500'
+                                                    : 'text-red-300'
+                                            "
+                                        >
+                                            {{
+                                                type.estado === 1
+                                                    ? "ACTIVO"
+                                                    : "INACTIVO"
+                                            }}
+                                        </span>
+                                    </p>
+                                </div> -->
                                 <!-- Menú de tres puntos -->
                                 <div class="absolute top-0 right-0 p-2 z-10">
                                     <button
@@ -290,26 +293,26 @@ const goToIndex = () => {
                                     </button>
                                     <div
                                         v-if="openMenuId === type.id"
-                                        class="bg-white flex justify-between shadow-lg rounded-lg absolute right-[6px] mt-1 w-24 z-20 text-center"
+                                        class="bg-white flex justify-between shadow-abajo-1 rounded-lg absolute right-0 mt-1 w-[86px] z-20 text-center"
                                     >
                                         <a
                                             href="#"
                                             @click="editType(type)"
-                                            class="block px-4 py-2 text-sm text-white bg-yellow-500 hover:bg-yellow-400 rounded-l-lg"
+                                            class="block px-3 py-1 text-sm text-slate-500 bg-yellow-200 hover:bg-yellow-300 rounded-l-lg"
                                         >
                                             <v-icon
                                                 name="md-modeedit-round"
-                                                class="text-white"
+                                                class="text-slate-500"
                                             />
                                         </a>
                                         <a
                                             href="#"
                                             @click="deleteType(type)"
-                                            class="block px-4 py-2 text-sm text-white bg-red-500 hover:bg-red-400 rounded-r-lg"
+                                            class="block px-3 py-1 text-sm text-slate-500 bg-red-300 hover:bg-red-400 rounded-r-lg"
                                         >
                                             <v-icon
                                                 name="bi-trash"
-                                                class="text-white"
+                                                class="text-slate-500"
                                             />
                                         </a>
                                     </div>
@@ -319,7 +322,10 @@ const goToIndex = () => {
                         <Pagination class="mt-2" :pagination="types" />
                     </div>
                     <Modal :show="showModal">
-                        <TypeForm :type="typeObj" @close-modal="closeModal" />
+                        <TypeForm
+                            :type="typeObj"
+                            @close-modal="closeModal"
+                        />
                     </Modal>
                 </div>
             </div>

@@ -135,15 +135,15 @@ const toggleTeam = (team) => {
 </script>
 
 <template>
-    <div class="pt-2">
-        <div class="max-w-7xl mx-auto px-2">
+    <div class="">
+        <div class="px-2">
             <div
                 v-for="pdv in groupedByPdv"
                 :key="pdv.pdvName"
-                class="rounded-xl mb-8 p-6 shadow-abajo-1 bg-3D-50"
+                class="rounded-xl my-3 p-4 shadow-abajo-1 bg-3D-50"
             >
                 <h2
-                    class="text-xl sm:text-2xl font-extrabold text-gray-600 inline-block mb-4"
+                    class="text-xl sm:text-2xl font-extrabold text-gray-600 inline-block"
                 >
                     PDV: {{ pdv.pdvName }}
                 </h2>

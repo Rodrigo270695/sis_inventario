@@ -14,7 +14,9 @@ import
     ViFileTypePdf, ViFileTypeWord, ViFileTypeImage, ViDefaultFile, ViFileTypeExcel, BiFileEarmarkExcelFill,
     FaSearch, BiEyeFill, BiEyeSlashFill, GiExitDoor, MdDelete, MdChangecircleRound, MdPassword, MdAddphotoalternateRound, BiUpload,
     GiHamburgerMenu, MdMonitorTwotone, HiSolidPlusSm, HiMinusSm, HiSolidChevronDown, IoClose, OiApps, MdAddbusiness, MdAddcircleRound,
-    MdAddlinkSharp, MdFileuploadRound, HiSolidDownload, BiNodePlusFill, HiChevronRight, HiChevronDown, BiArrowLeftRight
+    MdAddlinkSharp, MdFileuploadRound, HiSolidDownload, BiNodePlusFill, HiChevronRight, HiChevronDown, BiArrowLeftRight, RiGpsFill,
+    MdAddlocationaltOutlined, IoDesktop, MdGpsfixedTwotone, FaStoreAlt, MdDashboardSharp, BiMouse2, BiPcDisplay, MdMergetypeTwotone, AiPreregistered,
+    MdFactory, HiSolidDocumentAdd, HiSolidDocument, BiSendPlus, FaUserFriends, HiUserAdd
 } from "oh-vue-icons/icons";
 
 addIcons(
@@ -23,7 +25,9 @@ PrImages, BiTrash, FaEye, BiCartFill, BiClockFill, IoReloadCircleSharp,
 ViFileTypePdf, ViFileTypeWord, ViFileTypeImage, ViDefaultFile, ViFileTypeExcel, BiFileEarmarkExcelFill,
 FaSearch, BiEyeFill, BiEyeSlashFill, GiExitDoor, MdDelete, MdChangecircleRound, MdPassword, MdAddphotoalternateRound, BiUpload,
 GiHamburgerMenu, MdMonitorTwotone, HiSolidPlusSm, HiMinusSm, HiSolidChevronDown, IoClose, OiApps, MdAddbusiness, MdAddcircleRound,
-MdAddlinkSharp, MdFileuploadRound, HiSolidDownload, BiNodePlusFill, HiChevronRight, HiChevronDown, BiArrowLeftRight
+MdAddlinkSharp, MdFileuploadRound, HiSolidDownload, BiNodePlusFill, HiChevronRight, HiChevronDown, BiArrowLeftRight, RiGpsFill,
+MdAddlocationaltOutlined, IoDesktop, MdGpsfixedTwotone, FaStoreAlt, MdDashboardSharp, BiMouse2, BiPcDisplay, MdMergetypeTwotone, AiPreregistered,
+MdFactory, HiSolidDocumentAdd, HiSolidDocument, BiSendPlus, FaUserFriends, HiUserAdd
 );
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';

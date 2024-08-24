@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class AccessoryRequest extends FormRequest
@@ -12,14 +13,9 @@ class AccessoryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Auth::check();
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
@@ -29,8 +25,8 @@ class AccessoryRequest extends FormRequest
             'serie' => 'nullable|string|max:40',
             'estado_asignado' => 'in:ASIGNADO,NO ASIGNADO',
             'fecha_compra' => 'required|date',
-            'garantia_tienda' => 'required|integer',
-            'garantia_marca' => 'nullable|integer',
+            'garantia_tienda' => 'required|integer|min:1',
+            'garantia_marca' => 'nullable|integer|min:0',
             'codigo_barras' => 'string|max:14|unique:accessories,codigo_barras',
             'estado' => '   in:BAJA,DESECHADO,MANTENIMIENTO-DAÑO,MANTENIMIENTO-GARANTIA,RESERVADO,USO',
             'descripcion' => 'nullable|string',

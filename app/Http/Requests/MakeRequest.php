@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class MakeRequest extends FormRequest
@@ -10,7 +11,7 @@ class MakeRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return true;
+        return Auth::check();
     }
 
     public function rules(): array
@@ -25,7 +26,7 @@ class MakeRequest extends FormRequest
                     return $query->where('equipment_type_id', $this->equipment_type_id);
                 })->ignore($this->make ? $this->make->id : null),
             ],
-            'equipment_type_id' => 'required|exists:zonals,id',
+            'equipment_type_id' => 'required|exists:equipment_types,id',
         ];
     }
 }

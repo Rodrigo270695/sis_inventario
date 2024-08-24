@@ -2,11 +2,13 @@
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { ref, defineProps, onMounted, onUnmounted } from "vue";
 import Pagination from "@/Components/Pagination.vue";
-import Modal from "@/Components/Modal.vue";
-import CardTeam from "@/Components/CardTeam.vue";
+import TextSearch from "@/Components/TextSearch.vue";
 import TeamForm from "./TeamForm.vue";
-import ViewAccessory from "./ViewAccessory.vue";
 import UpdateDocument from "./UpdateDocument.vue";
+import ViewAccessory from "./ViewAccessory.vue";
+import IndexHeader from "@/Components/IndexHeader.vue";
+import CardTeam from "@/Components/CardTeam.vue";
+import Modal from "@/Components/Modal.vue";
 import Swal from "sweetalert2";
 import { useForm } from "@inertiajs/vue3";
 
@@ -30,14 +32,14 @@ let query = ref(props.texto);
 
 const addDoc = (team) => {
     showModalDoc.value = true;
-    teamObj.value = team
-}
+    teamObj.value = team;
+};
 
-const viewAccessory = (accesory) => {
-    console.log(accesory)
+const viewAccessory = (accessory) => {
+    console.log(accessory);
     showModalViewA.value = true;
-    accessoryObj.value = accesory;
-}
+    accessoryObj.value = accessory;
+};
 
 const addTeam = () => {
     teamObj.value = null;
@@ -71,25 +73,6 @@ onUnmounted(() => {
     window.removeEventListener("keydown", onKeydown);
 });
 
-/* const changeStatus = (team) => {
-    Swal.fire({
-        title: "¿Estás seguro?",
-        text: "¿Quieres cambiar el estado de del team?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Sí, cambiar!",
-        cancelButtonText: "No, cancelar!",
-    }).then((result) => {
-        if (result.isConfirmed) {
-            form.put(route("team.change", team), {
-                preserveScroll: true,
-            });
-        }
-    });
-}; */
-
 const deleteTeam = (team) => {
     Swal.fire({
         title: "¿Estás seguro?",
@@ -119,65 +102,23 @@ const goToIndex = () => {
 </script>
 
 <template>
-    <AppLayout title="Dashboard">
+    <AppLayout title="Equipos">
+        <template #header>
+            <IndexHeader title="Gestionar Equipos" @reload="goToIndex" />
+        </template>
         <div class="pt-5">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                    <div
-                        class="flex justify-between font-extrabold border-b px-4 py-2"
-                        title="Refrescar la página"
-                    >
-                        <div class="h-11 inline-flex items-center w-full">
-                            <h2 class="text-xl sm:text-2xl text-slate-700">
-                                Gestionar Equipos
-                            </h2>
-                        </div>
-                        <button
-                            class="bg-green-600 hover:bg-green-500 w-12 rounded-md"
-                            @click="goToIndex"
-                        >
-                            <v-icon
-                                class="text-white"
-                                name="io-reload-circle-sharp"
-                                scale="1.7"
-                            />
-                        </button>
-                    </div>
+            <div class="">
+                <div class="bg-3D-50 overflow-hidden shadow-abajo-2 rounded-lg">
+                    <TextSearch
+                        :query="query"
+                        :search="search"
+                        :add="addTeam"
+                        @update:query="query = $event"
+                        placeholder="Buscar Punto de venta"
+                    />
 
-                    <div class="flex justify-between py-2 px-4 mr-4 mt-4">
-                        <div class="relative">
-                            <input
-                                type="text"
-                                v-model="query"
-                                class="w-64 md:w-72 lg:w-96 hover:border-sky-300 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
-                                placeholder="Buscar Punto de venta"
-                                @input="query = query.toUpperCase()"
-                                @keyup.enter="search"
-                            />
-                            <button
-                                @click.prevent="search"
-                                class="absolute inset-y-0 right-0 px-3 flex items-center text-white bg-sky-800 rounded-e-md hover:bg-sky-700"
-                            >
-                                <v-icon name="fa-search" scale="1.5" />
-                            </button>
-                        </div>
-                        <div>
-                            <button
-                                class="bg-sky-800 hover:bg-sky-700 p-2 text-white rounded-lg flex items-center"
-                                @click="addTeam"
-                            >
-                                <v-icon
-                                    name="io-add-circle-sharp"
-                                    scale="1.1"
-                                />
-                                <p class="sm:block hidden ml-2">agregar</p>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="p-3 bg-3D-50">
-
-                        <div class="block">
+                    <div class="p-2">
+                        <div class="hidden sm:block">
                             <div class="overflow-x-auto rounded-lg">
                                 <CardTeam :pdvs="pdvs" @edit-team="editTeam" @add-doc="addDoc" @view-accessory="viewAccessory" />
                             </div>

@@ -2,10 +2,12 @@
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { ref, defineProps, onMounted, onUnmounted, nextTick } from "vue";
 import Pagination from "@/Components/Pagination.vue";
+import TextSearch from "@/Components/TextSearch.vue";
 import Modal from "@/Components/Modal.vue";
 import AccesoryForm from "./AccesoryForm.vue";
 import UpdateDocument from "./UpdateDocument.vue";
 import AssignAccessory from "./AssignAccessory.vue";
+import IndexHeader from "@/Components/IndexHeader.vue";
 import Swal from "sweetalert2";
 import { useForm } from "@inertiajs/vue3";
 import JsBarcode from "jsbarcode";
@@ -71,25 +73,6 @@ onMounted(() => {
 onUnmounted(() => {
     window.removeEventListener("keydown", onKeydown);
 });
-
-/* const changeStatus = (accesory) => {
-    Swal.fire({
-        title: "¿Estás seguro?",
-        text: "¿Quieres cambiar el estado de del Accesorio?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Sí, cambiar!",
-        cancelButtonText: "No, cancelar!",
-    }).then((result) => {
-        if (result.isConfirmed) {
-            form.put(route("accesory.change", accesory), {
-                preserveScroll: true,
-            });
-        }
-    });
-}; */
 
 const deleteAccesory = (accesory) => {
     Swal.fire({
@@ -182,179 +165,67 @@ const daysUntilWarrantyEnds = (purchaseDate, warrantyMonths) => {
 </script>
 
 <template>
-    <AppLayout title="Dashboard">
+    <AppLayout title="Accesorios">
+        <template #header>
+            <IndexHeader title="Gestionar Accesorios" @reload="goToIndex" />
+        </template>
         <div class="pt-5">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                    <div
-                        class="flex justify-between font-extrabold border-b px-4 py-2"
-                        title="Refrescar la página"
-                    >
-                        <div class="h-11 inline-flex items-center w-full">
-                            <h2 class="text-xl sm:text-2xl text-slate-700">
-                                Gestionar Accesorios
-                            </h2>
-                        </div>
-                        <button
-                            class="bg-green-600 hover:bg-green-500 w-12 rounded-md"
-                            @click="goToIndex"
-                        >
-                            <v-icon
-                                class="text-white"
-                                name="io-reload-circle-sharp"
-                                scale="1.7"
-                            />
-                        </button>
-                    </div>
-
-                    <div class="flex justify-between py-2 px-4 mr-4 mt-4">
-                        <div class="relative">
-                            <input
-                                type="text"
-                                v-model="query"
-                                class="w-64 md:w-72 lg:w-96 hover:border-sky-300 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
-                                placeholder="Buscar Accesorios"
-                                @keyup.enter="search"
-                            />
-                            <button
-                                @click.prevent="search"
-                                class="absolute inset-y-0 right-0 px-3 flex items-center text-white bg-sky-800 rounded-e-md hover:bg-sky-700"
-                            >
-                                <v-icon name="fa-search" scale="1.5" />
-                            </button>
-                        </div>
-                        <div>
-                            <button
-                                class="bg-sky-800 hover:bg-sky-700 p-2 text-white rounded-lg flex items-center"
-                                @click="addAccesory"
-                            >
-                                <v-icon
-                                    name="io-add-circle-sharp"
-                                    scale="1.1"
-                                />
-                                <p class="sm:block hidden ml-2">agregar</p>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="p-3 bg-white">
-                        <div class="block">
+            <div class="">
+                <div class="bg-3D-50 overflow-hidden shadow-abajo-2 rounded-lg">
+                    <TextSearch
+                        :query="query"
+                        :search="search"
+                        :add="addAccesory"
+                        @update:query="query = $event"
+                        placeholder="Buscar Accesorios"
+                    />
+                    <div class="p-3">
+                        <div class="hidden sm:block">
                             <div class="overflow-x-auto rounded-lg">
-                                <table
-                                    class="min-w-full divide-y divide-gray-200"
-                                >
-                                    <thead class="bg-cyan-800">
-                                        <tr class="">
-                                            <th
-                                                scope="col"
-                                                class="px-2 py-2 text-left text-xs sm:text-base font-semibold text-white uppercase tracking-wider border-l"
-                                            >
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-blue-200 shadow-abajo-2">
+                                        <tr>
+                                            <th scope="col" class="px-2 py-2 text-left text-xs sm:text-base font-bold text-slate-500 uppercase tracking-wider border-l">
                                                 PDV
                                             </th>
-                                            <th
-                                                scope="col"
-                                                class="px-2 py-2 text-center text-xs sm:text-base font-semibold text-white uppercase tracking-wider border-l"
-                                            >
+                                            <th scope="col" class="px-2 py-2 text-center text-xs sm:text-base font-bold text-slate-500 uppercase tracking-wider border-l">
                                                 Nombre
                                             </th>
-                                            <th
-                                                scope="col"
-                                                class="py-2 text-center text-xs sm:text-base font-semibold text-white uppercase tracking-wider border-l"
-                                            >
+                                            <th scope="col" class="py-2 text-center text-xs sm:text-base font-bold text-slate-500 uppercase tracking-wider border-l">
                                                 Garantía
                                             </th>
-                                            <th
-                                                scope="col"
-                                                class="px-2 py-2 text-center text-xs sm:text-base font-semibold text-white uppercase tracking-wider border-l"
-                                            >
+                                            <th scope="col" class="px-2 py-2 text-center text-xs sm:text-base font-bold text-slate-500 uppercase tracking-wider border-l">
                                                 Asignación
                                             </th>
-                                            <th
-                                                scope="col"
-                                                class="py-2 text-center text-xs sm:text-base font-semibold text-white uppercase tracking-wider border-l"
-                                            >
+                                            <th scope="col" class="py-2 text-center text-xs sm:text-base font-bold text-slate-500 uppercase tracking-wider border-l">
                                                 Código de Barras
                                             </th>
-                                            <th
-                                                scope="col"
-                                                class="px-1 py-2 text-center text-xs sm:text-base font-semibold text-white uppercase tracking-wider border-l"
-                                            >
+                                            <th scope="col" class="px-1 py-2 text-center text-xs sm:text-base font-bold text-slate-500 uppercase tracking-wider border-l">
                                                 Estado
                                             </th>
-                                            <th class="border-l"></th>
+                                            <th scope="col" class="border-l"></th>
                                         </tr>
                                     </thead>
-                                    <tbody
-                                        class="bg-white divide-y divide-gray-200"
-                                    >
-                                        <tr
-                                            v-for="accesory in accessories.data"
-                                            :key="accesory.id"
-                                            class="bg-sky-100 hover:bg-sky-200"
-                                        >
-                                            <td
-                                                class="text-xs md:text-sm pl-3 py-3 whitespace-nowrap"
-                                            >
-                                                {{
-                                                    accesory.store.pdv.nombre
-                                                }}/{{ accesory.store.nombre }}
+                                    <tbody class="bg-3D-50 divide-gray-200">
+                                        <tr v-for="accesory in accessories.data" :key="accesory.id" class="bg-3D-50 hover:bg-blue-50 border-2 shadow-abajo-2">
+                                            <td class="text-xs md:text-base text-slate-500 px-2 py-3 whitespace-nowrap">
+                                                {{ accesory.store.pdv.nombre }}/{{ accesory.store.nombre }}
                                             </td>
-                                            <td
-                                                class="text-xs md:text-sm py-3 whitespace-nowrap text-center"
-                                            >
+                                            <td class="text-xs md:text-base text-slate-500 px-2 py-3 whitespace-nowrap text-center">
                                                 {{ accesory.nombre }}
                                             </td>
-                                            <td
-                                                class="text-xs md:text-sm py-2 whitespace-nowrap text-center"
-                                            >
-                                                <div
-                                                    :class="
-                                                        daysUntilWarrantyEnds(
-                                                            accesory.fecha_compra,
-                                                            accesory.garantia_tienda
-                                                        ) > 30
-                                                            ? 'bg-green-300'
-                                                            : 'bg-red-300'
-                                                    "
-                                                    class="rounded-md h-7 inline-flex items-center justify-center px-2"
-                                                >
-                                                    {{
-                                                        formatDate(
-                                                            accesory.fecha_compra
-                                                        )
-                                                    }}
-                                                    ({{
-                                                        daysUntilWarrantyEnds(
-                                                            accesory.fecha_compra,
-                                                            accesory.garantia_tienda
-                                                        )
-                                                    }}
-                                                    días restantes)
+                                            <td class="text-xs md:text-base text-slate-500 px-2 py-3 whitespace-nowrap text-center">
+                                                <div :class="daysUntilWarrantyEnds(accesory.fecha_compra, accesory.garantia_tienda) > 30 ? 'bg-green-300' : 'bg-red-300'" class="rounded-md h-7 inline-flex items-center justify-center px-2">
+                                                    {{ formatDate(accesory.fecha_compra) }} ({{ daysUntilWarrantyEnds(accesory.fecha_compra, accesory.garantia_tienda) }} días restantes)
                                                 </div>
                                             </td>
-                                            <td
-                                                class="text-xs md:text-sm py-3 whitespace-nowrap text-center"
-                                            >
-                                                <div
-                                                    class="h-7 inline-flex items-center justify-center font-bold rounded-md px-2 text-white"
-                                                    :class="
-                                                        accesory.estado_asignado ===
-                                                        'NO ASIGNADO'
-                                                            ? 'bg-slate-600 '
-                                                            : 'bg-violet-400'
-                                                    "
-                                                >
-                                                    {{
-                                                        accesory.estado_asignado
-                                                    }}
+                                            <td class="text-xs md:text-base text-slate-500 px-2 py-3 whitespace-nowrap text-center">
+                                                <div class="h-7 inline-flex items-center justify-center font-bold rounded-md px-2 text-white" :class="accesory.estado_asignado === 'NO ASIGNADO' ? 'bg-slate-600 ' : 'bg-violet-400'">
+                                                    {{ accesory.estado_asignado }}
                                                 </div>
                                             </td>
-                                            <td
-                                                class="text-xs md:text-sm py-3 whitespace-nowrap text-center"
-                                            >
-                                                <div
-                                                    class="flex justify-around"
-                                                >
+                                            <td class="text-xs md:text-base text-slate-500 px-2 py-3 whitespace-nowrap text-center">
+                                                <div class="flex justify-around">
                                                     <canvas
                                                         class="w-36 cursor-pointer rounded-md"
                                                         :id="
@@ -372,125 +243,40 @@ const daysUntilWarrantyEnds = (purchaseDate, warrantyMonths) => {
                                                     </canvas>
                                                 </div>
                                             </td>
-                                            <td
-                                                class="text-xs md:text-sm py-3 whitespace-nowrap text-center"
-                                            >
-                                                {{ accesory.estado }}
+                                            <td class="text-xs md:text-base px-2 py-3 whitespace-nowrap text-center text-slate-500">
+                                                {{ accesory.estado  }}
                                             </td>
-                                            <td
-                                                class="px-6 py-3 whitespace-nowrap text-right text-sm font-medium"
-                                            >
-                                                <div
-                                                    class="flex items-center justify-center gap-x-1"
-                                                >
+                                            <td class="px-2 py-3 whitespace-nowrap text-right text-sm font-medium">
+                                                <div class="flex items-center justify-center gap-x-1">
                                                     <div class="relative group">
-                                                        <button
-                                                            class="bg-yellow-500 text-white p-1 rounded-md hover:bg-yellow-400 cursor-pointer"
-                                                            @click="
-                                                                editAccesory(
-                                                                    accesory
-                                                                )
-                                                            "
-                                                        >
-                                                            <v-icon
-                                                                name="md-modeedit-round"
-                                                            />
-                                                            <span
-                                                                class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
-                                                                style="
-                                                                    left: 50%;
-                                                                    transform: translateX(
-                                                                        -50%
-                                                                    );
-                                                                    transition: opacity
-                                                                        0.3s;
-                                                                "
-                                                            >
+                                                        <button class="bg-yellow-200 text-slate-500 p-1 rounded-md hover:bg-yellow-300 cursor-pointer shadow-abajo-1" @click="editAccesory(accesory)">
+                                                            <v-icon name="md-modeedit-round" />
+                                                            <span class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md" style="left: 50%; transform: translateX(-50%); transition: opacity 0.3s;">
                                                                 Editar Accesorio
                                                             </span>
                                                         </button>
                                                     </div>
                                                     <div class="relative group">
-                                                        <button
-                                                            class="bg-slate-500 text-white p-1 rounded-md hover:bg-slate-400 cursor-pointer"
-                                                            @click="
-                                                                addDoc(accesory)
-                                                            "
-                                                        >
-                                                            <v-icon
-                                                                name="md-fileupload-round"
-                                                            />
-                                                            <span
-                                                                class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
-                                                                style="
-                                                                    left: 50%;
-                                                                    transform: translateX(
-                                                                        -50%
-                                                                    );
-                                                                    transition: opacity
-                                                                        0.3s;
-                                                                "
-                                                            >
+                                                        <button class="bg-slate-300 text-slate-500 p-1 rounded-md hover:bg-slate-400 cursor-pointer shadow-abajo-1" @click="addDoc(accesory)">
+                                                            <v-icon name="md-fileupload-round" />
+                                                            <span class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md" style="left: 50%; transform: translateX(-50%); transition: opacity 0.3s;">
                                                                 Cargar Doc.
                                                             </span>
                                                         </button>
                                                     </div>
-                                                    <div
-                                                        v-if="
-                                                            accesory.estado_asignado ===
-                                                            'NO ASIGNADO'
-                                                        "
-                                                        class="relative group"
-                                                    >
-                                                        <button
-                                                            class="bg-violet-500 text-white p-1 rounded-md hover:bg-violet-400 cursor-pointer"
-                                                            @click="
-                                                                assign(accesory)
-                                                            "
-                                                        >
-                                                            <v-icon
-                                                                name="bi-node-plus-fill"
-                                                            />
-                                                            <span
-                                                                class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
-                                                                style="
-                                                                    left: 50%;
-                                                                    transform: translateX(
-                                                                        -50%
-                                                                    );
-                                                                    transition: opacity
-                                                                        0.3s;
-                                                                "
-                                                            >
+                                                    <div v-if="accesory.estado_asignado === 'NO ASIGNADO'" class="relative group">
+                                                        <button class="bg-violet-300 text-slate-500 p-1 rounded-md hover:bg-violet-400 cursor-pointer shadow-abajo-1" @click="assign(accesory)">
+                                                            <v-icon name="bi-node-plus-fill" />
+                                                            <span class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md" style="left: 50%; transform: translateX(-50%); transition: opacity 0.3s;">
                                                                 Asignar Equipo
-                                                            </span>
+                                                            </span> 
                                                         </button>
                                                     </div>
                                                     <div class="relative group">
-                                                        <button
-                                                            class="bg-red-500 text-white p-1 rounded-md hover:bg-red-400 cursor-pointer"
-                                                            @click="
-                                                                deleteAccesory(
-                                                                    accesory
-                                                                )
-                                                            "
-                                                        >
-                                                            <v-icon
-                                                                name="md-delete"
-                                                            />
-                                                            <span
-                                                                class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md"
-                                                                style="
-                                                                    left: 50%;
-                                                                    transform: translateX(
-                                                                        -50%
-                                                                    );
-                                                                    transition: opacity
-                                                                        0.3s;
-                                                                "
-                                                            >
-                                                                Eliminar
-                                                                Accesorio
+                                                        <button class="bg-red-300 text-slate-500 p-1 rounded-md hover:bg-red-400 cursor-pointer shadow-abajo-1" @click="deleteAccesory(accesory)">
+                                                            <v-icon name="md-delete" />
+                                                            <span class="absolute bottom-full mb-2 hidden group-hover:block w-auto p-2 text-xs text-white bg-sky-950 rounded-md" style="left: 50%; transform: translateX(-50%); transition: opacity 0.3s;">
+                                                                Eliminar Accesorio
                                                             </span>
                                                         </button>
                                                     </div>
@@ -498,10 +284,7 @@ const daysUntilWarrantyEnds = (purchaseDate, warrantyMonths) => {
                                             </td>
                                         </tr>
                                         <tr v-if="accessories.data.length <= 0">
-                                            <td
-                                                class="text-center text-slate-800 text-md sm:text-lg font-semibold bg-slate-300"
-                                                colspan="7"
-                                            >
+                                            <td class="text-center text-slate-800 text-md sm:text-lg font-semibold bg-slate-200" colspan="7">
                                                 No hay registros
                                             </td>
                                         </tr>
@@ -509,29 +292,47 @@ const daysUntilWarrantyEnds = (purchaseDate, warrantyMonths) => {
                                 </table>
                             </div>
                         </div>
-
+                        <!-- Versión mobile -->
+                        <div class="block sm:hidden rounded-lg">
+                            <div v-for="accesory in accessories.data" :key="accesory.id" class="p-4 mx-1 mt-4 bg-blue-50 hover:bg-blue-100 rounded-lg relative shadow-abajo-1">
+                                <!-- Contenido de la tarjeta -->
+                                <div class="flex items-center space-x-2 mb-4">
+                                    <svg class="h-6 w-6 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18m-9 5h9" />
+                                    </svg>
+                                    <h3 class="text-lg font-bold text-slate-700">
+                                        Accesorio:
+                                        <span class="font-normal">{{ accesory.nombre }}</span>
+                                    </h3>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="text-md text-slate-700">
+                                        Estado:
+                                        <span class="font-normal">{{ accesory.estado == 1 ? 'Activo' : 'Inactivo' }}</span>
+                                    </div>
+                                    <div class="absolute top-0 right-0 p-2 z-10">
+                                        <div class="flex items-center space-x-1">
+                                            <a href="#" @click="editAccesory(accesory)" class="block px-3 py-1 text-sm text-slate-500 bg-yellow-300 hover:bg-yellow-400 rounded-l-lg">
+                                                <v-icon name="md-modeedit-round" class="text-slate-500" />
+                                            </a>
+                                            <a href="#" @click="deleteAccesory(accesory)" class="block px-3 py-1 text-sm text-slate-500 bg-red-300 hover:bg-red-400 rounded-r-lg">
+                                                <v-icon name="bi-trash" class="text-slate-500" />
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <Pagination class="mt-2" :pagination="accessories" />
                     </div>
                     <Modal :show="showModal" maxWidth="3xl">
-                        <AccesoryForm
-                            :accesory="accesoryObj"
-                            :makes="makes"
-                            :stores="stores"
-                            @close-modal="closeModal"
-                        />
+                        <AccesoryForm :accesory="accesoryObj" :makes="makes" :stores="stores" @close-modal="closeModal" />
                     </Modal>
                     <Modal :show="showModalDoc" maxWidth="lg">
-                        <UpdateDocument
-                            :accessory="accesoryObj"
-                            @close-modal="closeModal"
-                        />
+                        <UpdateDocument :accessory="accesoryObj" @close-modal="closeModal" />
                     </Modal>
                     <Modal :show="showModalAssign" maxWidth="lg">
-                        <AssignAccessory
-                            :accessory="accesoryObj"
-                            :teams="teams"
-                            @close-modal="closeModal"
-                        />
+                        <AssignAccessory :accessory="accesoryObj" :teams="teams" @close-modal="closeModal" />
                     </Modal>
                 </div>
             </div>

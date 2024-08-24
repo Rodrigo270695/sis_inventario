@@ -1,9 +1,13 @@
 <script setup>
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
+import TextArea from "@/Components/TextArea.vue";
 import InputError from "@/Components/InputError.vue";
+import SubmitButton from "@/Components/SubmitButton.vue";
+import SelectInput from "@/Components/SelectInput.vue";
+import TitleForm from "@/Components/TitleForm.vue";
 import { useForm } from "@inertiajs/vue3";
-import { defineProps } from "vue";
+import { defineProps, defineEmits } from "vue";
 
 const props = defineProps({
     user: Object,
@@ -12,7 +16,7 @@ const props = defineProps({
 });
 
 const form = useForm({
-    id: props.user ? props.user.id : "",
+    id: props.user ? String(props.user.id) : "",
     name: props.user ? props.user.name : "",
     dni: props.user ? props.user.dni : "",
     email: props.user ? props.user.email : "",
@@ -42,23 +46,11 @@ const toTitleCase = (str) => {
 
 const emit = defineEmits(["close-modal"]);
 </script>
+
 <template>
-    <div class="flex justify-between bg-slate-300 h-12 px-4">
-        <div
-            class="text-lg sm:text-xl text-slate-700 font-bold inline-flex items-center"
-        >
-            {{ form.id == 0 ? "Registrar Usuario" : "Actualizar Usuario" }}
-        </div>
-        <button @click="emit('close-modal')">
-            <v-icon
-                class="text-white rounded-md bg-red-400"
-                name="io-close"
-                scale="1.5"
-            />
-        </button>
-    </div>
+    <TitleForm :title="form.id == 0 ? 'Registrar Usuario' : 'Actualizar Usuario'" @close-modal="emit('close-modal')" />
     <form @submit.prevent="submit">
-        <div class="bg-white shadow-md rounded-md p-4">
+        <div class="bg-3D-50 shadow-md rounded-md p-4">
             <div class="mb-4">
                 <div class="grid grid-cols-6 gap-3">
                     <div class="col-span-6 sm:col-span-3">
@@ -91,7 +83,7 @@ const emit = defineEmits(["close-modal"]);
                         <select
                             id="select"
                             v-model="form.pdv_id"
-                            class="bg-gray-50 border border-blue-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 white:bg-gray-700 white:border-gray-600 white:placeholder-gray-400 white:text-white white:focus:ring-blue-500 white:focus:border-blue-500"
+                            class="bg-3D-50 border border-blue-300 font-bold text-sm rounded-lg shadow-abajo-2 focus:border-blue-500 block w-full p-2.5 white:bg-gray-700 white:border-gray-600 white:placeholder-gray-400 white:text-white white:focus:ring-blue-500 white:focus:border-blue-500 focus:ring-slate-500 text-slate-500"
                         >
                             <option disabled selected value="">
                                 Elija una opción
@@ -114,7 +106,7 @@ const emit = defineEmits(["close-modal"]);
                         <select
                             id="select"
                             v-model="form.rol"
-                            class="bg-gray-50 border border-blue-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 white:bg-gray-700 white:border-gray-600 white:placeholder-gray-400 white:text-white white:focus:ring-blue-500 white:focus:border-blue-500"
+                            class="bg-3D-50 border border-blue-300 font-bold text-sm rounded-lg shadow-abajo-2 focus:border-blue-500 block w-full p-2.5 white:bg-gray-700 white:border-gray-600 white:placeholder-gray-400 white:text-white white:focus:ring-blue-500 white:focus:border-blue-500 focus:ring-slate-500 text-slate-500"
                         >
                             <option disabled selected value="">
                                 Elija una opción
@@ -135,12 +127,7 @@ const emit = defineEmits(["close-modal"]);
                 </div>
             </div>
             <div class="flex justify-end">
-                <button
-                    class="bg-sky-800 hover:bg-sky-700 text-white px-4 py-2 rounded-md mr-2"
-                    :disabled="form.processing"
-                >
-                    {{ form.id == 0 ? "Registrar" : "Actualizar" }}
-                </button>
+                <SubmitButton :text="form.id == 0 ? 'Registrar' : 'Actualizar'" :processing="form.processing" />
             </div>
         </div>
     </form>

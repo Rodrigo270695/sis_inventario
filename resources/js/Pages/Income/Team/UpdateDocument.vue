@@ -1,6 +1,8 @@
 <script setup>
 import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
+import SubmitButton from "@/Components/SubmitButton.vue";
+import TextInput from "@/Components/TextInput.vue";
 import { useForm } from "@inertiajs/vue3";
 import { defineProps, defineEmits } from "vue";
 
@@ -32,6 +34,7 @@ const submit = () => {
 
 const emit = defineEmits(["close-modal"]);
 </script>
+
 <template>
     <div class="flex justify-between bg-slate-300 h-12 px-4">
         <div class="text-lg sm:text-xl text-slate-700 font-bold inline-flex items-center">
@@ -46,14 +49,14 @@ const emit = defineEmits(["close-modal"]);
         </button>
     </div>
     <form @submit.prevent="submit">
-        <div class="bg-white shadow-md rounded-md p-4">
+        <div class="bg-3D-50 shadow-md rounded-md p-4">
             <div class="mb-4">
                 <div class="grid grid-cols-12 gap-3">
                     <div class="col-span-9 sm:col-span-9">
                         <InputLabel value="Documento" />
-                        <input
+                        <TextInput
                             type="file"
-                            class="bg-gray-50 border border-blue-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 white:bg-gray-700 white:border-gray-600 white:placeholder-gray-400 white:text-white white:focus:ring-blue-500 white:focus:border-blue-500"
+                            class="w-full file:bg-transparent file:border-none file:px-1 file:mt-2 file:p-0 file:shadow-abajo-1 file:rounded-md file:text-slate-500 file:font-bold file:hover:text-slate-500  file:cursor-pointer"
                             @change="onFileChange"
                             ref="documento"
                             accept=".jpg, .jpeg, .png, .pdf, .doc, .docx"
@@ -66,7 +69,7 @@ const emit = defineEmits(["close-modal"]);
                     <div class="col-span-3 sm:col-span-3">
                         <InputLabel value="Documento" />
                         <a
-                            v-if="team.documento"
+                            v-if="team && team.documento"
                             class=""
                             :href="`/team/download/${team.documento}`"
                             :download="team.documento"
@@ -110,12 +113,7 @@ const emit = defineEmits(["close-modal"]);
                 </div>
             </div>
             <div class="flex justify-end">
-                <button
-                    class="bg-sky-800 hover:bg-sky-700 text-white px-4 py-2 rounded-md mr-2"
-                    :disabled="form.processing"
-                >
-                    {{ form.id == 0 ? "Registrar" : "Actualizar" }}
-                </button>
+                <SubmitButton :text="'Actualizar'" :processing="form.processing" />
             </div>
         </div>
     </form>

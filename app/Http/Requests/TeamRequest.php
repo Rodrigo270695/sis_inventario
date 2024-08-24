@@ -26,7 +26,7 @@ class TeamRequest extends FormRequest
             'mac' => 'nullable|string|max:30',
             'estado' => 'nullable|in:BAJA,DESECHADO,MANTENIMIENTO-DAÑO,MANTENIMIENTO-GARANTIA,RESERVADO,USO',
             'fecha_compra' => 'required|date',
-            'garantia_tienda' => 'required|integer|min:0',
+            'garantia_tienda' => 'required|integer|min:1',
             'garantia_marca' => 'nullable|integer|min:0',
             'codigo_barras' => 'nullable|string|max:100',
             'descripcion' => 'nullable|string',

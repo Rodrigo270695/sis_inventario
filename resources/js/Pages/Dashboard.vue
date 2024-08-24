@@ -4,11 +4,17 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 
 <template>
     <AppLayout title="Dashboard">
-
-        <div class="pt-5">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                    <h1>Grupo Maclabi</h1>
+        <template #header>
+            <div class="flex justify-between">
+                <h2 class="font-bold text-xl text-slate-500 ">
+                    Dashboard
+                </h2>
+            </div>
+        </template>
+        <div class="py-5">
+            <div class="">
+                <div class="bg-3D-50 overflow-hidden shadow-abajo-2 rounded-lg">
+                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sed iste ducimus repellat numquam libero officiis accusamus possimus, consectetur minima blanditiis eos ea recusandae excepturi placeat aliquid corporis quia accusantium quaerat!
                 </div>
             </div>
         </div>
