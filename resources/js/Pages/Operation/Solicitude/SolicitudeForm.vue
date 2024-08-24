@@ -15,6 +15,12 @@ const form = useForm({
     id: props.solicitude ? props.solicitude.id : "",
     mensaje: props.solicitude ? props.solicitude.mensaje : "",
     type_request_id: props.solicitude ? props.solicitude.type_request_id : "",
+    observacion_local: props.solicitude
+        ? props.solicitude.observacion_local
+        : "",
+    observacion_gerencia: props.solicitude
+        ? props.solicitude.observacion_gerencia
+        : "",
 });
 
 const submit = () => {
@@ -56,6 +62,12 @@ const emit = defineEmits(["close-modal"]);
                         <InputLabel value="Tipo" />
                         <select
                             id="select"
+                            :disabled="
+                                $page.props.user.roles.includes(
+                                    'Supervisor 1'
+                                ) ||
+                                $page.props.user.roles.includes('Aprobador')
+                            "
                             v-model="form.type_request_id"
                             class="bg-gray-50 border border-blue-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 white:bg-gray-700 white:border-gray-600 white:placeholder-gray-400 white:text-white white:focus:ring-blue-500 white:focus:border-blue-500"
                         >
@@ -75,12 +87,58 @@ const emit = defineEmits(["close-modal"]);
                             :message="form.errors.type_request_id"
                         />
                     </div>
+
                     <div class="col-span-6 sm:col-span-6">
                         <InputLabel value="Mensaje" />
-                        <TextArea class="w-full h-60" v-model="form.mensaje" />
+                        <TextArea
+                            :disabled="
+                                ($page.props.user.roles.includes(
+                                    'Supervisor 1'
+                                ) ||
+                                $page.props.user.roles.includes('Aprobador') ||
+                                (props.solicitude?.aprobacion_local !== 0 )) && props.solicitude?.id !== undefined
+                            "
+                            class="w-full h-40"
+                            v-model="form.mensaje"
+                        />
                         <InputError
                             class="w-full"
                             :message="form.errors.mensaje"
+                        />
+                    </div>
+                    <div
+                        v-if="$page.props.user.roles.includes('Supervisor 1')"
+                        class="col-span-6 sm:col-span-6"
+                    >
+                        <InputLabel value="Observación" />
+                        <TextArea
+                            :disabled="props.solicitude?.aprobacion_local !== 0"
+                            class="w-full h-40"
+                            v-model="form.observacion_local"
+                        />
+                        <InputError
+                            class="w-full"
+                            :message="form.errors.observacion_local"
+                        />
+                    </div>
+                    <div
+                        v-if="
+                            $page.props.user.roles.includes('Administrador') ||
+                            $page.props.user.roles.includes('Aprobador')
+                        "
+                        class="col-span-6 sm:col-span-6"
+                    >
+                        <InputLabel value="Observación" />
+                        <TextArea
+                            :disabled="
+                                props.solicitude.aprobacion_gerencia !== 0
+                            "
+                            class="w-full h-40"
+                            v-model="form.observacion_gerencia"
+                        />
+                        <InputError
+                            class="w-full"
+                            :message="form.errors.observacion_gerencia"
                         />
                     </div>
                 </div>

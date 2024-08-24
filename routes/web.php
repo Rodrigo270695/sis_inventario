@@ -3,6 +3,7 @@
 use App\Http\Controllers\AccessoryController;
 use App\Http\Controllers\EquipmentTypeController;
 use App\Http\Controllers\MakeController;
+use App\Http\Controllers\MoveController;
 use App\Http\Controllers\PdvController;
 use App\Http\Controllers\SolicitudeController;
 use App\Http\Controllers\StoreController;
@@ -106,10 +107,13 @@ Route::middleware([
     Route::put('operation/typer/change/{type}', [TypeRequestController::class, 'change'])->name('typer.change');
 
     /* solicitud */
+    Route::get('operation/solicitude/search', [SolicitudeController::class, 'search' ])->name('solicitude.search');
     Route::resource('operation/solicitude', SolicitudeController::class);
     Route::put('operation/solicitude/approve/{solicitude}', [SolicitudeController::class, 'approve'])->name('solicitude.approve');
     Route::put('operation/solicitude/reject/{solicitude}', [SolicitudeController::class, 'reject'])->name('solicitude.reject');
     Route::put('operation/solicitude/approveManagement/{solicitude}', [SolicitudeController::class, 'approveManagement'])->name('solicitude.approveManagement');
     Route::put('operation/solicitude/rejectManagement/{solicitude}', [SolicitudeController::class, 'rejectManagement'])->name('solicitude.rejectManagement');
 
+    /* Traslados */
+    Route::resource('operation/move', MoveController::class);
 });

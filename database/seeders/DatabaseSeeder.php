@@ -20,7 +20,8 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             StoreSeeder::class,
             TypeSeeder::class,
-            MakeSeeder::class
+            MakeSeeder::class,
+            TypeRequestSeeder::class
         ]);
     }
 }
